@@ -1,0 +1,8 @@
+{
+  "remote.portsAttributes": {
+    "5173": {
+      "label": "Oasis dev",
+      "onAutoForward": "silent"
+    }
+  }
+}
