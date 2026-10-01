@@ -1,5 +1,5 @@
 # MyGames (working name: Oasis)
-A bilingual (French/English) PWA of gentle, calm tablet games for seniors: Match (pairs), Mahjong-style tiles with familiar pictures, Match 3, and Puzzles. First target device: iPad. Must look like a polished modern tablet game, while being forgiving and simple to play.
+A bilingual (French/English) PWA of gentle, calm tablet games for seniors. docs/CONCEPT.md is the product spec: read it before any feature work. When CLAUDE.md and CONCEPT.md differ on product decisions, CONCEPT.md wins.
 
 ## Stack
 React + TypeScript + Vite PWA, hosted on Netlify (free plan). No backend, no accounts, no Supabase. Settings stored locally on the device. Must work fully offline once installed. Everything must stay within free-tier limits.
@@ -16,8 +16,8 @@ React + TypeScript + Vite PWA, hosted on Netlify (free plan). No backend, no acc
 ## Design rules (non-negotiable)
 - Photosensitivity-safe: nothing flashes, blinks, strobes or flickers. Animations are slow and smooth (fades, glides, gentle lifts, 3D flips).
 - A global "Effects" setting: Full / Gentle / Minimal.
-- Every game supports two input modes, chosen in settings: Drag, and Tap-Tap (tap origin, then tap destination).
+- The kit supports two input modes: Drag, and Tap-Tap (tap origin, then tap destination). Which modes are exposed in settings is defined per release in CONCEPT.md.
 - No timers, lives, scores pressure, ads, accounts, streaks, rewards, or "come back tomorrow".
 - Large touch targets, clear simple navigation, always an obvious way back to Home.
 - All visible text in French and English; French is the default language.
-- Settings are global (apply to all games), with per-game overrides (mainly difficulty).
+- Settings are global with per-game overrides; which settings are visible is defined per release in CONCEPT.md.
