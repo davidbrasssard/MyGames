@@ -1,21 +1,58 @@
-REPORT
+REPORT: app shell
 
 Done:
-- Appended the "Device compatibility (non-negotiable)" section to the end of CLAUDE.md, exactly as given. Nothing else in CLAUDE.md changed. No app code. Nothing committed.
-- Overwrote this report.
+- Read CLAUDE.md (incl. Device compatibility), docs/CONCEPT.md and docs/reference/mockup.png first.
+- Scaffolded React + TypeScript + Vite in the repo root and built the shell: Home, press-and-hold Settings, temporary Mahjong "coming soon" screen. No game logic. Nothing committed, dev server not started.
+- "npm run build" passes (tsc typecheck + vite build). The legacy bundle is produced (assets/index-legacy-*.js + polyfills-legacy-*.js, SystemJS) next to the normal bundle. index.html only loads the normal bundle on browsers with import.meta.resolve (Chrome 105+); Chrome 80 falls through to the legacy one.
+- Checked the built output: no external requests (fonts are local woff2), no forbidden CSS in the build (the only "inset" is the box-shadow keyword), legacy JS only uses syntax Chrome 80 supports (one optional chaining "?.", valid in Chrome 80; no newer APIs).
+- Ran a throw-away Node test (not in the repo) of the settings store, scaling maths and touch rules: all passed (defaults, garbage/missing/throwing localStorage, scale at 1280x800 / 2560x1600 / 1024x768, one finger only, palm ignored, double tap ignored).
 
-Files changed:
-- CLAUDE.md
+Existing code read before changing: there was no app code. Existing files kept as they were: README.md, .gitignore (already ignores node_modules and dist), CLAUDE.md, docs/*. CONCEPT.md was read; it was the spec.
+
+Files created:
+- package.json, package-lock.json, tsconfig.json, vite.config.ts, netlify.toml, index.html
+- public/favicon.svg, public/icons/{icon-192,icon-512,maskable-512,apple-touch-icon-180}.png
+- scripts/generate-icons.mjs (regenerates the placeholder icons: node scripts/generate-icons.mjs)
+- src/main.tsx, App.tsx, styles.css, vite-env.d.ts
+- src/settings/settings.ts (store), settings/release.ts (what Release 1 shows)
+- src/i18n/dictionary.ts (FR/EN, useT())
+- src/kit/scale.ts, touch.ts, gestures.ts, motion.ts, ScreenHost.tsx, TapButton.tsx
+- src/games/registry.ts, games/icons.tsx
+- src/components/GearButton.tsx, BackButton.tsx, Controls.tsx
+- src/screens/HomeScreen.tsx, SettingsScreen.tsx, ComingSoonScreen.tsx
 - docs/results.txt (overwritten)
 
-Current relevant content before the edit (read first):
-- CLAUDE.md ended at line 23, the last line of "Design rules":
-  "- Settings are global with per-game overrides; which settings are visible is defined per release in CONCEPT.md."
-  The new section was added after it, separated by a blank line.
+How the items were done:
+1. PWA: vite-plugin-pwa (autoUpdate), manifest name "Oasis", display standalone + display_override fullscreen, orientation any, 192/512/maskable icons, Apple meta tags + apple-touch-icon, service worker precaches everything (both bundles, fonts, icons) and falls back to index.html offline.
+2. netlify.toml: publish dist, /* -> /index.html 200. Extras: Node 22, no-cache on sw.js and index.html so updates arrive.
+3. Font: @fontsource/nunito, weights 600/700/800, latin subset only (covers French accents), self-hosted.
+4. Dictionary: src/i18n/dictionary.ts; French keys define the type, English must match (build fails if a key is missing). French default.
+5. Settings: localStorage key "oasis.settings.v1", all try/catch. Full list from CONCEPT.md with the requested defaults. Add a setting = one line in Settings + one line in SPECS. Invalid stored values fall back to defaults.
+6. Scaling: the whole UI is in rem and the root font size follows the screen (base 1280x800 landscape / 800x1280 portrait, min of the two ratios). No transforms for scaling. Touch targets: min max(64px, 4rem).
+7. Kit: touch.ts (tap on release with 24px wobble, swipe = 140px+, mostly sideways, double taps within 400ms/40px ignored, first finger owns the gesture, palm-size contacts ignored, press-and-hold), gestures.ts (pinch, double-tap zoom, pull-to-refresh, selection, long-press menu, overscroll), motion.ts + ScreenHost (fade + small lift, length by Effects: Full 700ms, Gentle 500ms, Minimal 250ms with no movement). Only opacity/transform are animated.
+8. Home: leaf + "Oasis" + tagline, gear top-right, game buttons from enabledGames (only Mahjong now, large and centered). Pages of 4, arrows + dots + swipe only when more than 4 (not testable in the app yet with 1 game; logic written and typechecked only). Sky-to-lake gradient background.
+9. Settings: opened only by holding the gear 3 s (ring fills; tap does nothing). Shows Language, Difficulty (Mahjong), Sound. Changes apply immediately.
+10. Style: rounded corners, soft static shadows, calm colors, large text, color-coded buttons as in the mockup.
+11. Build verified (see above).
 
-Assumptions:
-- None; text added verbatim.
+Assumptions (please review):
+- Latest package versions were installed: Vite 8, React 19, TypeScript 7, plugin-legacy 8, vite-plugin-pwa 1.3.
+- Chrome 80 gets the legacy bundle because plugin-legacy's modern cut-off is Chrome 105. I left that default (targets "chrome >= 80" as asked). Both bundles are precached (about 600 KB total) so offline works on either.
+- Manifest: display "standalone" with display_override ["fullscreen","standalone"]; browsers that support it go full screen, others fall back to standalone. iOS status bar style "default" (not translucent).
+- Icons are generated placeholders (white leaf on a sky-to-lake gradient). Replace with real artwork later.
+- Settings values I had to choose: inputMode both/drag/tap, imageSize large/medium/small, collection "nature" as a free text id.
+- Second finger: ignored (the first finger keeps its gesture). Palm = touch contact larger than 90 CSS px. These numbers are in TOUCH in src/kit/touch.ts and may need tuning on the real tablet.
+- French game names: Match = "Paires", Match 3 = "Match 3", Puzzles = "Puzzles". Tagline: "Jouer, se détendre, sourire" / "Play, relax, smile". Taglines per game are my wording.
+- The Android Back button returns to Home instead of leaving the app (browser history entry per screen).
+- Settings can only be opened by touch/mouse hold, not by keyboard (by design: caregiver-only).
+- The Settings Difficulty card is driven by src/settings/release.ts (Mahjong only for Release 1).
+- Hint/Undo/etc. and the mockup's bottom ribbon ("Small steps. Big smiles.") are not part of this step and were left out.
+- The page dots are indicators only (not tappable) so they do not count as small touch targets.
+- autoUpdate means a new version reloads the app silently when it is opened/online; that could interrupt a game later (no pop-up, per the rules).
+- "npm install" warned that core-js has a postinstall script that is not approved; harmless, nothing was run.
 
-To check (David):
-- The new section says the primary device is the Galaxy Tab 4 (1280x800), while CONCEPT.md may still mention iPad or other platform details. Per CLAUDE.md, CONCEPT.md wins on product decisions, so check its Platform section for consistency.
-- The "Stack" section still says nothing about @vitejs/plugin-legacy; the new section covers it.
+David must check / do:
+- Run "npm run dev" (or "npm run build && npm run preview") and look at it in a browser at 1280x800 and in portrait. I could not view the screens myself, so the layout, sizes and the gear hold ring are verified by code and build only, not by eye.
+- On the Galaxy Tab 4: confirm the app loads (legacy bundle), that Back, the 3 s hold on the gear, and the language/difficulty/sound controls behave, and that nothing feels heavy.
+- Netlify: the build uses Node 22 (set in netlify.toml). Nothing was deployed or committed.
+- CONCEPT.md "Platform" still says iPad and Android generally; CLAUDE.md now names the Galaxy Tab 4 as primary. Consider aligning it.
