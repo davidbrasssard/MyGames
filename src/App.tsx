@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { ScreenHost } from './kit/ScreenHost';
 import { applyEffects } from './kit/motion';
 import { ComingSoonScreen } from './screens/ComingSoonScreen';
@@ -9,6 +9,10 @@ import { useSettings, type GameId } from './settings/settings';
 type Screen = { name: 'home' } | { name: 'settings' } | { name: 'game'; id: GameId };
 
 const HOME: Screen = { name: 'home' };
+
+// Development-only picture review screen at /dev/tiles. `import.meta.env.DEV` is a build-time constant,
+// so in the production build this is `null` and the screen's code is not included at all.
+const DevTiles = import.meta.env.DEV ? lazy(() => import('./dev/DevTiles')) : null;
 
 export function App() {
   const { language, effects } = useSettings();
@@ -42,6 +46,14 @@ export function App() {
     if (window.history.state && window.history.state.oasis) window.history.back();
     else setScreen(HOME);
   }, []);
+
+  if (DevTiles && window.location.pathname === '/dev/tiles') {
+    return (
+      <Suspense fallback={null}>
+        <DevTiles />
+      </Suspense>
+    );
+  }
 
   const key = screen.name === 'game' ? `game:${screen.id}` : screen.name;
 

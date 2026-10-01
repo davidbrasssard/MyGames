@@ -16,7 +16,15 @@ export function installGestureBlockers(): void {
     options,
   );
   // Pull-to-refresh, overscroll bounce and scrolling: the app never scrolls.
-  document.addEventListener('touchmove', stop, options);
+  // Only an element marked data-scrollable (the development-only picture review) may scroll.
+  document.addEventListener(
+    'touchmove',
+    (e) => {
+      if (e.target instanceof Element && e.target.closest('[data-scrollable]')) return;
+      e.preventDefault();
+    },
+    options,
+  );
 
   // Double-tap zoom, long-press menu, text selection, image dragging.
   document.addEventListener('dblclick', stop, options);

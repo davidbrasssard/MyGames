@@ -1,58 +1,101 @@
-REPORT: app shell
+REPORT: Mahjong tile pictures
 
 Done:
-- Read CLAUDE.md (incl. Device compatibility), docs/CONCEPT.md and docs/reference/mockup.png first.
-- Scaffolded React + TypeScript + Vite in the repo root and built the shell: Home, press-and-hold Settings, temporary Mahjong "coming soon" screen. No game logic. Nothing committed, dev server not started.
-- "npm run build" passes (tsc typecheck + vite build). The legacy bundle is produced (assets/index-legacy-*.js + polyfills-legacy-*.js, SystemJS) next to the normal bundle. index.html only loads the normal bundle on browsers with import.meta.resolve (Chrome 105+); Chrome 80 falls through to the legacy one.
-- Checked the built output: no external requests (fonts are local woff2), no forbidden CSS in the build (the only "inset" is the box-shadow keyword), legacy JS only uses syntax Chrome 80 supports (one optional chaining "?.", valid in Chrome 80; no newer APIs).
-- Ran a throw-away Node test (not in the repo) of the settings store, scaling maths and touch rules: all passed (defaults, garbage/missing/throwing localStorage, scale at 1280x800 / 2560x1600 / 1024x768, one finger only, palm ignored, double tap ignored).
+- Read CLAUDE.md and docs/CONCEPT.md first. Took 42 pictures from Microsoft fluentui-emoji, "Color" style only (the "Color" folder of each emoji; no 3D, Flat or High Contrast), pinned to commit 1ffb34c752ecf5d402f04cfb4b392c77f57c54bc.
+- I looked at about 190 candidates rendered side by side before choosing, then checked the 42 optimized files again the same way (all render correctly, no faces, hands, people, flags, symbols or text).
+- Bundled them locally, optimized with svgo: public/tiles/<id>.svg, 580 KB for all 42 (average 14 KB, largest: cactus 37 KB, butterfly 35 KB). They are served as plain files (shown with <img>), so they do not add to the JS bundle, and the service worker precaches all 42 for offline use (build says 62 precache entries, 1.1 MB, was 20).
+- Collection "tiles-fluent": src/pictures/tilesFluent.ts (generated), types in src/pictures/types.ts, lookup helpers in src/pictures/index.ts (getCollection, pictureUrl, pictureName). Each picture has an id and FR/EN names.
+- MIT notice: THIRD_PARTY_NOTICES.md (repo root) and public/tiles/LICENSE.txt (shipped with the pictures). Copy of Microsoft's LICENSE at the pinned commit.
+- Dev-only preview at /dev/tiles: all 42 pictures on ivory tile mock-ups (stacked thickness, rounded corners, soft shadow) in a scrolling grid, number and FR name under each. Only loads when import.meta.env.DEV is true.
+- npm run build passes (typecheck + build). Nothing committed. Dev server not started.
 
-Existing code read before changing: there was no app code. Existing files kept as they were: README.md, .gitignore (already ignores node_modules and dist), CLAUDE.md, docs/*. CONCEPT.md was read; it was the spec.
+Verified:
+- Production build contains no trace of the preview (no DevTiles chunk, no dev CSS: the CSS file is byte-identical in name to the previous build; searched dist for the screen's code and text: none).
+- dist/tiles has the 42 SVGs and LICENSE.txt; all 42 are in the service worker precache.
+- Rendering the preview component on the server (Vite module loader, no dev server) gives 42 tiles, 42 existing image files, 42 unique FR names; the collection has 42 unique ids, each with FR and EN names.
+- I could not view the preview page in a browser; I did view the pictures themselves as rendered contact sheets (on an ivory background, same as the tile).
 
 Files created:
-- package.json, package-lock.json, tsconfig.json, vite.config.ts, netlify.toml, index.html
-- public/favicon.svg, public/icons/{icon-192,icon-512,maskable-512,apple-touch-icon-180}.png
-- scripts/generate-icons.mjs (regenerates the placeholder icons: node scripts/generate-icons.mjs)
-- src/main.tsx, App.tsx, styles.css, vite-env.d.ts
-- src/settings/settings.ts (store), settings/release.ts (what Release 1 shows)
-- src/i18n/dictionary.ts (FR/EN, useT())
-- src/kit/scale.ts, touch.ts, gestures.ts, motion.ts, ScreenHost.tsx, TapButton.tsx
-- src/games/registry.ts, games/icons.tsx
-- src/components/GearButton.tsx, BackButton.tsx, Controls.tsx
-- src/screens/HomeScreen.tsx, SettingsScreen.tsx, ComingSoonScreen.tsx
+- scripts/tiles.json (the list: id, Fluent folder, FR, EN), scripts/fetch-tiles.mjs (downloads, optimizes, regenerates the files below: node scripts/fetch-tiles.mjs, needs internet)
+- public/tiles/*.svg (42), public/tiles/LICENSE.txt, THIRD_PARTY_NOTICES.md
+- src/pictures/types.ts, index.ts, tilesFluent.ts
+- src/dev/DevTiles.tsx, src/dev/DevTiles.css
+Files changed:
+- package.json, package-lock.json (added devDependency svgo)
+- src/App.tsx, src/kit/gestures.ts (see below)
 - docs/results.txt (overwritten)
 
-How the items were done:
-1. PWA: vite-plugin-pwa (autoUpdate), manifest name "Oasis", display standalone + display_override fullscreen, orientation any, 192/512/maskable icons, Apple meta tags + apple-touch-icon, service worker precaches everything (both bundles, fonts, icons) and falls back to index.html offline.
-2. netlify.toml: publish dist, /* -> /index.html 200. Extras: Node 22, no-cache on sw.js and index.html so updates arrive.
-3. Font: @fontsource/nunito, weights 600/700/800, latin subset only (covers French accents), self-hosted.
-4. Dictionary: src/i18n/dictionary.ts; French keys define the type, English must match (build fails if a key is missing). French default.
-5. Settings: localStorage key "oasis.settings.v1", all try/catch. Full list from CONCEPT.md with the requested defaults. Add a setting = one line in Settings + one line in SPECS. Invalid stored values fall back to defaults.
-6. Scaling: the whole UI is in rem and the root font size follows the screen (base 1280x800 landscape / 800x1280 portrait, min of the two ratios). No transforms for scaling. Touch targets: min max(64px, 4rem).
-7. Kit: touch.ts (tap on release with 24px wobble, swipe = 140px+, mostly sideways, double taps within 400ms/40px ignored, first finger owns the gesture, palm-size contacts ignored, press-and-hold), gestures.ts (pinch, double-tap zoom, pull-to-refresh, selection, long-press menu, overscroll), motion.ts + ScreenHost (fade + small lift, length by Effects: Full 700ms, Gentle 500ms, Minimal 250ms with no movement). Only opacity/transform are animated.
-8. Home: leaf + "Oasis" + tagline, gear top-right, game buttons from enabledGames (only Mahjong now, large and centered). Pages of 4, arrows + dots + swipe only when more than 4 (not testable in the app yet with 1 game; logic written and typechecked only). Sky-to-lake gradient background.
-9. Settings: opened only by holding the gear 3 s (ring fills; tap does nothing). Shows Language, Difficulty (Mahjong), Sound. Changes apply immediately.
-10. Style: rounded corners, soft static shadows, calm colors, large text, color-coded buttons as in the mockup.
-11. Build verified (see above).
+Existing code read before changing (current content before my change):
+- src/App.tsx: line 1 was "import { useCallback, useEffect, useState } from 'react';" and, right after "const HOME: Screen = { name: 'home' };", there was no dev screen. The render started with "const key = screen.name === 'game' ? `game:${screen.id}` : screen.name;" then "return (<div className="app"><ScreenHost ...". Change: import lazy/Suspense; added "const DevTiles = import.meta.env.DEV ? lazy(() => import('./dev/DevTiles')) : null;" and, before computing key, "if (DevTiles && window.location.pathname === '/dev/tiles') return <Suspense fallback={null}><DevTiles /></Suspense>;".
+- src/kit/gestures.ts: the touchmove blocker was "document.addEventListener('touchmove', stop, options);" (the app never scrolls). Change: it now lets touchmove through only inside an element marked data-scrollable, otherwise still blocks it. Only the dev preview uses data-scrollable.
 
-Assumptions (please review):
-- Latest package versions were installed: Vite 8, React 19, TypeScript 7, plugin-legacy 8, vite-plugin-pwa 1.3.
-- Chrome 80 gets the legacy bundle because plugin-legacy's modern cut-off is Chrome 105. I left that default (targets "chrome >= 80" as asked). Both bundles are precached (about 600 KB total) so offline works on either.
-- Manifest: display "standalone" with display_override ["fullscreen","standalone"]; browsers that support it go full screen, others fall back to standalone. iOS status bar style "default" (not translucent).
-- Icons are generated placeholders (white leaf on a sky-to-lake gradient). Replace with real artwork later.
-- Settings values I had to choose: inputMode both/drag/tap, imageSize large/medium/small, collection "nature" as a free text id.
-- Second finger: ignored (the first finger keeps its gesture). Palm = touch contact larger than 90 CSS px. These numbers are in TOUCH in src/kit/touch.ts and may need tuning on the real tablet.
-- French game names: Match = "Paires", Match 3 = "Match 3", Puzzles = "Puzzles". Tagline: "Jouer, se détendre, sourire" / "Play, relax, smile". Taglines per game are my wording.
-- The Android Back button returns to Home instead of leaving the app (browser history entry per screen).
-- Settings can only be opened by touch/mouse hold, not by keyboard (by design: caregiver-only).
-- The Settings Difficulty card is driven by src/settings/release.ts (Mahjong only for Release 1).
-- Hint/Undo/etc. and the mockup's bottom ribbon ("Small steps. Big smiles.") are not part of this step and were left out.
-- The page dots are indicators only (not tappable) so they do not count as small touch targets.
-- autoUpdate means a new version reloads the app silently when it is opened/online; that could interrupt a game later (no pop-up, per the rules).
-- "npm install" warned that core-js has a postinstall script that is not approved; harmless, nothing was run.
+The 42 pictures (same order as the preview grid):
+   1. sunflower     Tournesol        Sunflower
+   2. tulip         Tulipe           Tulip
+   3. apple         Pomme            Apple
+   4. grapes        Raisin           Grapes
+   5. orange        Orange           Orange
+   6. pear          Poire            Pear
+   7. watermelon    Pastèque         Watermelon
+   8. pineapple     Ananas           Pineapple
+   9. carrot        Carotte          Carrot
+  10. corn          Maïs             Corn
+  11. broccoli      Brocoli          Broccoli
+  12. owl           Hibou            Owl
+  13. swan          Cygne            Swan
+  14. parrot        Perroquet        Parrot
+  15. cat           Chat             Cat
+  16. cow           Vache            Cow
+  17. elephant      Éléphant         Elephant
+  18. turtle        Tortue           Turtle
+  19. giraffe       Girafe           Giraffe
+  20. butterfly     Papillon         Butterfly
+  21. whale         Baleine          Whale
+  22. snail         Escargot         Snail
+  23. tree          Arbre            Tree
+  24. palm-tree     Palmier          Palm tree
+  25. cactus        Cactus           Cactus
+  26. mushroom      Champignon       Mushroom
+  27. potted-plant  Plante en pot    Potted plant
+  28. sailboat      Voilier          Sailboat
+  29. car           Voiture          Car
+  30. bicycle       Vélo             Bicycle
+  31. airplane      Avion            Airplane
+  32. tractor       Tracteur         Tractor
+  33. umbrella      Parapluie        Umbrella
+  34. light-bulb    Ampoule          Light bulb
+  35. key           Clé              Key
+  36. book          Livre            Book
+  37. basket        Panier           Basket
+  38. camera        Appareil photo   Camera
+  39. sun-cloud     Soleil et nuage  Sun and cloud
+  40. moon          Lune             Moon
+  41. rainbow       Arc-en-ciel      Rainbow
+  42. mountain      Montagne         Mountain
+
+By category:
+Flowers (2): sunflower, tulip
+Fruit (6): apple, grapes, orange, pear, watermelon, pineapple
+Vegetables (3): carrot, corn, broccoli
+Birds (3): owl, swan, parrot
+Animals (8): cat, cow, elephant, turtle, giraffe, butterfly, whale, snail
+Trees and plants (5): tree, palm-tree, cactus, mushroom, potted-plant
+Boats and vehicles (5): sailboat, car, bicycle, airplane, tractor
+Household (6): umbrella, light-bulb, key, book, basket, camera
+Nature (4): sun-cloud, moon, rainbow, mountain
+
+How I chose (assumptions to review):
+- Only one picture per kind of subject; where two were close I kept one. Dropped for being near-twins: rose (tulip), banana (looks like the crescent moon), strawberry (apple), dog (cat), ladybug (butterfly), a second tree (evergreen), pink flowers (hibiscus, cherry blossom, lotus). Dropped for low contrast on ivory: rabbit (replaced by cow). Hyacinth was dropped because its file was 83 KB even after optimizing; replaced by the camera. So flowers are only two (sunflower, tulip).
+- Full-body animals only; no animal faces (cat face, panda, koala, frog...) to stay clear of the "no faces" rule. The owl has a face by nature; I kept it because it is instantly recognizable.
+- "Orange" is Fluent's "Tangerine" picture; "Livre" is the blue book; "Soleil et nuage" is Fluent's "sun behind cloud" (the plain sun looks too much like the sunflower).
+- Colors: many pictures are red/pink/green, but no two share both color and shape. Look hardest at: tulip / parrot / car / mushroom (all pink-red), and elephant / cow / swan (grey-white). These are the ones I would swap first.
+- Names: FR/EN names are my wording ("Raisin" singular for grapes, "Maïs", "Appareil photo", "Plante en pot").
+- Each picture is an <img> pointing at a file; the optimizer shortens internal ids (a, b, c...), which is fine for <img> but means these SVGs must NOT be pasted inline into the page together (the ids would clash).
+- Some pictures use SVG blur/shadow effects inside the file (that is how Fluent draws its soft edges). They are drawn once per image, not animated, so this does not break the "no heavy effects" rule, but watch performance of a full board on the Galaxy Tab 4.
+- The setting "collection" (default "nature") is a different thing: it is for backgrounds/photos later. "tiles-fluent" is the Mahjong tile set.
+- The preview screen text is plain French and not in the FR/EN dictionary because it is development-only.
 
 David must check / do:
-- Run "npm run dev" (or "npm run build && npm run preview") and look at it in a browser at 1280x800 and in portrait. I could not view the screens myself, so the layout, sizes and the gear hold ring are verified by code and build only, not by eye.
-- On the Galaxy Tab 4: confirm the app loads (legacy bundle), that Back, the 3 s hold on the gear, and the language/difficulty/sound controls behave, and that nothing feels heavy.
-- Netlify: the build uses Node 22 (set in netlify.toml). Nothing was deployed or committed.
-- CONCEPT.md "Platform" still says iPad and Android generally; CLAUDE.md now names the Galaxy Tab 4 as primary. Consider aligning it.
+- Run "npm run dev" and open http://localhost:5173/dev/tiles (it scrolls; works with touch too). Review the 42: tell me the numbers of any picture to swap.
+- Check that every picture looks recognizable on the tile at the size you want for Easy and Very Hard.
+- Nothing is committed.
