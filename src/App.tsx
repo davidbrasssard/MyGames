@@ -4,10 +4,9 @@ import { ScreenHost } from './kit/ScreenHost';
 import { applyEffects } from './kit/motion';
 import { ComingSoonScreen } from './screens/ComingSoonScreen';
 import { HomeScreen } from './screens/HomeScreen';
-import { SettingsScreen } from './screens/SettingsScreen';
 import { useSettings, type GameId } from './settings/settings';
 
-type Screen = { name: 'home' } | { name: 'settings' } | { name: 'game'; id: GameId };
+type Screen = { name: 'home' } | { name: 'game'; id: GameId };
 
 const HOME: Screen = { name: 'home' };
 
@@ -68,9 +67,8 @@ export function App() {
     <div className="app">
       <ScreenHost screenKey={key}>
         {screen.name === 'home' && (
-          <HomeScreen onOpenGame={(id) => open({ name: 'game', id })} onOpenSettings={() => open({ name: 'settings' })} />
+          <HomeScreen onOpenGame={(id) => open({ name: 'game', id })} />
         )}
-        {screen.name === 'settings' && <SettingsScreen onBack={goHome} />}
         {screen.name === 'game' && <GameRoute id={screen.id} onBack={goHome} />}
       </ScreenHost>
     </div>

@@ -25,8 +25,7 @@ export interface Settings {
   hints: boolean;
   swipe: boolean;
   collection: string; // picture collection id
-  enabledGames: GameId[]; // which games appear on Home
-  difficulty: Record<GameId, Difficulty>; // per game
+  level: Record<GameId, Difficulty>; // per game: the player's last chosen level (first play: easy)
 }
 
 // ---- How to add a setting: add it to Settings, then add one entry in SPECS. ----
@@ -44,12 +43,6 @@ const bool = (value: unknown): boolean | undefined => (typeof value === 'boolean
 
 const nonEmptyString = (value: unknown): string | undefined =>
   typeof value === 'string' && value.length > 0 ? value : undefined;
-
-const gameList = (value: unknown): GameId[] | undefined => {
-  if (!Array.isArray(value)) return undefined;
-  const known = GAME_IDS.filter((id) => value.includes(id));
-  return known.length > 0 ? known : undefined;
-};
 
 const perGame =
   <T>(fallback: T, parse: (value: unknown) => T | undefined) =>
@@ -71,12 +64,11 @@ const SPECS: { [K in keyof Settings]: Spec<Settings[K]> } = {
   inputMode: { default: 'both', parse: oneOf(INPUT_MODES) },
   effects: { default: 'gentle', parse: oneOf(EFFECTS) },
   imageSize: { default: 'large', parse: oneOf(IMAGE_SIZES) },
-  sound: { default: true, parse: bool },
+  sound: { default: false, parse: bool },
   hints: { default: true, parse: bool },
   swipe: { default: true, parse: bool },
   collection: { default: 'nature', parse: nonEmptyString },
-  enabledGames: { default: ['mahjong'], parse: gameList },
-  difficulty: { default: perGameDefault<Difficulty>('easy'), parse: perGame<Difficulty>('easy', oneOf(DIFFICULTIES)) },
+  level: { default: perGameDefault<Difficulty>('easy'), parse: perGame<Difficulty>('easy', oneOf(DIFFICULTIES)) },
 };
 
 const SETTING_KEYS = Object.keys(SPECS) as (keyof Settings)[];
@@ -135,8 +127,9 @@ export function updateSettings(patch: Partial<Settings>): void {
   listeners.forEach((listener) => listener());
 }
 
-export function setDifficulty(game: GameId, level: Difficulty): void {
-  updateSettings({ difficulty: { ...current.difficulty, [game]: level } });
+// In-game level picker: the player's level, remembered per game for next time.
+export function setLevel(game: GameId, level: Difficulty): void {
+  updateSettings({ level: { ...current.level, [game]: level } });
 }
 
 function subscribe(listener: () => void): () => void {

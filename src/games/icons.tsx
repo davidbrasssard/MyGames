@@ -82,10 +82,24 @@ export function GearIcon() {
   );
 }
 
-export function ChevronIcon({ direction }: { direction: 'left' | 'right' }) {
+export function ChevronIcon({ direction }: { direction: 'left' | 'right' | 'down' }) {
   return (
-    <svg viewBox="0 0 32 32" aria-hidden="true" style={{ transform: direction === 'right' ? 'rotate(180deg)' : undefined }}>
+    <svg viewBox="0 0 32 32" aria-hidden="true" style={{ transform: direction === 'right' ? 'rotate(180deg)' : direction === 'down' ? 'rotate(-90deg)' : undefined }}>
       <path d="M20 5L9 16l11 11" fill="none" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// Speaker: with sound waves when on, with a cross when off. Uses currentColor.
+export function SpeakerIcon({ on }: { on: boolean }) {
+  return (
+    <svg viewBox="0 0 48 48" aria-hidden="true">
+      <path fill="currentColor" d="M6 18h8l10-8v28l-10-8H6z" />
+      {on ? (
+        <path d="M31 17a10 10 0 0 1 0 14M36 11a18 18 0 0 1 0 26" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
+      ) : (
+        <path d="M31 18l11 12M42 18L31 30" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
+      )}
     </svg>
   );
 }

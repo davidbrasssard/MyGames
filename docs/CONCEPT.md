@@ -4,8 +4,8 @@
 Entertain, while staying super simple for both the player and the caregiver. Gentle tablet games for seniors, including people with mild memory difficulties. First player: a 75-year-old woman with good dexterity today; tap-based play must be ready for when that changes. Other players may follow. The look is adult and modern, never childish.
 
 ## Releases
-Design and build the code for the full version; expose only what each release needs. Settings are added release by release, based on real feedback.
-- Release 1: Mahjong only. Visible settings: Language (FR/EN), Difficulty (Easy/Medium/Hard/Very Hard), Sound (on/off). Everything else uses fixed defaults: Drag and Tap both work at the same time, Effects = Gentle, large pictures.
+Design and build the code for the full version; expose only what each release needs.
+- Release 1: Mahjong only. No settings screen. Home has a language pill FR | EN and a speaker (sound on/off) button, top-right. Everything else uses fixed defaults: Drag and Tap both work at the same time, Effects = Gentle, large pictures.
 - Next releases: ask the player which game she wants next; add settings only when feedback shows a need.
 
 ## Visual reference
@@ -29,6 +29,7 @@ When a game needs something new, extend the kit; no one-off code.
 - If no free pair remains, the remaining tiles reshuffle gently and automatically. No message, no game over.
 - Select a tile: it lifts with a soft glow. Tap its match: both glide away and fade. Wrong pick: the selection simply moves to the new tile.
 - Hint (gently highlights a free pair) and Undo.
+- Level picker (kit screen): the level badge in the game's top bar opens "Choose your level" (4 colored cards with tile count and 1-4 stars). Choosing starts a new board; Back returns to the game unchanged. The chosen level is remembered per game and used when the game is next opened from Home.
 - Levels: Easy = small, nearly flat board, few tiles; Very Hard = a tall pyramid of 5 layers. Every level is visibly layered (Easy 2 layers, Medium 3, Hard 4, Very Hard 5). Medium and Hard in between.
 
 ## Later games
@@ -45,9 +46,13 @@ Input modes supported by the kit: Drag, and Tap-Tap (tap piece, then tap destina
 Every image belongs to a collection. Sources: bundled illustrations (Fluent Emoji), bundled photos (free libraries, e.g. Pexels/Unsplash, used for backgrounds and later games), and personal photos (family, home, familiar places). Games ask for N pictures from a collection and do not care about the source.
 Personal photos (later release): caregiver uploads collections from settings (protected by a caregiver passcode) to a private Cloudflare R2 bucket; the tablet downloads changes when online and keeps them for offline play. Reuse the CHRONOS offline-package approach. No Supabase. Personal photos never go in the repo or on Netlify.
 
-## Settings (caregiver)
-Opened by press-and-hold on the gear for about 3 seconds (a ring fills); a normal tap does nothing.
-Full list the code must support (exposed release by release): language, difficulty per game, sound, input mode, effects (Full / Gentle / Minimal), image size, hints, swipe on/off, picture collection, which games appear on Home, caregiver setup guide for locking the tablet (Guided Access on iPad, Screen Pinning on Android).
+## Player controls and settings
+No settings screen for now. Home, top-right: a language pill "FR | EN" (both shown, current one highlighted; tapping the other switches the whole app at once) and a speaker button for sound on/off (clear on/off look). Both at least 64px tall.
+- Sound: default OFF. No music, ever. Only a very soft click on a match (coming later).
+- Levels: the first time a game is opened it starts on Easy; after that it opens on the level the player last chose (remembered per game).
+- All released games appear on Home automatically.
+- The settings store still holds the full list (language, sound, input mode, effects, image size, hints, swipe, picture collection, level per game); only language, sound and level are changeable by the player today. Defaults: Drag and Tap both on, Effects = Gentle, large pictures.
+- The gear returns later, only for caregiver functions (personal photos, passcode-protected, opened by press-and-hold ~3 seconds with a filling ring; a tap does nothing). The press-and-hold component is kept in src/kit/GearButton.tsx. A caregiver guide for locking the tablet (Guided Access on iPad, Screen Pinning on Android) comes with it.
 
 ## Never
 Timers, lives, scores pressure, ads, accounts, streaks, rewards, pop-ups, "come back tomorrow", flashing or flickering effects, scrolling game boards, hidden menus, close/exit buttons.

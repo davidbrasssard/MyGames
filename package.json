@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:public": "pkill -f node_modules/.bin/vite; (sleep 5 && gh codespace ports visibility 5173:public -c $CODESPACE_NAME) & vite --host --port 5173 --strictPort",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview"
   },

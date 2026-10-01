@@ -14,7 +14,7 @@ export interface GameDef {
   Screen?: ComponentType<GameProps>; // the playable game; games without one show the "coming soon" screen
 }
 
-// Every game the app knows about. Which ones appear on Home is the "enabledGames" setting.
+// Every game the app knows about. Home shows the ones that have a Screen (released).
 // To add a game: add its id in settings.ts (GAME_IDS), its texts in the dictionary, and an entry here.
 export const GAMES: GameDef[] = [
   { id: 'match', nameKey: 'gameMatch', taglineKey: 'gameMatchTagline', colors: ['#3d9be8', '#1f6fc4'], Icon: MatchIcon },

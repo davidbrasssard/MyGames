@@ -8,7 +8,7 @@ import { useDragGesture, type Point } from '../../kit/touch';
 import { useElementSize } from '../../kit/useElementSize';
 import type { Picture } from '../../pictures/types';
 import { TILES_FLUENT } from '../../pictures/tilesFluent';
-import { useSettings } from '../../settings/settings';
+import { setLevel, useSettings, type Difficulty } from '../../settings/settings';
 import { computeGeometry } from './geometry';
 import { LEVELS, type LevelDef } from './layouts';
 import { buildBlockers, createBoard, findFreePairs, freeIds, isFree, reshuffle, shuffled } from './rules';
@@ -43,10 +43,33 @@ function newGame(level: LevelDef): GameState {
   };
 }
 
-export function MahjongGame({ onBack, onComplete }: GameProps) {
+// The player's level is remembered per game. Picking a level (even the same one) deals a new board:
+// the board is rebuilt from scratch through its key.
+export function MahjongGame(props: GameProps) {
+  const { level } = useSettings();
+  const [round, setRound] = useState(0);
+  return (
+    <MahjongBoard
+      key={`${level.mahjong}:${round}`}
+      {...props}
+      levelId={level.mahjong}
+      onPickLevel={(next) => {
+        setLevel('mahjong', next);
+        setRound((r) => r + 1);
+      }}
+    />
+  );
+}
+
+function MahjongBoard({
+  onBack,
+  onComplete,
+  levelId,
+  onPickLevel,
+}: GameProps & { levelId: Difficulty; onPickLevel: (level: Difficulty) => void }) {
   const t = useT();
-  const { difficulty, hints, effects } = useSettings();
-  const level = LEVELS[difficulty.mahjong];
+  const { hints, effects } = useSettings();
+  const level = LEVELS[levelId];
   const fadeMs = EFFECT_PROFILES[effects].fadeMs;
   const blockers = useMemo(() => buildBlockers(level.positions), [level]);
 
@@ -340,6 +363,11 @@ export function MahjongGame({ onBack, onComplete }: GameProps) {
     <GameScreen
       title={t('gameMahjong')}
       levelLabel={`${t('level')} ${level.number} · ${t(LEVEL_TEXT[level.id])}`}
+      level={{
+        current: levelId,
+        detail: (l) => t('tilesCount').replace('{n}', String(LEVELS[l].positions.length)),
+        onPick: onPickLevel,
+      }}
       onBack={onBack}
       actions={actions}
       caption={t('mahjongCaption')}

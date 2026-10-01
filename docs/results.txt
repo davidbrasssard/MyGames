@@ -1,14 +1,17 @@
-REPORT: Mahjong layers and depth. Nothing committed. npm run build passes.
+Step A: simplify settings (not committed)
 
-Done (checked in headless Chromium screenshots, 1280x800, all levels):
-1. Gap removed: tiles on a layer touch, separated by their dark outline only.
-2. Thickness (0.11 of a tile) now shows on LEFT and BOTTOM in darker tan, with an outline round the block.
-3. Each layer shifts up and RIGHT by the thickness; soft static shadow falls down-left onto the tiles below. Paint order is set so a tile's shadow never darkens same-layer neighbours.
-4. Lower layers ~4% darker per layer (computed in Tile.tsx, passed as CSS variables). CONCEPT.md Mahjong section updated.
-5. Layouts (counts unchanged 24/40/64/80): Easy 2 layers, Medium 3, Hard 4, Very Hard 5, all stepped pyramids. Boards are still built by reverse play, so always solvable.
-6. All tile styling stays in the kit: Tile.tsx (shade prop, colours) + Tile.css (uses --tw, --t).
-Files changed: src/kit/Tile.tsx, src/kit/Tile.css, games/mahjong/geometry.ts, layouts.ts, MahjongGame.tsx (hit areas follow left-side thickness, shade/z-order, drag z-index), docs/CONCEPT.md.
-Before (verified): gap 0.05, thickness 0.085 on right/bottom, layers shifted up-left, all tiles identical, Very Hard 4 layers.
-Tile width at 1280x800: Easy 139px, Medium 113, Hard 105, Very Hard 90 (was ~84). All larger than before.
-Assumptions: Easy 6x3 + 3x2; shading step 4% per layer below the top.
-David must check: shading strength on the real tablet (SHADE_STEP in Tile.tsx if too strong or weak).
+Done
+- Removed gear + Settings screen from the app. Gear (press-and-hold) kept as src/kit/GearButton.tsx, unused for now.
+- Removed "starting level" and enabled-games settings. Home shows every game with a playable Screen (today: Mahjong). First play = Easy, then last level (per game, already stored).
+- Home top-right: FR|EN pill (current highlighted) and speaker button (green when on). Both 72px tall. Sound default OFF.
+- CONCEPT.md updated. package.json: "dev:public" script added.
+- npm run build passes.
+
+Files changed: App.tsx, HomeScreen.tsx, settings.ts, dictionary.ts, icons.tsx (SpeakerIcon), registry.ts (comment), styles.css, CONCEPT.md, package.json, kit/GearButton.tsx (moved).
+Deleted: SettingsScreen.tsx, settings/release.ts, components/Controls.tsx (only the settings screen used them).
+
+Assumptions / check
+- Old saved settings keep their stored values: a device that already saved sound=true stays on until toggled once (sound plays nothing yet).
+- dev:public kills vite via "pkill -f node_modules/.bin/vite" (plain "pkill -f vite" would kill its own shell). Untested here (needs Codespace + gh).
+- Unused dictionary keys removed (settings, startingLevel, sound, on/off, langFr/langEn); settingsHold kept for the gear.
+- Please check the pill and speaker look on the tablet.

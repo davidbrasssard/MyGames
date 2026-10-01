@@ -1,11 +1,11 @@
 import type { CSSProperties } from 'react';
 import { GearIcon } from '../games/icons';
 import { useT } from '../i18n/dictionary';
-import { useHold } from '../kit/touch';
+import { useHold } from './touch';
 
 export const SETTINGS_HOLD_MS = 3000;
 
-// Opens settings only after a press-and-hold of about 3 seconds, shown by a filling ring.
+// Caregiver-only control (not used on Home for now): opens something only after a press-and-hold of about 3 seconds, shown by a filling ring.
 // A normal tap does nothing. The ring is two half-rings turned with transform (no repaint-heavy animation).
 export function GearButton({ onOpen }: { onOpen: () => void }) {
   const t = useT();

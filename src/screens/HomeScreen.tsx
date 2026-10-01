@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { GearButton } from '../components/GearButton';
-import { ChevronIcon, LeafIcon } from '../games/icons';
+import { ChevronIcon, LeafIcon, SpeakerIcon } from '../games/icons';
 import { GAMES, type GameDef } from '../games/registry';
 import { useT } from '../i18n/dictionary';
 import { TapButton } from '../kit/TapButton';
 import { useTouch } from '../kit/touch';
-import { useSettings, type GameId } from '../settings/settings';
+import { updateSettings, useSettings, type GameId, type Language } from '../settings/settings';
 
 const PAGE_SIZE = 4;
 
@@ -33,13 +32,13 @@ function GameButton({ game, onOpen }: { game: GameDef; onOpen: (id: GameId) => v
   );
 }
 
-export function HomeScreen({ onOpenGame, onOpenSettings }: { onOpenGame: (id: GameId) => void; onOpenSettings: () => void }) {
+export function HomeScreen({ onOpenGame }: { onOpenGame: (id: GameId) => void }) {
   const t = useT();
-  const { enabledGames, swipe } = useSettings();
+  const { swipe, language, sound } = useSettings();
   const [requestedPage, setPage] = useState(0);
 
-  // Only games switched on by the caregiver appear (no placeholders).
-  const games = GAMES.filter((game) => enabledGames.includes(game.id));
+  // Every released game (one with a playable screen) appears automatically.
+  const games = GAMES.filter((game) => game.Screen);
   const pages = chunk(games, PAGE_SIZE);
   const paged = pages.length > 1;
   const page = Math.min(requestedPage, Math.max(0, pages.length - 1));
@@ -61,7 +60,32 @@ export function HomeScreen({ onOpenGame, onOpenSettings }: { onOpenGame: (id: Ga
             <p className="home-tagline">{t('tagline')}</p>
           </div>
         </div>
-        <GearButton onOpen={onOpenSettings} />
+        <div className="home-controls">
+          <div className="lang-pill" role="radiogroup" aria-label={t('language')}>
+            {(['fr', 'en'] as Language[]).map((code) => (
+              <TapButton
+                key={code}
+                className="lang-option"
+                role="radio"
+                aria-checked={language === code}
+                data-selected={language === code}
+                onTap={() => updateSettings({ language: code })}
+              >
+                {code.toUpperCase()}
+              </TapButton>
+            ))}
+          </div>
+          <TapButton
+            className="sound-button"
+            role="switch"
+            aria-checked={sound}
+            aria-label={sound ? t('soundOn') : t('soundOff')}
+            data-on={sound}
+            onTap={() => updateSettings({ sound: !sound })}
+          >
+            <SpeakerIcon on={sound} />
+          </TapButton>
+        </div>
       </header>
 
       <main className="home-stage" data-paged={paged} {...swipeHandlers}>
