@@ -210,3 +210,88 @@ export function useHold({ ms, onComplete }: HoldOptions): {
 
   return { handlers, holding };
 }
+
+// ---- Tap and drag on a board of pieces (used by tile / card / puzzle games) ----
+// One set of handlers goes on the board element. `pick` says which piece is under a point
+// (client coordinates). A press that stays within the wobble is a tap; a press that moves
+// further is a drag of that piece, reported until release. Drag and Tap-Tap are both always on.
+export interface Point {
+  x: number;
+  y: number;
+}
+
+export interface DragOptions<T> {
+  pick: (point: Point) => T | null;
+  onTap?: (item: T) => void;
+  onDragStart?: (item: T) => boolean | void; // return false to refuse (the press then does nothing)
+  onDragMove?: (item: T, delta: Point, point: Point) => void;
+  onDragEnd?: (item: T, delta: Point, point: Point) => void; // released after a drag: the drop
+  onDragCancel?: (item: T) => void; // the system took the touch away
+}
+
+type DragHandlers = Pick<TouchHandlers, 'onPointerDown' | 'onPointerMove' | 'onPointerUp' | 'onPointerCancel'>;
+
+export function useDragGesture<T>(options: DragOptions<T>): DragHandlers {
+  const optionsRef = useRef(options);
+  optionsRef.current = options;
+  const gestureRef = useRef<{
+    id: number;
+    item: T;
+    start: Point;
+    dragging: boolean;
+    refused: boolean;
+    maxDistance: number;
+  } | null>(null);
+
+  return useMemo<DragHandlers>(
+    () => ({
+      onPointerDown(e) {
+        if (gestureRef.current && gestureRef.current.id !== e.pointerId) return;
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        if (!claimPointer(e)) return;
+        const point = { x: e.clientX, y: e.clientY };
+        const item = optionsRef.current.pick(point);
+        if (item === null) return;
+        try {
+          e.currentTarget.setPointerCapture(e.pointerId); // keep receiving moves outside the board
+        } catch {
+          // not supported: moves still arrive while the pointer stays over the board
+        }
+        gestureRef.current = { id: e.pointerId, item, start: point, dragging: false, refused: false, maxDistance: 0 };
+      },
+      onPointerMove(e) {
+        const g = gestureRef.current;
+        if (!g || g.id !== e.pointerId || g.refused) return;
+        const delta = { x: e.clientX - g.start.x, y: e.clientY - g.start.y };
+        g.maxDistance = Math.max(g.maxDistance, Math.hypot(delta.x, delta.y));
+        if (!g.dragging && g.maxDistance > TOUCH.tapWobble * getScale()) {
+          if (optionsRef.current.onDragStart?.(g.item) === false) {
+            g.refused = true;
+            return;
+          }
+          g.dragging = true;
+        }
+        if (g.dragging) optionsRef.current.onDragMove?.(g.item, delta, { x: e.clientX, y: e.clientY });
+      },
+      onPointerUp(e) {
+        const g = gestureRef.current;
+        if (!g || g.id !== e.pointerId) return;
+        gestureRef.current = null;
+        if (g.refused) return;
+        const point = { x: e.clientX, y: e.clientY };
+        if (g.dragging) {
+          optionsRef.current.onDragEnd?.(g.item, { x: point.x - g.start.x, y: point.y - g.start.y }, point);
+        } else if (acceptTap(point.x, point.y)) {
+          optionsRef.current.onTap?.(g.item);
+        }
+      },
+      onPointerCancel(e) {
+        const g = gestureRef.current;
+        if (!g || g.id !== e.pointerId) return;
+        gestureRef.current = null;
+        if (g.dragging) optionsRef.current.onDragCancel?.(g.item);
+      },
+    }),
+    [],
+  );
+}

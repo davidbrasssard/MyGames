@@ -1,0 +1,23 @@
+/* Mahjong board. Only transform and opacity are animated. */
+.mj-board {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  touch-action: none;
+}
+
+.mj-tiles {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transition: opacity var(--fx-dur) ease-in-out;
+}
+
+/* While the tiles are dealt again the board fades out and back in. */
+.mj-tiles[data-shuffling='true'] {
+  opacity: 0;
+}

@@ -28,3 +28,7 @@ React + TypeScript + Vite PWA, hosted on Netlify (free plan). No backend, no acc
 - CSS must work in Chrome 80. Do NOT use: flexbox gap (use margins, or grid gap which is fine), aspect-ratio, inset shorthand, :is() / :where() / :has(), dvh/svh/lvh units, container queries, CSS nesting, color-mix(). If unsure whether a feature works in Chrome 80, don't use it.
 - Performance: animate only transform and opacity. No blur/backdrop-filter, no animated shadows, no heavy effects. Keep images optimized and the bundle small.
 - Layout: design base is 1280x800 landscape. Scale smoothly to any tablet 10 inches or larger, in landscape and portrait. Never smaller than 10-inch tablets.
+
+## Efficiency
+- Keep docs/results.txt reports short: about 15 lines maximum. List what was done, files changed, key assumptions, and anything David must check. Add detail only when something needs David's attention.
+- Do not view docs/reference/mockup.png unless the prompt explicitly asks for it.

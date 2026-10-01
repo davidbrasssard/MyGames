@@ -26,6 +26,21 @@ export function installGestureBlockers(): void {
     options,
   );
 
+  // The app never scrolls: if anything ever gets scrolled by accident (focus, drag near an edge...),
+  // put it straight back so nothing ends up shifted or clipped at the screen edge.
+  document.addEventListener(
+    'scroll',
+    (e) => {
+      const el = e.target;
+      if (!(el instanceof HTMLElement) || el.closest('[data-scrollable]')) return;
+      if (el.scrollLeft !== 0 || el.scrollTop !== 0) {
+        el.scrollLeft = 0;
+        el.scrollTop = 0;
+      }
+    },
+    true,
+  );
+
   // Double-tap zoom, long-press menu, text selection, image dragging.
   document.addEventListener('dblclick', stop, options);
   document.addEventListener('contextmenu', stop, options);

@@ -631,6 +631,117 @@ svg {
   transform: translateX(3.5rem);
 }
 
+/* ---- Kit: game screen (top bar, board, action side bar) ---- */
+.game-screen {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  /* Inner margins: nothing may touch or be clipped by the screen edges (never less than 28px). */
+  padding: calc(1.5rem + env(safe-area-inset-top, 0px)) calc(max(3rem, 28px) + env(safe-area-inset-right, 0px))
+    calc(1.25rem + env(safe-area-inset-bottom, 0px)) calc(max(3rem, 28px) + env(safe-area-inset-left, 0px));
+  /* A deeper, calm blue-green lake so the ivory tiles stand out; static. */
+  background-image: radial-gradient(ellipse at 50% 58%, rgba(14, 70, 92, 0.38), rgba(14, 70, 92, 0) 72%),
+    linear-gradient(to bottom, #a6d9e4 0%, #6fbccb 26%, #3f9ab0 62%, #2a7a93 100%);
+}
+
+.game-topbar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  height: 5rem;
+}
+
+.game-title {
+  margin-left: 1.75rem;
+  font-size: 2.4rem;
+  font-weight: 800;
+}
+
+.game-level {
+  margin-left: auto;
+  padding: 0.7rem 1.6rem;
+  border-radius: 2rem;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: var(--shadow);
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.game-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  margin-top: 1rem;
+}
+
+.game-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.game-board-area {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.game-caption {
+  align-self: flex-start;
+  flex: none;
+  margin-top: 0.75rem;
+  padding: 0.6rem 1.6rem;
+  border-radius: 1.6rem;
+  background: rgba(255, 255, 255, 0.82);
+  font-size: 1.3rem;
+  color: var(--ink-soft);
+}
+
+.game-sidebar {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 9rem;
+  margin-left: 1.5rem;
+}
+
+.action-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 8rem;
+  height: 8rem;
+  border-radius: 2rem;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow);
+  color: var(--accent);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.action-button svg {
+  flex: none;
+  width: 3.4rem;
+  height: 3.4rem;
+  margin-bottom: 0.35rem;
+}
+
+.action-button span {
+  color: var(--ink);
+}
+
+.action-button + .action-button {
+  margin-top: 1.5rem;
+}
+
 /* ---- Portrait: 3 or 4 games become 2 columns ---- */
 @media (orientation: portrait) {
   .game-grid[data-count='3'],
@@ -649,5 +760,28 @@ svg {
   .home {
     padding-left: calc(2rem + env(safe-area-inset-left, 0px));
     padding-right: calc(2rem + env(safe-area-inset-right, 0px));
+  }
+}
+
+/* Portrait: the action buttons move under the board. */
+@media (orientation: portrait) {
+  .game-body {
+    flex-direction: column;
+  }
+
+  .game-sidebar {
+    flex-direction: row;
+    width: auto;
+    margin: 1rem 0 0;
+  }
+
+  .action-button {
+    width: 7.5rem;
+    height: 7.5rem;
+  }
+
+  .action-button + .action-button {
+    margin-top: 0;
+    margin-left: 1.5rem;
   }
 }

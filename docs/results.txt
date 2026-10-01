@@ -1,101 +1,14 @@
-REPORT: Mahjong tile pictures
+REPORT: Mahjong layers and depth. Nothing committed. npm run build passes.
 
-Done:
-- Read CLAUDE.md and docs/CONCEPT.md first. Took 42 pictures from Microsoft fluentui-emoji, "Color" style only (the "Color" folder of each emoji; no 3D, Flat or High Contrast), pinned to commit 1ffb34c752ecf5d402f04cfb4b392c77f57c54bc.
-- I looked at about 190 candidates rendered side by side before choosing, then checked the 42 optimized files again the same way (all render correctly, no faces, hands, people, flags, symbols or text).
-- Bundled them locally, optimized with svgo: public/tiles/<id>.svg, 580 KB for all 42 (average 14 KB, largest: cactus 37 KB, butterfly 35 KB). They are served as plain files (shown with <img>), so they do not add to the JS bundle, and the service worker precaches all 42 for offline use (build says 62 precache entries, 1.1 MB, was 20).
-- Collection "tiles-fluent": src/pictures/tilesFluent.ts (generated), types in src/pictures/types.ts, lookup helpers in src/pictures/index.ts (getCollection, pictureUrl, pictureName). Each picture has an id and FR/EN names.
-- MIT notice: THIRD_PARTY_NOTICES.md (repo root) and public/tiles/LICENSE.txt (shipped with the pictures). Copy of Microsoft's LICENSE at the pinned commit.
-- Dev-only preview at /dev/tiles: all 42 pictures on ivory tile mock-ups (stacked thickness, rounded corners, soft shadow) in a scrolling grid, number and FR name under each. Only loads when import.meta.env.DEV is true.
-- npm run build passes (typecheck + build). Nothing committed. Dev server not started.
-
-Verified:
-- Production build contains no trace of the preview (no DevTiles chunk, no dev CSS: the CSS file is byte-identical in name to the previous build; searched dist for the screen's code and text: none).
-- dist/tiles has the 42 SVGs and LICENSE.txt; all 42 are in the service worker precache.
-- Rendering the preview component on the server (Vite module loader, no dev server) gives 42 tiles, 42 existing image files, 42 unique FR names; the collection has 42 unique ids, each with FR and EN names.
-- I could not view the preview page in a browser; I did view the pictures themselves as rendered contact sheets (on an ivory background, same as the tile).
-
-Files created:
-- scripts/tiles.json (the list: id, Fluent folder, FR, EN), scripts/fetch-tiles.mjs (downloads, optimizes, regenerates the files below: node scripts/fetch-tiles.mjs, needs internet)
-- public/tiles/*.svg (42), public/tiles/LICENSE.txt, THIRD_PARTY_NOTICES.md
-- src/pictures/types.ts, index.ts, tilesFluent.ts
-- src/dev/DevTiles.tsx, src/dev/DevTiles.css
-Files changed:
-- package.json, package-lock.json (added devDependency svgo)
-- src/App.tsx, src/kit/gestures.ts (see below)
-- docs/results.txt (overwritten)
-
-Existing code read before changing (current content before my change):
-- src/App.tsx: line 1 was "import { useCallback, useEffect, useState } from 'react';" and, right after "const HOME: Screen = { name: 'home' };", there was no dev screen. The render started with "const key = screen.name === 'game' ? `game:${screen.id}` : screen.name;" then "return (<div className="app"><ScreenHost ...". Change: import lazy/Suspense; added "const DevTiles = import.meta.env.DEV ? lazy(() => import('./dev/DevTiles')) : null;" and, before computing key, "if (DevTiles && window.location.pathname === '/dev/tiles') return <Suspense fallback={null}><DevTiles /></Suspense>;".
-- src/kit/gestures.ts: the touchmove blocker was "document.addEventListener('touchmove', stop, options);" (the app never scrolls). Change: it now lets touchmove through only inside an element marked data-scrollable, otherwise still blocks it. Only the dev preview uses data-scrollable.
-
-The 42 pictures (same order as the preview grid):
-   1. sunflower     Tournesol        Sunflower
-   2. tulip         Tulipe           Tulip
-   3. apple         Pomme            Apple
-   4. grapes        Raisin           Grapes
-   5. orange        Orange           Orange
-   6. pear          Poire            Pear
-   7. watermelon    Pastèque         Watermelon
-   8. pineapple     Ananas           Pineapple
-   9. carrot        Carotte          Carrot
-  10. corn          Maïs             Corn
-  11. broccoli      Brocoli          Broccoli
-  12. owl           Hibou            Owl
-  13. swan          Cygne            Swan
-  14. parrot        Perroquet        Parrot
-  15. cat           Chat             Cat
-  16. cow           Vache            Cow
-  17. elephant      Éléphant         Elephant
-  18. turtle        Tortue           Turtle
-  19. giraffe       Girafe           Giraffe
-  20. butterfly     Papillon         Butterfly
-  21. whale         Baleine          Whale
-  22. snail         Escargot         Snail
-  23. tree          Arbre            Tree
-  24. palm-tree     Palmier          Palm tree
-  25. cactus        Cactus           Cactus
-  26. mushroom      Champignon       Mushroom
-  27. potted-plant  Plante en pot    Potted plant
-  28. sailboat      Voilier          Sailboat
-  29. car           Voiture          Car
-  30. bicycle       Vélo             Bicycle
-  31. airplane      Avion            Airplane
-  32. tractor       Tracteur         Tractor
-  33. umbrella      Parapluie        Umbrella
-  34. light-bulb    Ampoule          Light bulb
-  35. key           Clé              Key
-  36. book          Livre            Book
-  37. basket        Panier           Basket
-  38. camera        Appareil photo   Camera
-  39. sun-cloud     Soleil et nuage  Sun and cloud
-  40. moon          Lune             Moon
-  41. rainbow       Arc-en-ciel      Rainbow
-  42. mountain      Montagne         Mountain
-
-By category:
-Flowers (2): sunflower, tulip
-Fruit (6): apple, grapes, orange, pear, watermelon, pineapple
-Vegetables (3): carrot, corn, broccoli
-Birds (3): owl, swan, parrot
-Animals (8): cat, cow, elephant, turtle, giraffe, butterfly, whale, snail
-Trees and plants (5): tree, palm-tree, cactus, mushroom, potted-plant
-Boats and vehicles (5): sailboat, car, bicycle, airplane, tractor
-Household (6): umbrella, light-bulb, key, book, basket, camera
-Nature (4): sun-cloud, moon, rainbow, mountain
-
-How I chose (assumptions to review):
-- Only one picture per kind of subject; where two were close I kept one. Dropped for being near-twins: rose (tulip), banana (looks like the crescent moon), strawberry (apple), dog (cat), ladybug (butterfly), a second tree (evergreen), pink flowers (hibiscus, cherry blossom, lotus). Dropped for low contrast on ivory: rabbit (replaced by cow). Hyacinth was dropped because its file was 83 KB even after optimizing; replaced by the camera. So flowers are only two (sunflower, tulip).
-- Full-body animals only; no animal faces (cat face, panda, koala, frog...) to stay clear of the "no faces" rule. The owl has a face by nature; I kept it because it is instantly recognizable.
-- "Orange" is Fluent's "Tangerine" picture; "Livre" is the blue book; "Soleil et nuage" is Fluent's "sun behind cloud" (the plain sun looks too much like the sunflower).
-- Colors: many pictures are red/pink/green, but no two share both color and shape. Look hardest at: tulip / parrot / car / mushroom (all pink-red), and elephant / cow / swan (grey-white). These are the ones I would swap first.
-- Names: FR/EN names are my wording ("Raisin" singular for grapes, "Maïs", "Appareil photo", "Plante en pot").
-- Each picture is an <img> pointing at a file; the optimizer shortens internal ids (a, b, c...), which is fine for <img> but means these SVGs must NOT be pasted inline into the page together (the ids would clash).
-- Some pictures use SVG blur/shadow effects inside the file (that is how Fluent draws its soft edges). They are drawn once per image, not animated, so this does not break the "no heavy effects" rule, but watch performance of a full board on the Galaxy Tab 4.
-- The setting "collection" (default "nature") is a different thing: it is for backgrounds/photos later. "tiles-fluent" is the Mahjong tile set.
-- The preview screen text is plain French and not in the FR/EN dictionary because it is development-only.
-
-David must check / do:
-- Run "npm run dev" and open http://localhost:5173/dev/tiles (it scrolls; works with touch too). Review the 42: tell me the numbers of any picture to swap.
-- Check that every picture looks recognizable on the tile at the size you want for Easy and Very Hard.
-- Nothing is committed.
+Done (checked in headless Chromium screenshots, 1280x800, all levels):
+1. Gap removed: tiles on a layer touch, separated by their dark outline only.
+2. Thickness (0.11 of a tile) now shows on LEFT and BOTTOM in darker tan, with an outline round the block.
+3. Each layer shifts up and RIGHT by the thickness; soft static shadow falls down-left onto the tiles below. Paint order is set so a tile's shadow never darkens same-layer neighbours.
+4. Lower layers ~4% darker per layer (computed in Tile.tsx, passed as CSS variables). CONCEPT.md Mahjong section updated.
+5. Layouts (counts unchanged 24/40/64/80): Easy 2 layers, Medium 3, Hard 4, Very Hard 5, all stepped pyramids. Boards are still built by reverse play, so always solvable.
+6. All tile styling stays in the kit: Tile.tsx (shade prop, colours) + Tile.css (uses --tw, --t).
+Files changed: src/kit/Tile.tsx, src/kit/Tile.css, games/mahjong/geometry.ts, layouts.ts, MahjongGame.tsx (hit areas follow left-side thickness, shade/z-order, drag z-index), docs/CONCEPT.md.
+Before (verified): gap 0.05, thickness 0.085 on right/bottom, layers shifted up-left, all tiles identical, Very Hard 4 layers.
+Tile width at 1280x800: Easy 139px, Medium 113, Hard 105, Very Hard 90 (was ~84). All larger than before.
+Assumptions: Easy 6x3 + 3x2; shading step 4% per layer below the top.
+David must check: shading strength on the real tablet (SHADE_STEP in Tile.tsx if too strong or weak).

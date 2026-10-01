@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useSettings, type Language } from '../settings/settings';
+import { useSettings, type Difficulty, type Language } from '../settings/settings';
 
 // Every visible text lives here. French is the source of truth for the keys.
 const fr = {
@@ -34,6 +34,12 @@ const fr = {
   sound: 'Son',
   on: 'Activé',
   off: 'Désactivé',
+
+  level: 'Niveau',
+  actionHint: 'Indice',
+  actionUndo: 'Annuler',
+  actionShuffle: 'Mélanger',
+  mahjongCaption: 'Trouvez et retirez les tuiles identiques.',
 };
 
 export type TextKey = keyof typeof fr;
@@ -70,9 +76,23 @@ const en: Record<TextKey, string> = {
   sound: 'Sound',
   on: 'On',
   off: 'Off',
+
+  level: 'Level',
+  actionHint: 'Hint',
+  actionUndo: 'Undo',
+  actionShuffle: 'Shuffle',
+  mahjongCaption: 'Find and remove matching tiles.',
 };
 
 export const DICTIONARY: Record<Language, Record<TextKey, string>> = { fr, en };
+
+// Level names shared by every game (CONCEPT.md: Easy / Medium / Hard / Very Hard).
+export const LEVEL_TEXT: Record<Difficulty, TextKey> = {
+  easy: 'levelEasy',
+  medium: 'levelMedium',
+  hard: 'levelHard',
+  veryHard: 'levelVeryHard',
+};
 
 export type Translate = (key: TextKey) => string;
 

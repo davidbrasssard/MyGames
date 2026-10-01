@@ -1,4 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
+import { getGame } from './games/registry';
 import { ScreenHost } from './kit/ScreenHost';
 import { applyEffects } from './kit/motion';
 import { ComingSoonScreen } from './screens/ComingSoonScreen';
@@ -13,6 +14,12 @@ const HOME: Screen = { name: 'home' };
 // Development-only picture review screen at /dev/tiles. `import.meta.env.DEV` is a build-time constant,
 // so in the production build this is `null` and the screen's code is not included at all.
 const DevTiles = import.meta.env.DEV ? lazy(() => import('./dev/DevTiles')) : null;
+
+// The playable game if the game has one; otherwise the temporary "coming soon" screen.
+function GameRoute({ id, onBack }: { id: GameId; onBack: () => void }) {
+  const { Screen: GameScreenComponent } = getGame(id);
+  return GameScreenComponent ? <GameScreenComponent onBack={onBack} onComplete={onBack} /> : <ComingSoonScreen gameId={id} onBack={onBack} />;
+}
 
 export function App() {
   const { language, effects } = useSettings();
@@ -64,7 +71,7 @@ export function App() {
           <HomeScreen onOpenGame={(id) => open({ name: 'game', id })} onOpenSettings={() => open({ name: 'settings' })} />
         )}
         {screen.name === 'settings' && <SettingsScreen onBack={goHome} />}
-        {screen.name === 'game' && <ComingSoonScreen gameId={screen.id} onBack={goHome} />}
+        {screen.name === 'game' && <GameRoute id={screen.id} onBack={goHome} />}
       </ScreenHost>
     </div>
   );

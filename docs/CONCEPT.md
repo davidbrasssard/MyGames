@@ -23,13 +23,13 @@ When a game needs something new, extend the kit; no one-off code.
 
 ## Mahjong (Release 1)
 - Layered tiles; only free tiles can be picked (no tile on top, and a free left or right side).
-- Tiles: ivory blocks built in CSS (visible thickness, rounded edges, soft shadow, stacked layers). Pictures: Microsoft Fluent Emoji, "Color" (flat) style, MIT license, bundled locally for offline use.
+- Tiles: ivory blocks built in CSS. Tiles on a layer sit tight together; thickness shows on the left and bottom (darker tan). Each higher layer is offset up and to the right by the tile thickness and casts a soft static shadow down-left onto the tiles below. Lower layers are slightly darker (about 4% per layer) so the top tiles stand out; tiles on the same layer look identical. Blocked tiles are never greyed out. Pictures: Microsoft Fluent Emoji, "Color" (flat) style, MIT license, bundled locally for offline use.
 - Every picture on a board must be clearly different from the others: no near-twins (e.g. never two butterflies).
 - Every board is generated to be solvable.
 - If no free pair remains, the remaining tiles reshuffle gently and automatically. No message, no game over.
 - Select a tile: it lifts with a soft glow. Tap its match: both glide away and fade. Wrong pick: the selection simply moves to the new tile.
 - Hint (gently highlights a free pair) and Undo.
-- Levels: Easy = small, nearly flat board, few tiles; Very Hard = taller classic-style pyramid. Medium and Hard in between.
+- Levels: Easy = small, nearly flat board, few tiles; Very Hard = a tall pyramid of 5 layers. Every level is visibly layered (Easy 2 layers, Medium 3, Hard 4, Very Hard 5). Medium and Hard in between.
 
 ## Later games
 Match (pairs; Easy 6 cards, Medium 12, Hard 20, Very Hard 32; wrong pair flips back gently), Match 3 (no way to lose), Puzzles (move tiles to rebuild a picture). All games use the level names Easy / Medium / Hard / Very Hard; each game defines what they mean.

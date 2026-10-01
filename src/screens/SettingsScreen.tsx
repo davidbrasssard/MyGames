@@ -1,16 +1,9 @@
 import { BackButton } from '../components/BackButton';
 import { Segmented, Switch } from '../components/Controls';
 import { getGame } from '../games/registry';
-import { useT, type TextKey } from '../i18n/dictionary';
+import { LEVEL_TEXT, useT } from '../i18n/dictionary';
 import { RELEASE_DIFFICULTY_GAMES, RELEASE_VISIBLE_SETTINGS } from '../settings/release';
 import { DIFFICULTIES, setDifficulty, updateSettings, useSettings, type Difficulty, type Language } from '../settings/settings';
-
-const LEVEL_KEYS: Record<Difficulty, TextKey> = {
-  easy: 'levelEasy',
-  medium: 'levelMedium',
-  hard: 'levelHard',
-  veryHard: 'levelVeryHard',
-};
 
 // Changes save and apply immediately (the store writes to the device on every change).
 export function SettingsScreen({ onBack }: { onBack: () => void }) {
@@ -51,7 +44,7 @@ export function SettingsScreen({ onBack }: { onBack: () => void }) {
                 label={t('difficulty')}
                 value={settings.difficulty[gameId]}
                 onChange={(level) => setDifficulty(gameId, level)}
-                options={DIFFICULTIES.map((level) => ({ value: level, label: t(LEVEL_KEYS[level]) }))}
+                options={DIFFICULTIES.map((level) => ({ value: level, label: t(LEVEL_TEXT[level]) }))}
               />
             </section>
           ))}
