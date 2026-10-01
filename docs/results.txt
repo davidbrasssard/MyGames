@@ -1,23 +1,17 @@
 REPORT
 
-Context: this prompt is a revised version of the previous one (SNAPSHOT.md dropped from the spec).
-
 Done:
-- CLAUDE.md: changed the last Working rule to "Do not update docs/BACKLOG.md unless the prompt asks." (SNAPSHOT.md reference removed). All other text unchanged.
-- Deleted docs/SNAPSHOT.md, which I created last time. I checked it first: untracked, containing only the placeholder text "# Project Snapshot / Not yet written."
-- docs/BACKLOG.md ("# Backlog" + "Empty.") and docs/results.txt already existed from last time and are correct; BACKLOG.md left as is.
+- Created docs/CONCEPT.md with the content from the prompt, verbatim.
 - Overwrote this report.
 
-Current state of CLAUDE.md before the edit (relevant line): "- Do not update docs/SNAPSHOT.md or docs/BACKLOG.md unless the prompt asks."
-
-Files changed: CLAUDE.md, docs/results.txt
-Files deleted: docs/SNAPSHOT.md
-No app code written. Nothing committed.
+Files created: docs/CONCEPT.md
+Files changed: docs/results.txt
+No app code written. Nothing committed. No existing files were modified apart from this report (docs/CONCEPT.md did not exist before; checked docs/ contained only BACKLOG.md and results.txt).
 
 Assumptions:
-- Since the new prompt does not list SNAPSHOT.md, I removed the earlier file rather than leave a stray doc.
-- Same as before: results.txt contains this report rather than being empty, since the prompt says to write the report there.
+- None needed; content copied as given.
 
 For David to check:
-- Confirm you want SNAPSHOT.md gone (easy to recreate).
+- Minor tension to be aware of: CONCEPT.md says "Never ... rewards" while the "Bravo !" completion screen is intended. I treated Bravo as acceptable feedback, not a reward system; no change made.
+- CLAUDE.md says per-game overrides are "mainly difficulty"; CONCEPT.md allows optional overrides of any global setting. Not conflicting, but worth knowing when settings are built.
 - .claude/ is still untracked; decide whether to commit or ignore it.
