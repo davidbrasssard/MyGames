@@ -1,28 +1,21 @@
 REPORT
 
 Done:
-- Edited CLAUDE.md (3 changes, everything else untouched). Nothing committed.
+- Appended the "Device compatibility (non-negotiable)" section to the end of CLAUDE.md, exactly as given. Nothing else in CLAUDE.md changed. No app code. Nothing committed.
 - Overwrote this report.
 
 Files changed:
 - CLAUDE.md
 - docs/results.txt (overwritten)
 
-Current text of the lines changed (before editing):
-1. Line 2 (first paragraph under "# MyGames"):
-   "A bilingual (French/English) PWA of gentle, calm tablet games for seniors: Match (pairs), Mahjong-style tiles with familiar pictures, Match 3, and Puzzles. First target device: iPad. Must look like a polished modern tablet game, while being forgiving and simple to play."
-2. Line 19 (Design rules, input modes):
-   "- Every game supports two input modes, chosen in settings: Drag, and Tap-Tap (tap origin, then tap destination)."
-3. Line 23 (Design rules, settings):
-   "- Settings are global (apply to all games), with per-game overrides (mainly difficulty)."
-
-New text:
-1. "A bilingual (French/English) PWA of gentle, calm tablet games for seniors. docs/CONCEPT.md is the product spec: read it before any feature work. When CLAUDE.md and CONCEPT.md differ on product decisions, CONCEPT.md wins."
-2. "- The kit supports two input modes: Drag, and Tap-Tap (tap origin, then tap destination). Which modes are exposed in settings is defined per release in CONCEPT.md."
-3. "- Settings are global with per-game overrides; which settings are visible is defined per release in CONCEPT.md."
+Current relevant content before the edit (read first):
+- CLAUDE.md ended at line 23, the last line of "Design rules":
+  "- Settings are global with per-game overrides; which settings are visible is defined per release in CONCEPT.md."
+  The new section was added after it, separated by a blank line.
 
 Assumptions:
-- None; text applied exactly as given.
+- None; text added verbatim.
 
 To check (David):
-- Replacement 1 removes "First target device: iPad" and the "polished modern tablet game" sentence from CLAUDE.md, as instructed. Confirm CONCEPT.md covers both (Look and feel / Platform).
+- The new section says the primary device is the Galaxy Tab 4 (1280x800), while CONCEPT.md may still mention iPad or other platform details. Per CLAUDE.md, CONCEPT.md wins on product decisions, so check its Platform section for consistency.
+- The "Stack" section still says nothing about @vitejs/plugin-legacy; the new section covers it.
