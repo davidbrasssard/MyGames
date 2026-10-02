@@ -67,3 +67,28 @@
   font-size: 1.3rem;
   font-weight: 800;
 }
+
+.dev-cel-buttons {
+  display: flex;
+  margin-top: 1rem;
+}
+
+.dev-cel-button {
+  min-height: 3.5rem;
+  margin-right: 0.75rem;
+  padding: 0 1.5rem;
+  border: 0.2rem solid #1f6fc4;
+  border-radius: 1rem;
+  background: #fff;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.dev-cel-stage {
+  width: 34rem;
+  margin: 1rem 0 2rem;
+  padding: 1.25rem 1.75rem;
+  border: 0.3rem solid #e2b24a;
+  border-radius: 2rem;
+  background: #fffaf0;
+}

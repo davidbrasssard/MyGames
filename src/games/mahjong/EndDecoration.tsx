@@ -1,10 +1,11 @@
 import type { CSSProperties } from 'react';
-import { Trophy } from 'lucide-react';
+import { useMemo } from 'react';
+import { Celebration, pickCelebration, type CelebrationId } from '../../kit/Celebrations';
 import { Tile } from '../../kit/Tile';
 import type { Picture } from '../../pictures/types';
 
 // The Mahjong end-card decoration, built from the tiles of the board just played.
-// Win: a gold trophy with 4 tiles fanned out on both sides. Stuck: 3 remaining tiles in front, 3 faded behind.
+// Win: a kit celebration (trophy + 4 tiles). Stuck: 3 remaining tiles in front, 3 faded behind.
 // Positions are the final ones; the CSS animations (styles.css, .end-deco-*) only add the entrance.
 interface Placed {
   picture: Picture;
@@ -22,20 +23,13 @@ function Piece({ picture, dx, rot, dy = 0, faded, order }: Placed & { faded?: bo
   );
 }
 
-export function WinDecoration({ pictures }: { pictures: Picture[] }) {
-  const slots = [-12.5, -7.2, 7.2, 12.5];
-  const rots = [-16, -7, 7, 16];
-  const drop = [0.9, 0.2, 0.2, 0.9];
-  return (
-    <div className="end-deco-stage" data-kind="win">
-      {pictures.slice(0, 4).map((picture, i) => (
-        <Piece key={i} picture={picture} dx={slots[i]} rot={rots[i]} dy={drop[i]} order={i} />
-      ))}
-      <div className="end-trophy">
-        <Trophy strokeWidth={1.8} fill="#f2b92f" stroke="#b9801a" aria-hidden="true" />
-      </div>
-    </div>
-  );
+// The kit picks the celebration (random, never the same twice in a row); Mahjong only supplies its tiles.
+export function WinDecoration({ pictures, celebration }: { pictures: Picture[]; celebration?: CelebrationId }) {
+  const id = useMemo(() => celebration ?? pickCelebration(), [celebration]);
+  const pieces = pictures.slice(0, 4).map((picture, i) => (
+    <Tile key={i} picture={picture} style={{ left: 0, top: 0, width: '4.6rem', height: '5.6rem', ['--tw' as string]: '4.6rem', ['--t' as string]: '0.45rem' }} />
+  ));
+  return <Celebration id={id} pieces={pieces} />;
 }
 
 export function StuckDecoration({ pictures }: { pictures: Picture[] }) {

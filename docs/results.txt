@@ -1,14 +1,15 @@
-End cards redesigned. Not committed. npm run build passes (not viewed on a screen).
+Shiny trophy + 5 rotating win celebrations. Not committed. npm run build passes (not viewed on a screen).
+
+Read first: EndDecoration.tsx (Lucide Trophy + .end-trophy/deco-pop/deco-slide CSS), fetch-tiles.mjs, EndCard.tsx, DevTiles.tsx.
 
 Done:
-- Kit EndCard: ivory card, gold border, warm static glow, large title + line, Rejouer (green) / Accueil (white, blue outline); compact (34rem). New `decoration` slot; drifting leaves removed. OverlayCard got a `className` prop.
-- Mahjong decoration (new src/games/mahjong/EndDecoration.tsx), tiles use the kit Tile with real pictures from the board:
-  - Win: gold filled Lucide Trophy pops in with a small bounce; 4 tiles slide out from behind it, tilted.
-  - Stuck: 3 remaining tiles in front, up to 4 faded behind; gentle fade-in.
-- Texts: Bravo !/Well done! + Partie terminée/Game complete; Presque !/Almost! + "Plus de paires libres. On réessaie ?"/"No free pairs left. Try again?". Removed unused keys mahjongWinLine.
-- Effects: Full = bounce + slide; Gentle = trophy fades only (tiles slide, shorter); Minimal = no animation. Transform/opacity only.
+- Trophy: scripts/fetch-tiles.mjs now also fetches Fluent "Trophy" (Color, same pinned commit) -> public/kit/trophy.svg (9 KB), precached (checked in dist/sw.js). Tile files unchanged. THIRD_PARTY_NOTICES.md updated.
+- New kit library src/kit/Celebrations.tsx + Celebrations.css: pop, wave, orbit, rain, sunburst. <Celebration id pieces=[ReactNode x4]/> + pickCelebration() (random, never same as last win; stored in localStorage key oasis.lastCelebration).
+- Mahjong WinDecoration now just passes its 4 tiles to the kit. Stuck card unchanged. Old win CSS removed from styles.css.
+- Effects: Full = full movement; Gentle = half amplitude, 0.6x duration (pop: trophy only fades); Minimal = no animation, static final layout. Transform/opacity only. Sunburst rays turn once per 90 s (only endless animation).
+- Dev preview: 5 buttons on /dev/tiles (DevTiles.tsx/.css); not in dist (checked).
 
-Files: src/kit/EndCard.tsx, OverlayCard.tsx, src/games/mahjong/{EndDecoration.tsx (new),MahjongGame.tsx}, src/i18n/dictionary.ts, src/styles.css.
+Files: scripts/fetch-tiles.mjs, public/kit/trophy.svg, src/kit/Celebrations.{tsx,css}, src/games/mahjong/EndDecoration.tsx, src/styles.css, src/dev/DevTiles.{tsx,css}, THIRD_PARTY_NOTICES.md.
 
-Assumptions: the 4 win tiles are random distinct pictures from the board; if fewer than 7 distinct pictures remain when stuck, fewer faded tiles show. CONCEPT.md end-card text updated.
-David to check: look of the card on the tablet (tile size, trophy proportions), animation smoothness.
+Assumptions: orbit is an ellipse (3.4rem tall) so it fits the card, tiles pass over the trophy; pieces other than pop rest upright beside the trophy; rain tiles start 7rem above and fade in; in dev StrictMode the random pick may run twice (harmless).
+David to check on the tablet: smoothness of orbit/sunburst, how the rays look over the title, the trophy's SVG drop shadow filter rendering on Chrome 80.

@@ -36,6 +36,15 @@ for (const tile of tiles) {
 }
 console.log(`total ${total} bytes for ${tiles.length} pictures`);
 
+// The kit's win trophy (Fluent "Trophy", Color style) -> public/kit/trophy.svg, used by src/kit/Celebrations.tsx.
+mkdirSync(new URL('../public/kit/', import.meta.url), { recursive: true });
+const trophyUrl = `https://raw.githubusercontent.com/microsoft/fluentui-emoji/${FLUENT_REF}/assets/Trophy/Color/trophy_color.svg`;
+const trophyResponse = await fetch(trophyUrl);
+if (!trophyResponse.ok) throw new Error(`trophy: HTTP ${trophyResponse.status} for ${trophyUrl}`);
+const trophy = optimize(await trophyResponse.text(), svgoConfig).data;
+writeFileSync(new URL('../public/kit/trophy.svg', import.meta.url), trophy);
+console.log(`trophy         ${String(trophy.length).padStart(6)} bytes`);
+
 const entries = tiles
   .map((t) => `  { id: '${t.id}', name: { fr: '${t.fr}', en: '${t.en}' } },`)
   .join('\n');

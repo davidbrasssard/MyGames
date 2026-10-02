@@ -1,0 +1,217 @@
+/* Win celebrations (kit). Final positions are set here; every animation is only an entrance or a short flourish.
+   --amp scales movement (Gentle = smaller), --tm scales time (Gentle = shorter). Minimal removes all animation.
+   Only transform and opacity are animated. */
+.cel {
+  --amp: 1;
+  --tm: 1;
+  --u: calc(var(--fx-dur) * var(--tm));
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+[data-effects='gentle'] .cel {
+  --amp: 0.5;
+  --tm: 0.6;
+}
+
+.cel-tile {
+  position: absolute;
+  top: 1.7rem;
+  left: 50%;
+  width: 4.6rem;
+  height: 5.6rem;
+  margin-left: -2.3rem;
+  transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
+}
+
+.cel-trophy {
+  position: absolute;
+  top: 0.4rem;
+  left: 50%;
+  width: 7.5rem;
+  height: 7.5rem;
+  margin-left: -3.75rem;
+  pointer-events: none;
+}
+
+.cel-rays {
+  position: absolute;
+  top: 4.15rem;
+  left: 50%;
+  width: 16rem;
+  height: 16rem;
+  margin-top: -8rem;
+  margin-left: -8rem;
+  animation: cel-turn 90s linear infinite;
+}
+
+/* ---- pop: trophy bounces in, tiles fan out from behind it ---- */
+.cel[data-cel='pop'] .cel-trophy {
+  animation: cel-pop calc(var(--u) * 1.4) ease-out backwards;
+}
+
+.cel[data-cel='pop'] .cel-tile {
+  animation: cel-fan calc(var(--u) * 1.6) ease-out backwards;
+  animation-delay: calc(var(--u) * 0.9);
+}
+
+[data-effects='gentle'] .cel[data-cel='pop'] .cel-trophy {
+  animation-name: overlay-fade;
+}
+
+/* ---- wave: tiles beside the trophy hop up one after another, twice ---- */
+.cel[data-cel='wave'] .cel-trophy,
+.cel[data-cel='orbit'] .cel-trophy,
+.cel[data-cel='rain'] .cel-trophy {
+  animation: overlay-fade var(--u) ease-out backwards;
+}
+
+.cel[data-cel='wave'] .cel-tile {
+  animation: cel-hop calc(var(--u) * 1.6) ease-in-out 2 backwards;
+  animation-delay: calc(var(--u) * 0.8 + var(--order) * var(--u) * 0.45);
+}
+
+/* ---- orbit: tiles circle once around the trophy (an ellipse of 12 steps), then rest at its sides ---- */
+.cel[data-cel='orbit'] .cel-tile {
+  animation: cel-orbit calc(var(--u) * 6) linear backwards;
+  animation-delay: calc(var(--u) * 0.6);
+}
+
+/* ---- rain: tiles drift down from above and land beside the trophy ---- */
+.cel[data-cel='rain'] .cel-tile {
+  animation: cel-drift calc(var(--u) * 3.2) ease-out backwards;
+  animation-delay: calc(var(--u) * 0.4 + var(--order) * var(--u) * 0.6);
+}
+
+/* ---- sunburst: rays turn very slowly behind the trophy, which wobbles once; tiles fade in ---- */
+.cel[data-cel='sunburst'] .cel-trophy {
+  animation: cel-wobble calc(var(--u) * 3) ease-in-out calc(var(--u) * 0.6) backwards;
+}
+
+.cel[data-cel='sunburst'] .cel-tile {
+  animation: overlay-fade calc(var(--u) * 2) ease-out backwards;
+  animation-delay: calc(var(--u) * 1.2 + var(--order) * var(--u) * 0.5);
+}
+
+@keyframes cel-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes cel-fan {
+  from {
+    opacity: 0;
+    transform: translate(0, var(--dy)) rotate(0deg) scale(0.6);
+  }
+}
+
+@keyframes cel-hop {
+  0%,
+  100% {
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
+  }
+  50% {
+    transform: translate(var(--dx), calc(var(--dy) - 1.6rem * var(--amp))) rotate(var(--rot));
+  }
+}
+
+@keyframes cel-orbit {
+  0.0% {
+    opacity: 0;
+    transform: translate(calc(var(--dx) * 1.0), calc(var(--dy) + var(--sg) * 0.0 * 3.4rem * var(--amp)));
+  }
+  8.33% {
+    opacity: 1;
+    transform: translate(calc(var(--dx) * 0.866), calc(var(--dy) + var(--sg) * 0.5 * 3.4rem * var(--amp)));
+  }
+  16.67% {
+    transform: translate(calc(var(--dx) * 0.5), calc(var(--dy) + var(--sg) * 0.866 * 3.4rem * var(--amp)));
+  }
+  25.0% {
+    transform: translate(calc(var(--dx) * 0.0), calc(var(--dy) + var(--sg) * 1.0 * 3.4rem * var(--amp)));
+  }
+  33.33% {
+    transform: translate(calc(var(--dx) * -0.5), calc(var(--dy) + var(--sg) * 0.866 * 3.4rem * var(--amp)));
+  }
+  41.67% {
+    transform: translate(calc(var(--dx) * -0.866), calc(var(--dy) + var(--sg) * 0.5 * 3.4rem * var(--amp)));
+  }
+  50.0% {
+    transform: translate(calc(var(--dx) * -1.0), calc(var(--dy) + var(--sg) * 0.0 * 3.4rem * var(--amp)));
+  }
+  58.33% {
+    transform: translate(calc(var(--dx) * -0.866), calc(var(--dy) + var(--sg) * -0.5 * 3.4rem * var(--amp)));
+  }
+  66.67% {
+    transform: translate(calc(var(--dx) * -0.5), calc(var(--dy) + var(--sg) * -0.866 * 3.4rem * var(--amp)));
+  }
+  75.0% {
+    transform: translate(calc(var(--dx) * -0.0), calc(var(--dy) + var(--sg) * -1.0 * 3.4rem * var(--amp)));
+  }
+  83.33% {
+    transform: translate(calc(var(--dx) * 0.5), calc(var(--dy) + var(--sg) * -0.866 * 3.4rem * var(--amp)));
+  }
+  91.67% {
+    transform: translate(calc(var(--dx) * 0.866), calc(var(--dy) + var(--sg) * -0.5 * 3.4rem * var(--amp)));
+  }
+  100.0% {
+    transform: translate(calc(var(--dx) * 1.0), calc(var(--dy) + var(--sg) * -0.0 * 3.4rem * var(--amp))) rotate(var(--rot));
+  }
+}
+
+@keyframes cel-drift {
+  0% {
+    opacity: 0;
+    transform: translate(var(--dx), calc(var(--dy) - 7rem * var(--amp))) rotate(calc(var(--rot) - 12deg));
+  }
+  25% {
+    opacity: 1;
+  }
+  60% {
+    transform: translate(calc(var(--dx) + 0.7rem), calc(var(--dy) - 1.6rem * var(--amp))) rotate(calc(var(--rot) + 6deg));
+  }
+  100% {
+    opacity: 1;
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
+  }
+}
+
+@keyframes cel-wobble {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(calc(-7deg * var(--amp)));
+  }
+  55% {
+    transform: rotate(calc(5deg * var(--amp)));
+  }
+  80% {
+    transform: rotate(calc(-2deg * var(--amp)));
+  }
+}
+
+@keyframes cel-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+[data-effects='minimal'] .cel .cel-tile,
+[data-effects='minimal'] .cel .cel-trophy,
+[data-effects='minimal'] .cel .cel-rays {
+  animation: none;
+}

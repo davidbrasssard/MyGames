@@ -7,6 +7,8 @@ The 42 pictures in `public/tiles/` (collection `tiles-fluent`) come from
 `1ffb34c752ecf5d402f04cfb4b392c77f57c54bc`. They were only optimized (smaller SVG), not redrawn.
 The list and the exact source of each picture is in `scripts/tiles.json`; `node scripts/fetch-tiles.mjs` regenerates them.
 
+The win trophy `public/kit/trophy.svg` is the Fluent "Trophy" (Color style, same commit), fetched by the same script.
+
 The same notice is shipped next to the pictures in `public/tiles/LICENSE.txt`.
 
 ```
