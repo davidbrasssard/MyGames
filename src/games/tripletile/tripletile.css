@@ -15,13 +15,15 @@
 
 .tt-tray {
   position: absolute;
-  background: #d9b98a;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.55); /* see-through over the photo; no blur (slow tablets) */
+  border: 3px solid rgba(255, 255, 255, 0.9);
   border-radius: 1.4rem;
 }
 
 .tt-slot {
   position: absolute;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.7); /* wells a little whiter than the tray so the 7 places stay clear */
   border-radius: 0.9rem;
 }
 
@@ -174,8 +176,9 @@
   text-align: center;
   font-size: 1.3rem;
   font-weight: 700;
-  color: #4a3a22;
-  background: rgba(255, 250, 240, 0.92);
+  color: #3a2d18;
+  background: rgba(255, 255, 255, 0.96); /* near-opaque with a firm edge: readable on every photo */
+  border: 2px solid rgba(255, 255, 255, 1);
   border-radius: 1rem;
   animation: tt-line-in 500ms ease-out backwards;
 }

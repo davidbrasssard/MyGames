@@ -582,7 +582,14 @@ svg {
 }
 
 .game-title {
-  margin-left: 1.75rem;
+  display: flex;
+  align-items: center;
+  height: 5rem; /* same white pill as the Back button, so the title never sits on the photo */
+  margin: 0 0 0 1.75rem;
+  padding: 0 2.25rem;
+  border-radius: 2.5rem;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow);
   font-size: 2.4rem;
   font-weight: 800;
 }
@@ -824,6 +831,18 @@ svg {
 
 .action-button + .action-button {
   margin-top: 1.5rem;
+}
+
+/* Disabled: the button stays a solid white one (visible on any photo); only its icon and label turn grey. */
+.action-button:disabled {
+  opacity: 1;
+  background: #fff;
+}
+
+.action-button:disabled svg,
+.action-button:disabled span {
+  color: #9a9a9a;
+  opacity: 0.8;
 }
 
 /* ---- Portrait: 3 or 4 games become 2 columns ---- */
