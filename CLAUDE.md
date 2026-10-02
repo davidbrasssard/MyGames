@@ -26,6 +26,7 @@ React + TypeScript + Vite PWA, hosted on Netlify (free plan). No backend, no acc
 - Primary device: Samsung Galaxy Tab 4 10.1 (2014): Android 4.4 or 5, old Chrome (assume Chrome 80), 1.5 GB RAM, screen 1280x800. The app must run smoothly on it.
 - Build: use @vitejs/plugin-legacy with targets "chrome >= 80" so old browsers get a compatible bundle; modern tablets get the normal one.
 - CSS must work in Chrome 80. Do NOT use: flexbox gap (use margins, or grid gap which is fine), aspect-ratio, inset shorthand, :is() / :where() / :has(), dvh/svh/lvh units, container queries, CSS nesting, color-mix(). If unsure whether a feature works in Chrome 80, don't use it.
+- Every tile-type game uses the kit tile depth by default, with its own palette.
 - Performance: animate only transform and opacity. No blur/backdrop-filter, no animated shadows, no heavy effects. Keep images optimized and the bundle small.
 - Layout: design base is 1280x800 landscape. Scale smoothly to any tablet 10 inches or larger, in landscape and portrait. Never smaller than 10-inch tablets.
 

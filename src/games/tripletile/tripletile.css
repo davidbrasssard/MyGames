@@ -37,56 +37,17 @@
   transition-duration: 170ms;
 }
 
-/* Same depth recipe as Mahjong, in blue: white face, thick blue side at the bottom and a thinner one on the left
-   (stepped hard shadows, no blur), a darker blue rim. --tw / --t / --tl are set by the board, --c-* / --g-* by tileVars
-   (lower layers a touch darker). */
+/* The kit tile depth (.td-solid, kit/tileDepth.css) in blue: white face, thick blue side at the bottom and a thinner one on
+   the left, a darker blue rim. --tw / --t / --tl are set by the board, --c-* / --g-* by tileVars (lower layers a touch darker). */
 .tt-tile {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  box-sizing: border-box;
-  border: 2px solid var(--c-edge);
   border-radius: calc(var(--tw) * 0.14);
   background: var(--c-face);
-  box-shadow:
-    calc(var(--tl) * -0.25) calc(var(--t) * 0.25) 0 var(--c-side),
-    calc(var(--tl) * -0.5) calc(var(--t) * 0.5) 0 var(--c-side),
-    calc(var(--tl) * -0.75) calc(var(--t) * 0.75) 0 var(--c-side),
-    calc(var(--tl) * -1) var(--t) 0 var(--c-side),
-    calc(var(--tl) * -1) var(--t) 0 2px var(--c-rim),
-    calc(var(--tl) * -0.5) calc(var(--t) * 0.5) 0 2px var(--c-rim),
-    0 0 0 2px var(--c-rim);
   transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;
-}
-
-/* Soft static ground shadow: two plain translucent rounded shapes (no blur), down and to the left of the tile. */
-.tt-drop {
-  position: absolute;
-  top: calc(var(--t) * 0.7);
-  right: calc(var(--tw) * 0.02);
-  bottom: calc(var(--t) * -1.5);
-  left: calc(var(--tl) * -2.4);
-  border-radius: calc(var(--tw) * 0.2);
-  background: rgba(6, 36, 52, 0.16);
-  pointer-events: none;
-  transition: opacity 200ms ease-in-out;
-}
-
-.tt-drop::before {
-  content: '';
-  position: absolute;
-  top: calc(var(--t) * -0.3);
-  right: calc(var(--t) * -0.3);
-  bottom: calc(var(--t) * -0.3);
-  left: calc(var(--t) * -0.3);
-  border-radius: inherit;
-  background: rgba(6, 36, 52, 0.09);
-}
-
-.tt-drop[data-gone='true'] {
-  opacity: 0;
 }
 
 .tt-tile img {
@@ -96,29 +57,6 @@
   width: 82%;
   height: 82%;
   pointer-events: none;
-}
-
-/* Blocked: a grey layer (face, border and thickness) that fades in and out, so a freed tile
-   loses its grey smoothly. Only this layer's opacity animates. */
-.tt-shade {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  bottom: -2px;
-  left: -2px;
-  border: 2px solid var(--g-edge);
-  border-radius: inherit;
-  background: var(--g-face);
-  box-shadow:
-    calc(var(--tl) * -0.25) calc(var(--t) * 0.25) 0 var(--g-side),
-    calc(var(--tl) * -0.5) calc(var(--t) * 0.5) 0 var(--g-side),
-    calc(var(--tl) * -0.75) calc(var(--t) * 0.75) 0 var(--g-side),
-    calc(var(--tl) * -1) var(--t) 0 var(--g-side),
-    calc(var(--tl) * -1) var(--t) 0 2px var(--g-rim),
-    calc(var(--tl) * -0.5) calc(var(--t) * 0.5) 0 2px var(--g-rim),
-    0 0 0 2px var(--g-rim);
-  pointer-events: none;
-  transition: opacity 300ms ease-in-out;
 }
 
 .tt-tile img {
@@ -215,7 +153,7 @@
 /* Détente, tray full: the tray, its slots and its tiles sway once, gently. */
 .tt-field[data-full='true'] .tt-tray,
 .tt-field[data-full='true'] .tt-slot,
-.tt-field[data-full='true'] .tt-drop[data-intray='true'],
+.tt-field[data-full='true'] .td-drop[data-intray='true'],
 .tt-field[data-full='true'] .tt-tile[data-intray='true'] {
   animation: tt-shake 900ms ease-in-out;
 }

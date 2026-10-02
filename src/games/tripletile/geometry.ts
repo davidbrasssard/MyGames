@@ -1,18 +1,20 @@
+import { tileDepth } from '../../kit/tileDepth';
 import { TILE_UNITS, TRAY_SIZE, type Pos } from './rules';
 
 // Turns layout positions into pixels. The board (quarter-tile units) and the 7-slot tray below it are fitted together
 // into the space available, so tiles come out as large as possible. Every size is a multiple of the pitch
 // (the width of one grid step), so it is computed once for pitch 1 and scaled.
-// Like Mahjong, face + side thickness fill the grid step exactly, so neighbours touch with no gap.
+// The tile depth is the kit's (kit/tileDepth.ts): face + side thickness fill the grid step exactly, so neighbours touch with no gap.
 export const THICK_L = 0.06; // blue thickness on the left, in pitches
-export const FACE_W = 1 - THICK_L; // tile face width: face + left thickness = one pitch
-export const FACE_H = FACE_W * 1.12; // tile face height
 export const THICK = 0.115; // thicker blue thickness under the face (bottom)
-export const ROW = FACE_H + THICK; // vertical step between two rows: face + bottom thickness, no gap
-// Each layer sits up by the bottom thickness and right by the left thickness (as Mahjong does with its one thickness),
-// so a higher tile covers the lower one's face and only the thickness edges of the pile show.
-export const LIFT = THICK;
-export const LEAN = THICK_L;
+const DEPTH = tileDepth({ thickL: THICK_L, thickB: THICK, faceH: (1 - THICK_L) * 1.12 });
+export const FACE_W = DEPTH.faceW; // tile face width: face + left thickness = one pitch
+export const FACE_H = DEPTH.faceH; // tile face height
+export const ROW = DEPTH.row; // vertical step between two rows: face + bottom thickness, no gap
+// Each layer sits up by the bottom thickness and right by the left thickness, so a higher tile covers the lower one's face
+// and only the thickness edges of the pile show.
+export const LIFT = DEPTH.lift;
+export const LEAN = DEPTH.lean;
 const SHADOW = 0.06; // room for the ground shadow, left of and below the board
 const TRAY_PAD = 0.28; // space round the slots inside the tray
 const TRAY_GAP = 0.4; // space between the board and the tray

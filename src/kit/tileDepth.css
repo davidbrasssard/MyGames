@@ -1,0 +1,72 @@
+/* The kit tile depth, shared by every tile-type game. The board sets --tw (face width), --t (bottom thickness) and
+   --tl (left thickness) in px; each tile gets its colours from paletteVars() (tileDepth.ts); --bw is the border width.
+   All static: no blur, no filter; only opacity and transform ever animate. */
+
+/* Face block: edge border, stepped thickness on the left + bottom, then a rim round the whole raised block.
+   Optional extras a game can set in --td-inset (drawn on top of the face) and --td-ground (drawn last, under everything). */
+.td-solid {
+  box-sizing: border-box;
+  border: var(--bw) solid var(--c-edge);
+  box-shadow:
+    var(--td-inset, 0 0 0 0 transparent),
+    calc(var(--tl) * -0.25) calc(var(--t) * 0.25) 0 var(--c-side1),
+    calc(var(--tl) * -0.5) calc(var(--t) * 0.5) 0 var(--c-side2),
+    calc(var(--tl) * -0.75) calc(var(--t) * 0.75) 0 var(--c-side3),
+    calc(var(--tl) * -1) var(--t) 0 var(--c-side4),
+    calc(var(--tl) * -1) var(--t) 0 var(--bw) var(--c-rim),
+    calc(var(--tl) * -0.5) calc(var(--t) * 0.5) 0 var(--bw) var(--c-rim),
+    0 0 0 var(--bw) var(--c-rim),
+    var(--td-ground, 0 0 0 0 transparent);
+}
+
+/* Blocked: a grey layer (face, border and thickness) over the tile that fades in and out; only its opacity animates. */
+.td-blocked {
+  position: absolute;
+  top: calc(var(--bw) * -1);
+  right: calc(var(--bw) * -1);
+  bottom: calc(var(--bw) * -1);
+  left: calc(var(--bw) * -1);
+  box-sizing: border-box;
+  border: var(--bw) solid var(--g-edge);
+  border-radius: inherit;
+  background: var(--g-face);
+  box-shadow:
+    calc(var(--tl) * -0.25) calc(var(--t) * 0.25) 0 var(--g-side),
+    calc(var(--tl) * -0.5) calc(var(--t) * 0.5) 0 var(--g-side),
+    calc(var(--tl) * -0.75) calc(var(--t) * 0.75) 0 var(--g-side),
+    calc(var(--tl) * -1) var(--t) 0 var(--g-side),
+    calc(var(--tl) * -1) var(--t) 0 var(--bw) var(--g-rim),
+    calc(var(--tl) * -0.5) calc(var(--t) * 0.5) 0 var(--bw) var(--g-rim),
+    0 0 0 var(--bw) var(--g-rim);
+  pointer-events: none;
+  transition: opacity 300ms ease-in-out;
+}
+
+/* Light static ground shadow: two plain translucent rounded shapes (no blur), down and to the left of the tile.
+   Place it as the first child of a tile wrapper, before the .td-solid face. */
+.td-drop {
+  position: absolute;
+  top: calc(var(--t) * 0.7);
+  right: calc(var(--tw) * 0.02);
+  bottom: calc(var(--t) * -1.5);
+  left: calc(var(--tl) * -2.4);
+  border-radius: calc(var(--tw) * 0.2);
+  background: rgba(6, 36, 52, 0.16);
+  pointer-events: none;
+  transition: opacity 200ms ease-in-out;
+}
+
+.td-drop::before {
+  content: '';
+  position: absolute;
+  top: calc(var(--t) * -0.3);
+  right: calc(var(--t) * -0.3);
+  bottom: calc(var(--t) * -0.3);
+  left: calc(var(--t) * -0.3);
+  border-radius: inherit;
+  background: rgba(6, 36, 52, 0.09);
+}
+
+.td-drop[data-gone='true'] {
+  opacity: 0;
+}

@@ -8,7 +8,7 @@ import { FACE_H, FACE_W, THICK, THICK_L } from './tripletile/geometry';
 import { tileVars } from './tripletile/tileLook';
 
 // Home icons for Mahjong and Trio are static mini scenes drawn with the games' real tile styles (the kit Tile and the
-// .tt-tile CSS). Geometry is computed on a 68 x 68 design box (1 unit = 0.1rem) and every length is
+// kit tile depth + .tt-tile CSS). Geometry is computed on a 68 x 68 design box (1 unit = 0.1rem) and every length is
 // calc(var(--k) * Nrem), where --k (set in styles.css on .game-icon) grows the scene with the larger icon box.
 const BOX = 68;
 const len = (v: number) => `calc(var(--k) * ${(v / 10).toFixed(3)}rem)`;
@@ -65,8 +65,8 @@ export function TripleTileIcon() {
             zIndex: i,
           }}
         >
-          <div className="tt-drop" />
-          <div className="tt-tile">
+          <div className="td-drop" />
+          <div className="tt-tile td-solid">
             <img src={pictureUrl(TRIPLE_TILES_FLUENT, berry)} alt="" draggable={false} />
           </div>
         </div>

@@ -9,9 +9,9 @@ import './DevTripleTiles.css';
 function DevTile({ src, alt, blocked, shade = 0, x = 0, y = 0 }: { src: string; alt: string; blocked?: boolean; shade?: number; x?: number; y?: number }) {
   return (
     <div className="tt-pos" style={{ ...tileVars(shade), width: '7rem', height: '7.8rem', transform: `translate(${x}rem, ${y}rem)`, zIndex: Math.round(-y * 10) }}>
-      <div className="tt-drop" />
-      <div className="tt-tile">
-        <div className="tt-shade" style={{ opacity: blocked ? 1 : 0 }} />
+      <div className="td-drop" />
+      <div className="tt-tile td-solid">
+        <div className="td-blocked" style={{ opacity: blocked ? 1 : 0 }} />
         <img src={src} alt={alt} draggable={false} />
       </div>
     </div>

@@ -1,8 +1,11 @@
-Home icons: Mahjong and Trio are now static mini scenes drawn with the games' real tile styles. Not committed.
-Before: both were hand-drawn SVGs in src/games/icons.tsx (MahjongIcon, TripleTileIcon); shown in .game-icon (9rem, 11.5rem when 1-2 games) via registry.ts / HomeScreen GameButton.
-Changed: src/games/icons.tsx, src/styles.css (.game-icon --k scale var, new .icon-scene).
-- Mahjong: 4 kit <Tile>s (sunflower, tulip bottom; swan, tree on top), positions laid out by Mahjong's own computeGeometry, so layers lean up-right; bottom ones are darker via shade.
-- Trio: 3 strawberry tiles using the real .tt-tile/.tt-drop CSS + tileVars (white face, blue depth), cascading up-right with a slight overlap.
-- Sizes are rem-based (scale with the app), so the icon box size/position is unchanged. Real CSS tiles = crisp on iPad and 1280x800. tsc and vite build pass.
-Assumptions: Trio's blue depth is thin at icon size (same proportions as the game). Static: no animation/hover.
-Check: Home on Galaxy Tab 4 / iPad (tile size, sharpness, 1-2 games vs 3+ games layout); Tile.css/tripletile.css edits will now also change these icons.
+Tile depth refactor (no visual change intended). Not committed.
+Read first: Mahjong (kit/Tile.tsx+css, mahjong/geometry.ts) and Trio (tripletile/{geometry,tileLook}.ts, tripletile.css) had the same recipe in two copies: same stepped left+bottom thickness, rim, layer lift/lean = thickness, per-layer darkening. They differed in numbers (Mahjong thickness 0.11 both axes; Trio 0.06 left / 0.115 bottom), palette, face (gradient vs flat), border (2.2% vs 2px), shadow (Mahjong blurred box-shadow; Trio separate unblurred shape), colour steps (4 side tones vs 1).
+Moved to NEW kit/tileDepth.ts + kit/tileDepth.css: tileDepth() geometry (faceW, row, lift, lean), paletteVars() shading, BLOCKED_GREY, flatSides(); CSS classes .td-solid (sides+rim), .td-blocked (grey layer), .td-drop (ground shadow, no blur).
+Games now supply only palette + rules: kit/Tile.tsx (Mahjong palette), tripletile/tileLook.ts (Trio palette). mahjong/geometry.ts and tripletile/geometry.ts call tileDepth() (old exports kept). Home icons and the /dev pages go through these, so they use the kit too.
+Files: kit/tileDepth.{ts,css} (new); kit/Tile.tsx, Tile.css; mahjong/geometry.ts; tripletile/{geometry.ts,tileLook.ts,tripletile.css,TripleTileGame.tsx}; games/icons.tsx; dev/DevTripleTiles.tsx; CLAUDE.md; docs/CONCEPT.md. Classes renamed: tt-drop -> td-drop, tt-shade -> td-blocked (+ td-solid on tt-tile).
+Checked: tsc + vite build pass. Screenshots before/after (git stash baseline, 1280 wide) of Home, /dev/tiles, /dev/triple-tiles, /dev/triple-layouts are byte-identical.
+Differences kept on purpose (to avoid visual change), against your recipe:
+ - Mahjong's ground shadow is still a blurred box-shadow (kit .td-drop is no-blur, used by Trio only). Switching Mahjong needs a wrapper around its tile = small look change.
+ - Mahjong's free faces still darken per layer; Trio's stay fixed (palette flag: fixed vs shaded). Moving Mahjong to fixed faces changes its look.
+ - Thickness/face ratios are still per game (passed to tileDepth), not one global ratio.
+To check: play a Mahjong board and a Trio board on the tablet (not screenshotted in-game, only via Home icons/dev pages). Say if you want the three differences unified.

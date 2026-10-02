@@ -409,12 +409,12 @@ function TripleTileBoard({
                   style={{ ...tileVars(onBoard ? topLayer - pos.z : 0), width: geometry.tw, height: geometry.th, zIndex, transform: `translate(${x}px, ${y}px)` }}
                 >
                   <div
-                    className="tt-drop"
+                    className="td-drop"
                     data-gone={gone !== undefined ? 'true' : undefined}
                     data-intray={onBoard ? undefined : 'true'}
                   />
                   <div
-                    className="tt-tile"
+                    className="tt-tile td-solid"
                     data-hint={hint === id ? 'true' : undefined}
                     data-gone={gone !== undefined ? 'true' : undefined}
                     data-fly={flying.has(id) ? 'true' : undefined}
@@ -422,7 +422,7 @@ function TripleTileBoard({
                     data-intray={onBoard ? undefined : 'true'}
                     data-wiggle={wiggle?.id === id ? (wiggle.n % 2 ? 'a' : 'b') : undefined}
                   >
-                    <div className="tt-shade" style={{ opacity: onBoard && !freeSet.has(id) ? 1 : 0 }} />
+                    <div className="td-blocked" style={{ opacity: onBoard && !freeSet.has(id) ? 1 : 0 }} />
                     <div className="tt-glow" />
                     <img src={pictureUrl(TRIPLE_TILES_FLUENT, picture)} alt={pictureName(picture, language)} draggable={false} />
                   </div>

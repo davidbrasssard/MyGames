@@ -27,6 +27,7 @@ docs/reference/mockup.png (when added) is a visual reference for layout and tile
 Everything is built once and shared by all games. A game only defines its own rules. The kit includes:
 - One game screen layout: top bar (Back, game name, level), board in the middle, side bar of action buttons (Hint, Undo, Shuffle...). Each game declares which buttons it uses.
 - One tile/card component, same look everywhere.
+- Tile depth (src/kit/tileDepth.ts + tileDepth.css): every tile-type game uses the kit tile depth by default, with its own palette (Mahjong ivory/gold, Triple Tile white/blue). It covers the geometry (face and thickness ratios, touching neighbours, row step, each layer lifted up and leaning right by the thickness), the colour variables (face, edge, side, rim, blocked grey; lower layers get darker sides and rim), stepped thickness on the left and bottom, and a light static ground shadow (no blur, no filter). A game supplies only its palette and its rules; Home icons use it too.
 - One touch system (see Touch).
 - One undo system: every game records moves the same way.
 - One set of animations (lift, glide, fade, flip) that follows the Effects setting.
