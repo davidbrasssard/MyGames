@@ -1,6 +1,8 @@
-Triple Tile: free tiles now have the same pure white face (and light blue edge) on every layer. Not committed.
-Before (tileLook.ts): --c-face and --c-edge were darkened 4% per layer; CSS .tt-tile reads var(--c-face)/var(--c-edge).
-Changed (tileLook.ts only): --c-face/--c-edge are fixed; darkening (4%/layer) still applies to the blue side + rim
- (--c-side, --c-rim) and to the blocked grey (face, edge, side, rim). Blocked grey is 201 at the top layer vs 255 white
- (darker still on lower layers), so blocked stays clearly grey. tsc clean.
-To test: /dev/triple-tiles pile sample and a real board: free tiles all equally white, lower-layer thickness darker.
+Home icons: Mahjong and Trio are now static mini scenes drawn with the games' real tile styles. Not committed.
+Before: both were hand-drawn SVGs in src/games/icons.tsx (MahjongIcon, TripleTileIcon); shown in .game-icon (9rem, 11.5rem when 1-2 games) via registry.ts / HomeScreen GameButton.
+Changed: src/games/icons.tsx, src/styles.css (.game-icon --k scale var, new .icon-scene).
+- Mahjong: 4 kit <Tile>s (sunflower, tulip bottom; swan, tree on top), positions laid out by Mahjong's own computeGeometry, so layers lean up-right; bottom ones are darker via shade.
+- Trio: 3 strawberry tiles using the real .tt-tile/.tt-drop CSS + tileVars (white face, blue depth), cascading up-right with a slight overlap.
+- Sizes are rem-based (scale with the app), so the icon box size/position is unchanged. Real CSS tiles = crisp on iPad and 1280x800. tsc and vite build pass.
+Assumptions: Trio's blue depth is thin at icon size (same proportions as the game). Static: no animation/hover.
+Check: Home on Galaxy Tab 4 / iPad (tile size, sharpness, 1-2 games vs 3+ games layout); Tile.css/tripletile.css edits will now also change these icons.

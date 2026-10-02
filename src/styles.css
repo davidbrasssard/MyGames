@@ -265,6 +265,7 @@ svg {
 }
 
 .game-icon {
+  --k: 1; /* scene scale for the mini-scene icons (content box 6.8rem) */
   width: 9rem;
   height: 9rem;
   padding: 1.1rem;
@@ -276,9 +277,21 @@ svg {
 
 .game-grid[data-count='1'] .game-icon,
 .game-grid[data-count='2'] .game-icon {
+  --k: 1.2794; /* content box 8.7rem */
   width: 11.5rem;
   height: 11.5rem;
   padding: 1.4rem;
+}
+
+/* Static mini scene inside the icon box; tiles are positioned absolutely by the icon component. */
+.icon-scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.icon-scene .tt-pos {
+  transition: none;
 }
 
 .game-name {
