@@ -46,10 +46,11 @@ interface GameScreenProps {
   onBack: () => void;
   actions: GameAction[];
   caption?: string;
+  overlay?: ReactNode; // covers the whole screen, top bar and actions included (end cards)
   children: ReactNode; // the board
 }
 
-export function GameScreen({ title, levelLabel, level, onBack, actions, caption, children }: GameScreenProps) {
+export function GameScreen({ title, levelLabel, level, onBack, actions, caption, overlay, children }: GameScreenProps) {
   const t = useT();
   const [picking, setPicking] = useState(false);
   return (
@@ -83,7 +84,6 @@ export function GameScreen({ title, levelLabel, level, onBack, actions, caption,
           </aside>
         )}
       </div>
-    
       {picking && (
         <LevelPicker
           current={level.current}
@@ -96,6 +96,7 @@ export function GameScreen({ title, levelLabel, level, onBack, actions, caption,
           }}
         />
       )}
+      {overlay}
     </div>
   );
 }

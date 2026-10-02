@@ -21,3 +21,18 @@
 .mj-tiles[data-shuffling='true'] {
   opacity: 0;
 }
+
+/* Dev-only test shortcuts (not present in the production build) */
+.mj-dev {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  opacity: 0.5;
+}
+
+.mj-dev button {
+  margin-left: 0.4rem;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.8rem;
+}

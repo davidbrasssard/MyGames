@@ -360,6 +360,25 @@ function MahjongBoard({
     return () => window.clearTimeout(id);
   }, [shuffling, fadeMs, level]);
 
+  // ---- Dev-only test shortcuts (stripped from the production build) ----
+  const devApply = (removed: boolean[], card: 'win' | 'stuck') => {
+    const next = { ...stateRef.current, removed };
+    stateRef.current = next;
+    setGame(next);
+    setHidden(new Set(removed.flatMap((r, i) => (r ? [i] : []))));
+    setSelected(null);
+    clearHint();
+    setEndCard(card);
+  };
+  const devWin = () => devApply(new Array<boolean>(level.positions.length).fill(true), 'win');
+  const devStuck = () => {
+    // Keep every tile of about half of the pictures, so real tiles remain behind the card.
+    const g = stateRef.current;
+    const pics = shuffled([...new Set(g.pictures)], Math.random);
+    const keep = new Set(pics.slice(0, Math.max(7, Math.ceil(pics.length / 2))));
+    devApply(g.pictures.map((p) => !keep.has(p)), 'stuck');
+  };
+
   // ---- Screen ----
   // Pictures of the tiles of this board for the end card: distinct pictures, from what was just played (or what is left).
   const endDecoration = useMemo(() => {
@@ -405,6 +424,7 @@ function MahjongBoard({
       onBack={onBack}
       actions={actions}
       caption={t('mahjongCaption')}
+      overlay={endCard && <EndCard kind={endCard} decoration={endDecoration} onReplay={onReplay} onHome={onBack} />}
     >
       <div
         ref={boardRef}
@@ -415,7 +435,7 @@ function MahjongBoard({
         {geometry && (
           <div className="mj-tiles" data-shuffling={shuffling}>
             {level.positions.map((pos, id) =>
-              hidden.has(id) ? null : (
+              hidden.has(id) || (endCard === 'win' && game.removed[id]) ? null : (
                 <Tile
                   key={id}
                   tileId={id}
@@ -431,8 +451,11 @@ function MahjongBoard({
           </div>
         )}
       </div>
-      {endCard && (
-        <EndCard kind={endCard} decoration={endDecoration} onReplay={onReplay} onHome={onBack} />
+      {import.meta.env.DEV && (
+        <div className="mj-dev">
+          <button type="button" onClick={devWin}>Win</button>
+          <button type="button" onClick={devStuck}>Stuck</button>
+        </div>
       )}
     </GameScreen>
   );

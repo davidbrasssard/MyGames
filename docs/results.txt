@@ -1,15 +1,15 @@
-Shiny trophy + 5 rotating win celebrations. Not committed. npm run build passes (not viewed on a screen).
+End-card fixes + dev test shortcuts. Not committed. npm run build passes (not viewed on a screen).
 
-Read first: EndDecoration.tsx (Lucide Trophy + .end-trophy/deco-pop/deco-slide CSS), fetch-tiles.mjs, EndCard.tsx, DevTiles.tsx.
+Read first: MahjongGame.tsx (EndCard rendered inside .game-board-area, so its backdrop only covered the board), kit/EndCard.tsx, OverlayCard.tsx (.overlay-backdrop absolute, z-index 200000), kit/GameScreen.tsx.
 
 Done:
-- Trophy: scripts/fetch-tiles.mjs now also fetches Fluent "Trophy" (Color, same pinned commit) -> public/kit/trophy.svg (9 KB), precached (checked in dist/sw.js). Tile files unchanged. THIRD_PARTY_NOTICES.md updated.
-- New kit library src/kit/Celebrations.tsx + Celebrations.css: pop, wave, orbit, rain, sunburst. <Celebration id pieces=[ReactNode x4]/> + pickCelebration() (random, never same as last win; stored in localStorage key oasis.lastCelebration).
-- Mahjong WinDecoration now just passes its 4 tiles to the kit. Stuck card unchanged. Old win CSS removed from styles.css.
-- Effects: Full = full movement; Gentle = half amplitude, 0.6x duration (pop: trophy only fades); Minimal = no animation, static final layout. Transform/opacity only. Sunburst rays turn once per 90 s (only endless animation).
-- Dev preview: 5 buttons on /dev/tiles (DevTiles.tsx/.css); not in dist (checked).
+1. GameScreen has a new `overlay` prop rendered at the root of .game-screen (like the LevelPicker), so the dimmed backdrop covers the whole screen: top bar, Back, level badge, Undo, Hint. Only the card's two buttons respond.
+2. Win: tiles that are removed are no longer drawn at all once the Bravo card is up (card already waited fade + 1.2 s), so the board is empty behind it.
+3. Dev only (import.meta.env.DEV): small half-transparent "Win" and "Stuck" buttons at the bottom-right of the board. Win clears the board and shows Bravo. Stuck removes all tiles of about half the pictures (min 7 kept) and shows Presque with real tiles left (decoration uses them).
+4. Home speaker icon untouched.
+5. Build checked: JS contains no Win/Stuck buttons or handlers. The tiny inert CSS rule .mj-dev remains in the CSS (harmless).
 
-Files: scripts/fetch-tiles.mjs, public/kit/trophy.svg, src/kit/Celebrations.{tsx,css}, src/games/mahjong/EndDecoration.tsx, src/styles.css, src/dev/DevTiles.{tsx,css}, THIRD_PARTY_NOTICES.md.
+Files: src/kit/GameScreen.tsx, src/games/mahjong/MahjongGame.tsx, src/games/mahjong/mahjong.css.
 
-Assumptions: orbit is an ellipse (3.4rem tall) so it fits the card, tiles pass over the trophy; pieces other than pop rest upright beside the trophy; rain tiles start 7rem above and fade in; in dev StrictMode the random pick may run twice (harmless).
-David to check on the tablet: smoothness of orbit/sunburst, how the rays look over the title, the trophy's SVG drop shadow filter rendering on Chrome 80.
+Assumptions: the dev buttons are English-only plain buttons; on a Détente level the Stuck shortcut may reshuffle quietly behind the card (harmless).
+David to check: end card dims the full screen on the tablet; Win/Stuck buttons in npm run dev.
