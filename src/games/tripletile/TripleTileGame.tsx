@@ -13,7 +13,7 @@ import { TRIPLE_TILES_FLUENT } from '../../pictures/tripleTilesFluent';
 import { setLevel, useSettings, type Difficulty } from '../../settings/settings';
 import { StuckDecoration, WinDecoration } from '../mahjong/EndDecoration';
 import { computeGeometry } from './geometry';
-import { LEVELS } from './layouts';
+import { LEVELS, pickLayout, rememberLayout } from './layouts';
 import {
   createBoard,
   freeIds,
@@ -43,14 +43,16 @@ const FULL_DELAY_MS = 400; // Détente full tray: notice appears once the last t
 const WIN_PAUSE_MS = 1200; // pause after the last set, before the Bravo card
 const STUCK_PAUSE_MS = 1500; // calm pause once the tray is full (Défi levels), before the Presque card
 
-function newBoard(levelId: Difficulty): Board {
+// A new board on a random layout of the level (never the one dealt last).
+function newBoard(levelId: Difficulty): { board: Board; layoutId: string } {
   const level = LEVELS[levelId];
+  const layout = pickLayout(levelId, Math.random);
   const ids = pickPictures(
     TRIPLE_TILES_FLUENT.pictures.map((picture) => picture.id),
     level.pictureCount,
     Math.random,
   );
-  return createBoard(level.positions, ids, Math.random);
+  return { board: createBoard(layout.positions, ids, Math.random), layoutId: layout.id };
 }
 
 // The player's level is remembered per game. Picking a level (even the same one) deals a new board:
@@ -82,7 +84,8 @@ function TripleTileBoard({
   const { hints, language } = useSettings();
   const level = LEVELS[levelId];
 
-  const [board] = useState<Board>(() => newBoard(levelId));
+  const [{ board, layoutId }] = useState(() => newBoard(levelId));
+  useEffect(() => rememberLayout(levelId, layoutId), [levelId, layoutId]);
   const [game, setGame] = useState<GameState>(() => initialState(board));
   // What is drawn in the tray. It runs a moment ahead of game.tray: a set that just completed stays in its
   // slots until it has arrived, then fades away (goneSlots remembers where each cleared tile sat).
@@ -122,8 +125,8 @@ function TripleTileBoard({
   // ---- Board geometry ----
   const [fieldRef, size] = useElementSize<HTMLDivElement>();
   const geometry = useMemo(
-    () => (size.width > 0 && size.height > 0 ? computeGeometry(level.positions, size.width, size.height) : null),
-    [level, size.width, size.height],
+    () => (size.width > 0 && size.height > 0 ? computeGeometry(board.positions, size.width, size.height) : null),
+    [board, size.width, size.height],
   );
   const freeSet = useMemo(() => new Set(freeIds(game.onBoard, board.covers)), [game.onBoard, board]);
 
@@ -135,12 +138,12 @@ function TripleTileBoard({
     const y = point.y - rect.top;
     const { onBoard } = stateRef.current;
     let best: number | null = null;
-    level.positions.forEach((pos, id) => {
+    board.positions.forEach((pos, id) => {
       if (!onBoard[id]) return;
       const l = geometry.left[id];
       const tp = geometry.top[id];
       if (x < l || x > l + geometry.tw || y < tp || y > tp + geometry.th + geometry.t) return;
-      if (best === null || pos.z >= level.positions[best].z) best = id;
+      if (best === null || pos.z >= board.positions[best].z) best = id;
     });
     return best;
   };
@@ -344,7 +347,7 @@ function TripleTileBoard({
       levelLabel={`${t('level')} ${level.number} · ${t(LEVEL_TEXT[level.id])}`}
       level={{
         current: levelId,
-        detail: (l) => t('tilesCount').replace('{n}', String(LEVELS[l].positions.length)),
+        detail: (l) => t('tilesCount').replace('{n}', String(LEVELS[l].tiles)),
         kind: (l) => (LEVELS[l].canLose ? 'challenge' : 'relaxed'),
         onPick: onPickLevel,
       }}
@@ -388,7 +391,7 @@ function TripleTileBoard({
               } else if (game.onBoard[id]) {
                 x = geometry.left[id];
                 y = geometry.top[id];
-                zIndex = pos.z * 1000 + pos.y;
+                zIndex = pos.z * 1000 + Math.round(pos.y / 2);
               } else {
                 return null;
               }

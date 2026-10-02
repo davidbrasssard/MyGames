@@ -52,10 +52,11 @@ When a game needs something new, extend the kit; no one-off code.
 - Real Tile Master rules. Layered, symmetric boards. A tile is free when no tile above overlaps it. Tap only (no drag).
 - A tapped free tile flies into a 7-slot tray below the board and is placed next to identical pictures already in the tray. When 3 identical tiles are in the tray they clear with a lively animation (glow, gather, vanish).
 - Levels (every board is generated to be solvable). First play starts on Facile; the last level chosen is remembered (kit rule).
-  - Facile (Easy): 36 tiles, 2 layers, 6 pictures. Détente.
-  - Moyen (Medium): 54 tiles, 3 layers, 9 pictures. Détente.
-  - Difficile (Hard): 72 tiles, 3 layers, 12 pictures. Défi.
-  - Très difficile (Very Hard): 90 tiles, 4 layers, 15 pictures. Défi.
+  - Facile (Easy): 36 tiles, 2 layers (piles of 2 at most), 6 pictures. Détente.
+  - Moyen (Medium): 54 tiles, up to 3 layers (piles up to 3), 9 pictures. Détente.
+  - Difficile (Hard): 72 tiles, up to 4 layers (piles up to 4), 12 pictures. Défi.
+  - Très difficile (Very Hard): 90 tiles, up to 4 layers (piles up to 4), 15 pictures. Défi.
+  - Shaped layouts: each level has 4 symmetric layouts with exactly the level's tile count (Facile: ring, diamond, two islands, staircases; Moyen: butterfly, cross, arch, staircases; Difficile: double ring, big diamond, four islands, staircases and centre; Très difficile: big butterfly, big cross, big arch, islands and staircases). Positions are in quarter-tile units. Real-game features: deep piles (tiles exactly on the same spot, each higher tile drawn slightly higher so the stacked edges show), stepped clusters (groups of 3 tiles inside the outline, each step half a tile further toward the centre and one layer higher; nothing sticks out of the shape), separate clusters with open space between. Facile stays simple (no staircases, piles of 2). Each new board picks a random layout of its level, never the same one twice in a row; the layout is scaled as large as possible in the board area. Difficulty comes mainly from the tile and picture counts.
 - Action bar: the kit Hint and Undo, same as Mahjong. Undo is unlimited. No Shuffle button. Hint highlights the next free tile that builds toward a set.
 - Tray full, Détente levels (Facile, Moyen): the tray gives a gentle shake, the Undo button glows and pulses, and a clear line appears above the tray: FR "Plateau plein — annulez votre dernier coup" / EN "Tray full — undo your last move". Tapping board tiles only gives a tiny wiggle. Hint points to Undo. No timer, no ending. The line disappears once she taps Undo.
 - Tray full, Défi levels (Difficile, Très difficile): the game ends with the kit stuck EndCard exactly as shipped (its rotating titles) and Rejouer.

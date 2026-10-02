@@ -15,6 +15,7 @@ const HOME: Screen = { name: 'home' };
 // so in the production build this is `null` and the screen's code is not included at all.
 const DevTiles = import.meta.env.DEV ? lazy(() => import('./dev/DevTiles')) : null;
 const DevTripleTiles = import.meta.env.DEV ? lazy(() => import('./dev/DevTripleTiles')) : null;
+const DevTripleLayouts = import.meta.env.DEV ? lazy(() => import('./dev/DevTripleLayouts')) : null;
 
 // The playable game if the game has one; otherwise the temporary "coming soon" screen.
 function GameRoute({ id, onBack }: { id: GameId; onBack: () => void }) {
@@ -72,6 +73,14 @@ export function App() {
     return (
       <Suspense fallback={null}>
         <DevTripleTiles />
+      </Suspense>
+    );
+  }
+
+  if (DevTripleLayouts && window.location.pathname === '/dev/triple-layouts') {
+    return (
+      <Suspense fallback={null}>
+        <DevTripleLayouts />
       </Suspense>
     );
   }

@@ -1,0 +1,66 @@
+/* Development-only styles for /dev/triple-layouts (never in the production build). */
+.dtl {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 2rem 3rem 4rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  background-image: linear-gradient(to bottom, #dff1fb, #b7e0ee 60%, #8cc6dc);
+}
+
+.dtl-level {
+  margin: 2rem 0 1rem;
+  font-size: 1.4rem;
+}
+
+.dtl-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.dtl-card {
+  margin: 0 2rem 1.5rem 0;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.55);
+  border-radius: 12px;
+}
+
+.dtl-board {
+  position: relative;
+  margin: 0 auto;
+}
+
+.dtl-tile {
+  position: absolute;
+  box-sizing: border-box;
+  border: 1px solid #4a78a8;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+.dtl-tile[data-z='1'] { background-color: #e3eefb; }
+.dtl-tile[data-z='2'] { background-color: #c6dcf5; }
+.dtl-tile[data-z='3'] { background-color: #a5c6ee; }
+.dtl-tile[data-z='4'] { background-color: #86b0e6; }
+
+.dtl-name {
+  margin-top: 0.6rem;
+  font-weight: 700;
+}
+
+.dtl-count {
+  font-size: 0.9rem;
+}
+
+.dtl .dev-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.8rem;
+}
+
+.dtl .dev-note {
+  margin: 0;
+}

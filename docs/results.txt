@@ -1,7 +1,11 @@
-DOCS: design direction change (no code, not committed)
-Done:
-- CONCEPT.md: Purpose now "vivid, playful"; new "Design direction" section (vivid and playful, adult, never childish) with the non-negotiable senior rules (big tiles, forgiving touch, no ads/timers/pressure, simple controls, sound minimal and default off, no music, Détente can't be lost, photosensitivity, performance); Visual reference rewritten (mockup is a reference only, Design direction wins); Triple Tile "calm line" -> "clear line", background points to the Backlog.
-- CLAUDE.md: line 2 description updated to the new direction.
-- BACKLOG.md: added the 4 items (shaped layouts, illustrated backgrounds, Home buttons with real tiles, Mahjong refresh).
-Lines that still read calm (kept on purpose, they describe behaviour, not look): Mahjong Détente "reshuffle gently", Défi "short calm pause", "Select a tile: lifts with a soft glow", Effects default "Gentle" (a setting name), "soft depth/soft blue thickness". Review if you want them livelier.
-Check: the existing app look (sand/lake backgrounds, Mahjong) still follows the old direction until the backlog items are built.
+TRIPLE TILE: STAIRCASES NOW STEPPED CLUSTERS INSIDE THE SHAPE (not committed)
+Before (layouts.ts): 'f' spots sat on outline corners and fanned tiles outward (legs). Now each 'f' is a group of 3 tiles stepping toward the centre (2 steps, half a tile each, one layer higher), nothing outside the outline.
+Builder caps piles under/next to a cluster so no same-layer overlap; self-check also fails any tile outside the bottom layer's outline.
+- Escaliers (Moyen): framed 10x6 with a 4x2 centre block; clusters in the 4 inner corners of the frame.
+- Escaliers et centre (Difficile): 12x6 with notched corners; clusters just inside the notches, centre block.
+- Grand papillon: 13 wide, clusters inside the wing corners (row 2 / row 5), stepping toward the body.
+- Grande arche: clusters at the foot of the opening between the pillars, stepping inward and up.
+- Îles et escaliers: islands widened to 5x4 (more room for piles); one cluster per island corner, stepping inward.
+Piles/counts rebalanced automatically. Facile Escaliers had no clusters (unchanged). CONCEPT.md wording updated.
+Self-check: 200 boards x 16 layouts OK (counts, solvable, symmetric, no overlap, limits, inside outline); dealing OK; tsc OK.
+David to check: /dev/triple-layouts. Butterfly and arch are left-right symmetric only where top/bottom differ.

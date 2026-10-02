@@ -1,24 +1,26 @@
 // Triple Tile rules, kept free of React so they can be tested on their own.
-// Tiles are identified by their index in the layout. Positions are in half-tile units
-// (a tile covers 2x2 units), so upper layers can sit half a tile off the layer below.
+// Tiles are identified by their index in the layout. Positions are in quarter-tile units
+// (a tile covers 4x4 units), so upper layers can sit a small diagonal offset from the layer below.
 
 export interface Pos {
-  x: number; // half-tile units, left to right
-  y: number; // half-tile units, top to bottom
+  x: number; // quarter-tile units, left to right
+  y: number; // quarter-tile units, top to bottom
   z: number; // layer, 0 = bottom
 }
 
 export type Rng = () => number;
 
+export const TILE_UNITS = 4; // a tile is 4x4 position units
 export const TRAY_SIZE = 7;
 export const SET_SIZE = 3;
 
-// above[i] = the tiles that cover tile i. Only layers matter: a tile is free when none of them is left.
+// above[i] = the tiles that cover tile i: higher layers that overlap it by any amount (any offset, the
+// squares are 4 units wide). A tile is free when none of them is left.
 export function buildCovers(positions: readonly Pos[]): number[][] {
   return positions.map((a, i) => {
     const covers: number[] = [];
     positions.forEach((b, j) => {
-      if (i !== j && b.z > a.z && Math.abs(b.x - a.x) < 2 && Math.abs(b.y - a.y) < 2) covers.push(j);
+      if (i !== j && b.z > a.z && Math.abs(b.x - a.x) < TILE_UNITS && Math.abs(b.y - a.y) < TILE_UNITS) covers.push(j);
     });
     return covers;
   });

@@ -1,12 +1,14 @@
-import { TRAY_SIZE, type Pos } from './rules';
+import { TILE_UNITS, TRAY_SIZE, type Pos } from './rules';
 
-// Turns layout positions into pixels. The board (half-tile units) and the 7-slot tray below it are fitted together
+// Turns layout positions into pixels. The board (quarter-tile units) and the 7-slot tray below it are fitted together
 // into the space available, so tiles come out as large as possible. Every size is a multiple of the pitch
 // (the width of one grid step), so it is computed once for pitch 1 and scaled.
-const FACE_W = 0.94; // tile face width, in pitches
-const FACE_H = FACE_W * 1.12; // tile face height
-const THICK = FACE_W * 0.09; // soft blue thickness under the face
-const ROW = FACE_H + THICK + 0.03; // vertical step between two rows of tiles
+export const FACE_W = 0.94; // tile face width, in pitches
+export const FACE_H = FACE_W * 1.12; // tile face height
+export const THICK = FACE_W * 0.09; // soft blue thickness under the face
+export const ROW = FACE_H + THICK + 0.03; // vertical step between two rows of tiles
+// Each layer sits this much higher, so the edges of a deep pile stay visible.
+export const LIFT = THICK * 1.3;
 const TRAY_PAD = 0.28; // space round the slots inside the tray
 const TRAY_GAP = 0.4; // space between the board and the tray
 const MAX_PITCH = 150;
@@ -33,8 +35,8 @@ export function computeGeometry(positions: readonly Pos[], width: number, height
   const l1: number[] = [];
   const t1: number[] = [];
   for (const p of positions) {
-    const l = p.x / 2;
-    const t = (p.y / 2) * ROW - p.z * THICK; // each layer sits a little higher
+    const l = p.x / TILE_UNITS;
+    const t = (p.y / TILE_UNITS) * ROW - p.z * LIFT;
     l1.push(l);
     t1.push(t);
     minX = Math.min(minX, l);
