@@ -1,7 +1,19 @@
 # MyGames (Oasis) — Concept
 
 ## Purpose
-Entertain, while staying super simple for both the player and the caregiver. Gentle tablet games for seniors, including people with mild memory difficulties. First player: a 75-year-old woman with good dexterity today; tap-based play must be ready for when that changes. Other players may follow. The look is adult and modern, never childish.
+Entertain, while staying super simple for both the player and the caregiver. Vivid, playful tablet games for seniors, including people with mild memory difficulties. First player: a 75-year-old woman with good dexterity today; tap-based play must be ready for when that changes. Other players may follow. The look is adult and modern, never childish.
+
+## Design direction
+- Look: vivid and playful, but adult; never childish. Colourful illustrated scenes, rich colour, glossy tiles, lively animations and rewarding moments (glow, sparkle, bounce, flourishes) are welcome. This replaces the earlier "calm / soothing / gentle" look direction.
+- Non-negotiable senior-friendly rules (functional, they do not change with the look):
+  - Big, readable tiles and large touch targets; clear pictures.
+  - Forgiving touch (see Touch).
+  - No ads, no accounts, no timers, no pressure (no lives, no score pressure, no streaks, no "come back tomorrow").
+  - Very simple controls and navigation; always an obvious way back to Home.
+  - Sound minimal and default off; no music, ever.
+  - Détente levels cannot be lost.
+  - Photosensitivity-safe: lively is fine, never strobing, flashing or flickering.
+  - Performance on the Galaxy Tab 4 (transform/opacity only, light assets).
 
 ## Releases
 Design and build the code for the full version; expose only what each release needs.
@@ -9,7 +21,7 @@ Design and build the code for the full version; expose only what each release ne
 - Next releases: ask the player which game she wants next; add settings only when feedback shows a need.
 
 ## Visual reference
-docs/reference/mockup.png (when added) is the visual standard: calm nature backgrounds (lakes, mountains, forests, flowers), soft depth, rounded glossy tiles, color-coded game buttons, large clear text, smooth gentle animations.
+docs/reference/mockup.png (when added) is a visual reference for layout and tile depth; where it looks calmer or more muted than the Design direction, the Design direction wins. Target: illustrated nature scenes with rich colour (lakes, mountains, forests, flowers), depth, rounded glossy tiles, colour-coded game buttons, large clear text, lively and smooth animations.
 
 ## Approach: a generic game kit
 Everything is built once and shared by all games. A game only defines its own rules. The kit includes:
@@ -45,9 +57,9 @@ When a game needs something new, extend the kit; no one-off code.
   - Difficile (Hard): 72 tiles, 3 layers, 12 pictures. Défi.
   - Très difficile (Very Hard): 90 tiles, 4 layers, 15 pictures. Défi.
 - Action bar: the kit Hint and Undo, same as Mahjong. Undo is unlimited. No Shuffle button. Hint highlights the next free tile that builds toward a set.
-- Tray full, Détente levels (Facile, Moyen): the tray gives a gentle shake, the Undo button glows and pulses, and a calm line appears above the tray: FR "Plateau plein — annulez votre dernier coup" / EN "Tray full — undo your last move". Tapping board tiles only gives a tiny wiggle. Hint points to Undo. No timer, no ending. The line disappears once she taps Undo.
+- Tray full, Détente levels (Facile, Moyen): the tray gives a gentle shake, the Undo button glows and pulses, and a clear line appears above the tray: FR "Plateau plein — annulez votre dernier coup" / EN "Tray full — undo your last move". Tapping board tiles only gives a tiny wiggle. Hint points to Undo. No timer, no ending. The line disappears once she taps Undo.
 - Tray full, Défi levels (Difficile, Très difficile): the game ends with the kit stuck EndCard exactly as shipped (its rotating titles) and Rejouer.
-- Look: Microsoft Fluent Emoji "3D" style (PNG, MIT license), bundled offline, distinct from Mahjong's flat "Color" style. Tiles: white face, soft blue thickness, rounded corners. Blocked tiles are clearly greyed but still readable. Own colourful painted-landscape background.
+- Look: Microsoft Fluent Emoji "3D" style (PNG, MIT license), bundled offline, distinct from Mahjong's flat "Color" style. Tiles: white face, soft blue thickness, rounded corners. Blocked tiles are clearly greyed but still readable. Own colourful illustrated background (see Backlog: illustrated backgrounds).
 - Performance: glows and sparkles are opacity-faded layers using transform/opacity only, no animated shadows or filters. Fluent 3D PNGs are resized small (about 128 px) to stay light on the Galaxy Tab 4.
 - Sound: minimal, default off (kit rule); its own soft "good action" sound when a set clears. No music.
 - Its own end-card decoration (kit rule).

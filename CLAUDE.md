@@ -1,5 +1,5 @@
 # MyGames (working name: Oasis)
-A bilingual (French/English) PWA of gentle, calm tablet games for seniors. docs/CONCEPT.md is the product spec: read it before any feature work. When CLAUDE.md and CONCEPT.md differ on product decisions, CONCEPT.md wins.
+A bilingual (French/English) PWA of vivid, playful (but adult, never childish) tablet games for seniors, with calm, simple, pressure-free play. docs/CONCEPT.md is the product spec: read it before any feature work. When CLAUDE.md and CONCEPT.md differ on product decisions, CONCEPT.md wins.
 
 ## Stack
 React + TypeScript + Vite PWA, hosted on Netlify (free plan). No backend, no accounts, no Supabase. Settings stored locally on the device. Must work fully offline once installed. Everything must stay within free-tier limits.

@@ -1,12 +1,7 @@
-STEP B1: Triple Tile lively (not committed)
-Relied on: CONCEPT.md Triple Tile (+Performance line); TripleTileGame (shownTray/goneSlots/busy/epoch pattern, Undo history); geometry.ts (slot positions, unchanged); kit GameScreen action buttons (TapButton, .action-button). Mahjong untouched.
+DOCS: design direction change (no code, not committed)
 Done:
-1. Tile to tray: 350 ms glide + arc (inner layer lifts and swells, then settles). Tray tiles slide to make room (transform transition).
-2. Set clear: gold glow layer (opacity) + bounce 280 ms, gather onto middle tile 170 ms, pop (swell + fade) with 6 sparkles 300 ms. Remaining tiles slide over.
-3. Unblock: grey is now a separate layer whose opacity fades (300 ms) instead of switching.
-4. Détente full tray: tray/slots/tiles sway once, Undo gets a pulsing gold glow (kit GameAction "emphasis"), line "Plateau plein — annulez votre dernier coup" / "Tray full — undo your last move" (dictionary key trayFull) above the tray; board taps = tiny wiggle; Hint -> Undo pulses faster; all reset on Undo. No timer.
-5. Taps are blocked only from a set-completing tap until the set starts to pop (~0.8 s); all other taps are never blocked.
-Files: src/games/tripletile/{TripleTileGame.tsx,tripletile.css}, src/kit/GameScreen.tsx (emphasis prop), src/styles.css (action-button pulse), src/i18n/dictionary.ts.
-Checks: tsc + build pass. Not tested in a browser or on device.
-To test: all 4 levels; arc and gather look right on 1280x800 and portrait; unblocking fade; Facile full tray (shake, line position, Undo glow, Hint, wiggle, Undo resets); Défi full tray still ends with Presque; Effects Minimal = no movement (opacity only); Undo during a clear.
-Assumptions: lift/shake/wiggle sizes scale with the Effects setting (--fx-lift; 0 on Minimal). Full-tray line sits in the gap above the tray on a light pill and may overlap the bottom board row slightly. Shake plays once per full tray. Win/Presque card delays adjusted to the new timings. Old fadeMs-based clear timing removed.
+- CONCEPT.md: Purpose now "vivid, playful"; new "Design direction" section (vivid and playful, adult, never childish) with the non-negotiable senior rules (big tiles, forgiving touch, no ads/timers/pressure, simple controls, sound minimal and default off, no music, Détente can't be lost, photosensitivity, performance); Visual reference rewritten (mockup is a reference only, Design direction wins); Triple Tile "calm line" -> "clear line", background points to the Backlog.
+- CLAUDE.md: line 2 description updated to the new direction.
+- BACKLOG.md: added the 4 items (shaped layouts, illustrated backgrounds, Home buttons with real tiles, Mahjong refresh).
+Lines that still read calm (kept on purpose, they describe behaviour, not look): Mahjong Détente "reshuffle gently", Défi "short calm pause", "Select a tile: lifts with a soft glow", Effects default "Gentle" (a setting name), "soft depth/soft blue thickness". Review if you want them livelier.
+Check: the existing app look (sand/lake backgrounds, Mahjong) still follows the old direction until the backlog items are built.
