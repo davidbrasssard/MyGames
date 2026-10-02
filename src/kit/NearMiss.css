@@ -1,0 +1,89 @@
+/* Near miss (kit). Final (rest) positions are set here. --amp scales movement (Gentle = smaller), --tm scales time
+   (Gentle = shorter). Minimal removes all animation. Only transform and opacity are animated; it plays once. */
+.nm {
+  --amp: 1;
+  --tm: 1;
+  --u: calc(var(--fx-dur) * var(--tm));
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+[data-effects='gentle'] .nm {
+  --amp: 0.6;
+  --tm: 0.6;
+}
+
+.nm-tile {
+  position: absolute;
+  top: 1.7rem;
+  left: 50%;
+  width: 4.6rem;
+  height: 5.6rem;
+  margin-left: -2.3rem;
+  animation: nm-in calc(var(--u) * 1.4) ease-out backwards;
+}
+
+.nm-left {
+  transform: translate(-6.6rem, 0);
+  animation: nm-in calc(var(--u) * 1.4) ease-out backwards, nm-left calc(var(--u) * 6.4) ease-in-out calc(var(--u) * 1.6) backwards;
+}
+
+.nm-right {
+  transform: translate(6.6rem, 0);
+  animation: nm-in calc(var(--u) * 1.4) ease-out backwards, nm-right calc(var(--u) * 6.4) ease-in-out calc(var(--u) * 1.6) backwards;
+}
+
+.nm-middle {
+  opacity: 0.55; /* the blocker */
+  animation: nm-in calc(var(--u) * 1.4) ease-out backwards, nm-rise calc(var(--u) * 6.4) ease-in-out calc(var(--u) * 1.6) backwards;
+}
+
+/* from-only: ends at each tile's own opacity */
+@keyframes nm-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* rest, slide in (just short of the middle tile), pause, drift back */
+@keyframes nm-left {
+  0%,
+  100% {
+    transform: translate(-6.6rem, 0);
+  }
+  38%,
+  58% {
+    transform: translate(calc(-6.6rem + 1.5rem * var(--amp)), 0);
+  }
+}
+
+@keyframes nm-right {
+  0%,
+  100% {
+    transform: translate(6.6rem, 0);
+  }
+  38%,
+  58% {
+    transform: translate(calc(6.6rem - 1.5rem * var(--amp)), 0);
+  }
+}
+
+@keyframes nm-rise {
+  0%,
+  34%,
+  62%,
+  100% {
+    transform: translate(0, 0);
+  }
+  42%,
+  54% {
+    transform: translate(0, calc(-0.4rem * var(--amp)));
+  }
+}
+
+[data-effects='minimal'] .nm .nm-tile {
+  animation: none;
+}

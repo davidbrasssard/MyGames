@@ -45,7 +45,9 @@ const fr = {
   endWin: 'Bravo !',
   endStuck: 'Presque !',
   endWinLine: 'Partie terminée',
-  endStuckLine: 'Plus de paires libres. On réessaie ?',
+  endStuckLine: 'On réessaie ?',
+  endStuckNot: 'Pas cette fois…',
+  endStuckClose: 'Oh, si près !',
   playAgain: 'Rejouer',
   home: 'Accueil',
 };
@@ -95,7 +97,9 @@ const en: Record<TextKey, string> = {
   endWin: 'Well done!',
   endStuck: 'Almost!',
   endWinLine: 'Game complete',
-  endStuckLine: 'No free pairs left. Try again?',
+  endStuckLine: 'Try again?',
+  endStuckNot: 'Not this time…',
+  endStuckClose: 'Oh, so close!',
   playAgain: 'Play again',
   home: 'Home',
 };

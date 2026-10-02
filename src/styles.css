@@ -832,9 +832,22 @@ svg {
 .overlay-card.end-overlay {
   max-width: 34rem;
   padding: 1.25rem 1.75rem 1.5rem;
-  border: 0.3rem solid #e2b24a;
-  border-radius: 2rem;
+  border: 1.5px solid #e2b24a;
+  border-radius: 1.6rem;
   background: #fffaf0;
+}
+
+/* Stuck card: thin lavender border, ivory background, no glow. The win card stays gold. */
+.overlay-card.end-overlay-stuck {
+  border-color: #b9a4e6;
+}
+
+.end-card[data-kind='stuck'] .end-title {
+  color: #4a2f8a;
+}
+
+.end-card[data-kind='stuck'] .end-line {
+  color: #8a77b5;
 }
 
 .end-card {
@@ -857,12 +870,12 @@ svg {
   right: 0;
   bottom: -1rem;
   left: 0;
-  background-image: radial-gradient(ellipse at center, rgba(255, 214, 120, 0.7) 0%, rgba(255, 214, 120, 0.25) 45%, rgba(255, 214, 120, 0) 70%);
+  background-image: radial-gradient(ellipse at center, rgba(255, 214, 120, 0.4) 0%, rgba(255, 214, 120, 0.14) 45%, rgba(255, 214, 120, 0) 70%);
 }
 
 .end-title {
   margin-top: 0.75rem;
-  font-size: 3rem;
+  font-size: 2.4rem;
   font-weight: 800;
   text-align: center;
 }
@@ -885,7 +898,7 @@ svg {
   min-height: 4.5rem;
   padding: 0 1rem;
   border: 0.22rem solid var(--accent);
-  border-radius: 1.4rem;
+  border-radius: 12px;
   background: #fff;
   color: var(--accent);
   font-size: 1.6rem;
@@ -900,37 +913,4 @@ svg {
   background: var(--good);
   border-color: var(--good);
   color: #fff;
-}
-
-/* ---- Mahjong end decoration (final positions here; the entrance is only an animated `from`) ---- */
-.end-deco-stage {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-
-.end-deco-tile {
-  position: absolute;
-  top: 1.7rem;
-  left: 50%;
-  width: 4.6rem;
-  height: 5.6rem;
-  margin-left: -2.3rem;
-  transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
-}
-
-.end-deco-stage[data-kind='stuck'] .end-deco-tile {
-  animation: overlay-fade calc(var(--fx-dur) * 1.6) ease-out backwards;
-  animation-delay: calc(var(--order) * var(--fx-dur) * 0.5);
-}
-
-.end-deco-tile[data-faded='true'] {
-  opacity: 0.4;
-}
-
-/* Stuck: Minimal = no animation (the win celebrations have their own rules in src/kit/Celebrations.css). */
-[data-effects='minimal'] .end-deco-tile {
-  animation: none;
 }

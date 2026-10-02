@@ -9,20 +9,21 @@ import { TapButton } from './TapButton';
 // follow the Effects setting (see .end-deco rules in styles.css).
 export interface EndCardProps {
   kind: 'win' | 'stuck';
+  title?: string; // replaces the default title (e.g. the rotating "almost" titles)
   decoration?: ReactNode; // drawn in the top area, over the glow; should fit a 9rem-high, full-width box
   onReplay: () => void; // new board, same level
   onHome: () => void;
 }
 
-export function EndCard({ kind, decoration, onReplay, onHome }: EndCardProps) {
+export function EndCard({ kind, title: customTitle, decoration, onReplay, onHome }: EndCardProps) {
   const t = useT();
-  const title = t(kind === 'win' ? 'endWin' : 'endStuck');
+  const title = customTitle ?? t(kind === 'win' ? 'endWin' : 'endStuck');
   return (
-    <OverlayCard label={title} onClose={() => undefined} dismissable={false} className="end-overlay">
+    <OverlayCard label={title} onClose={() => undefined} dismissable={false} className={`end-overlay end-overlay-${kind}`}>
       {() => (
         <div className="end-card" data-kind={kind}>
           <div className="end-deco">
-            <div className="end-glow" aria-hidden="true" />
+            {kind === 'win' && <div className="end-glow" aria-hidden="true" />}
             {decoration}
           </div>
           <h1 className="end-title">{title}</h1>

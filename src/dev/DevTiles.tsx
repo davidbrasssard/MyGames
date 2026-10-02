@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CELEBRATIONS, type CelebrationId } from '../kit/Celebrations';
-import { WinDecoration } from '../games/mahjong/EndDecoration';
+import { StuckDecoration, WinDecoration } from '../games/mahjong/EndDecoration';
 import { pictureUrl } from '../pictures';
 import { TILES_FLUENT } from '../pictures/tilesFluent';
 import './DevTiles.css';
@@ -10,6 +10,7 @@ import './DevTiles.css';
 export default function DevTiles() {
   const { pictures } = TILES_FLUENT;
   const [cel, setCel] = useState<{ id: CelebrationId; run: number } | null>(null);
+  const [nearMiss, setNearMiss] = useState(0);
   const sample = [pictures[0], pictures[7], pictures[14], pictures[21]];
   return (
     <div className="dev-tiles" data-scrollable>
@@ -21,6 +22,14 @@ export default function DevTiles() {
             {id}
           </button>
         ))}
+      </div>
+      <div className="dev-cel-buttons">
+        <button type="button" className="dev-cel-button" onClick={() => setNearMiss((n) => n + 1)}>
+          near miss
+        </button>
+      </div>
+      <div className="dev-cel-stage">
+        <div className="end-deco">{nearMiss > 0 && <StuckDecoration key={nearMiss} pair={pictures[0]} blocker={pictures[28]} />}</div>
       </div>
       <div className="dev-cel-stage">
         <div className="end-deco">

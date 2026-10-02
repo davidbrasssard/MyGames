@@ -1,15 +1,15 @@
-End-card fixes + dev test shortcuts. Not committed. npm run build passes (not viewed on a screen).
+Finer end cards: "near miss" stuck card, calmer win card. Not committed. npm run build passes (not viewed on a screen).
 
-Read first: MahjongGame.tsx (EndCard rendered inside .game-board-area, so its backdrop only covered the board), kit/EndCard.tsx, OverlayCard.tsx (.overlay-backdrop absolute, z-index 200000), kit/GameScreen.tsx.
+Read first: MahjongGame.tsx (end decoration + title pick), EndDecoration.tsx, EndCard.tsx, Almost.tsx/.css (rain/droop/close + Lucide cloud), DevTiles.tsx, styles.css end-card rules (border 0.3rem, glow 0.7 alpha, title 3rem, buttons 1.4rem radius).
 
 Done:
-1. GameScreen has a new `overlay` prop rendered at the root of .game-screen (like the LevelPicker), so the dimmed backdrop covers the whole screen: top bar, Back, level badge, Undo, Hint. Only the card's two buttons respond.
-2. Win: tiles that are removed are no longer drawn at all once the Bravo card is up (card already waited fade + 1.2 s), so the board is empty behind it.
-3. Dev only (import.meta.env.DEV): small half-transparent "Win" and "Stuck" buttons at the bottom-right of the board. Win clears the board and shows Bravo. Stuck removes all tiles of about half the pictures (min 7 kept) and shows Presque with real tiles left (decoration uses them).
-4. Home speaker icon untouched.
-5. Build checked: JS contains no Win/Stuck buttons or handlers. The tiny inert CSS rule .mj-dev remains in the CSS (harmless).
+- Stuck card: new kit src/kit/NearMiss.tsx + NearMiss.css. 3 real remaining tiles in a row: identical pair left/right, a different tile between (opacity 0.55). The pair slides 1.5 rem toward the middle, stops just short, pauses, drifts back (~4.5 s, once); middle tile rises 0.4 rem as they meet. Gentle = 0.6x amplitude and time; Minimal = static.
+- Stuck styling: ivory card, 1.5px lavender border (#b9a4e6), no glow (not rendered), title deep purple, line softer purple (#8a77b5).
+- Titles still rotate (Presque ! / Pas cette fois… / Oh, si près !), line "On réessaie ?", never same twice (localStorage oasis.lastStuckTitle; replaces oasis.lastAlmost).
+- Win card: 1.5px gold border, lighter glow (alpha 0.4), title 2.4rem (was 3rem), button radius 12px (shared, so the stuck card's buttons too). Trophy and 5 celebrations untouched.
+- Removed: Almost.tsx/.css (rain/droop/close, Lucide cloud, lavender glow/tint CSS), old dev preview buttons. Dev preview /dev/tiles has one "near miss" button.
 
-Files: src/kit/GameScreen.tsx, src/games/mahjong/MahjongGame.tsx, src/games/mahjong/mahjong.css.
+Files: src/kit/NearMiss.{tsx,css} (new), src/kit/EndCard.tsx, src/games/mahjong/{EndDecoration,MahjongGame}.tsx, src/dev/DevTiles.tsx, src/styles.css; src/kit/Almost.{tsx,css} deleted.
 
-Assumptions: the dev buttons are English-only plain buttons; on a Détente level the Stuck shortcut may reshuffle quietly behind the card (harmless).
-David to check: end card dims the full screen on the tablet; Win/Stuck buttons in npm run dev.
+Assumptions: border radius of the cards eased to 1.6rem; pair = a picture with 2+ tiles left (always true after pair removals), blocker = any other remaining picture; the card tint is now ivory for both cards.
+David to check on the tablet: the slide distance reads as a "near miss"; win title size.

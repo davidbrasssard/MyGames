@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LEVEL_TEXT, useT } from '../../i18n/dictionary';
+import { pickStuckTitle } from '../../kit/NearMiss';
 import { EndCard } from '../../kit/EndCard';
 import { StuckDecoration, WinDecoration } from './EndDecoration';
 import { GameScreen, type GameAction, type GameProps } from '../../kit/GameScreen';
@@ -381,23 +382,31 @@ function MahjongBoard({
 
   // ---- Screen ----
   // Pictures of the tiles of this board for the end card: distinct pictures, from what was just played (or what is left).
+  const stuckTitle = useMemo(() => (endCard === 'stuck' ? pickStuckTitle() : null), [endCard]);
   const endDecoration = useMemo(() => {
     if (!endCard) return null;
     const g = stateRef.current;
-    const wanted = endCard === 'win' ? 4 : 7;
-    const ids = shuffled(
-      g.pictures.map((_, i) => i).filter((i) => (endCard === 'win' ? true : !g.removed[i])),
-      Math.random,
-    );
+    if (endCard === 'stuck') {
+      // An identical pair of remaining tiles, and a different remaining tile as the blocker between them.
+      const left = g.pictures.filter((_, i) => !g.removed[i]);
+      const counts = new Map<string, number>();
+      left.forEach((p) => counts.set(p, (counts.get(p) ?? 0) + 1));
+      const pairs = shuffled([...counts].filter(([, n]) => n >= 2).map(([p]) => p), Math.random);
+      const pairId = pairs[0] ?? left[0];
+      const others = shuffled([...counts.keys()].filter((p) => p !== pairId), Math.random);
+      const blockerId = others[0] ?? pairId;
+      return <StuckDecoration pair={PICTURE_BY_ID.get(pairId) as Picture} blocker={PICTURE_BY_ID.get(blockerId) as Picture} />;
+    }
+    const ids = shuffled(g.pictures.map((_, i) => i), Math.random);
     const seen = new Set<string>();
     const pics: Picture[] = [];
     for (const i of ids) {
       if (seen.has(g.pictures[i])) continue;
       seen.add(g.pictures[i]);
       pics.push(PICTURE_BY_ID.get(g.pictures[i]) as Picture);
-      if (pics.length === wanted) break;
+      if (pics.length === 4) break;
     }
-    return endCard === 'win' ? <WinDecoration pictures={pics} /> : <StuckDecoration pictures={pics} />;
+    return <WinDecoration pictures={pics} />;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [endCard]);
 
@@ -424,7 +433,7 @@ function MahjongBoard({
       onBack={onBack}
       actions={actions}
       caption={t('mahjongCaption')}
-      overlay={endCard && <EndCard kind={endCard} decoration={endDecoration} onReplay={onReplay} onHome={onBack} />}
+      overlay={endCard && <EndCard kind={endCard} title={stuckTitle ? t(stuckTitle) : undefined} decoration={endDecoration} onReplay={onReplay} onHome={onBack} />}
     >
       <div
         ref={boardRef}
