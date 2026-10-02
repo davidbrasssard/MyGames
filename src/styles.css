@@ -326,6 +326,22 @@ svg {
   right: 0.75rem;
 }
 
+.home-version {
+  flex-shrink: 0;
+  align-self: center;
+  margin: 0.6rem 0 0;
+  padding: 0.2rem 0.9rem;
+  border-radius: 1rem;
+  background: rgba(0, 0, 0, 0.25);
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 .page-dots {
   display: flex;
   align-items: center;

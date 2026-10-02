@@ -2,10 +2,15 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import legacy from '@vitejs/plugin-legacy';
 import { VitePWA } from 'vite-plugin-pwa';
+import pkg from './package.json';
 
 export default defineConfig({
-  // Lets src/kit/quality.ts re-check the device after each app update.
-  define: { __BUILD_ID__: JSON.stringify(Date.now().toString(36)) },
+  // __BUILD_ID__ lets src/kit/quality.ts re-check the device after each app update; version and date feed the Home label.
+  define: {
+    __BUILD_ID__: JSON.stringify(Date.now().toString(36)),
+    __APP_VERSION__: JSON.stringify(pkg.version),
+    __BUILD_DATE__: JSON.stringify(new Date().toISOString().slice(0, 10)),
+  },
   plugins: [
     react(),
     // Old tablets (Chrome 80 and up to the modern cut-off) get the legacy bundle; newer ones get the normal one.

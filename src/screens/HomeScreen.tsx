@@ -10,6 +10,20 @@ import { updateSettings, useSettings, type GameId, type Language } from '../sett
 
 const PAGE_SIZE = 4;
 
+// "v1.0.0 · 2 oct. 2026" / "v1.0.0 · Oct 2, 2026": the build day, written in the current language.
+function versionLabel(language: Language): string {
+  const [y, m, d] = __BUILD_DATE__.split('-').map(Number);
+  let date = __BUILD_DATE__;
+  try {
+    date = new Intl.DateTimeFormat(language === 'fr' ? 'fr-FR' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(
+      new Date(Date.UTC(y, m - 1, d)),
+    );
+  } catch {
+    // Keep the plain ISO date.
+  }
+  return `v${__APP_VERSION__} · ${date}`;
+}
+
 function chunk<T>(items: T[], size: number): T[][] {
   const pages: T[][] = [];
   for (let i = 0; i < items.length; i += size) pages.push(items.slice(i, i + size));
@@ -131,6 +145,8 @@ export function HomeScreen({ onOpenGame }: { onOpenGame: (id: GameId) => void })
           ))}
         </div>
       )}
+
+      <p className="home-version">{versionLabel(language)}</p>
     </div>
   );
 }
