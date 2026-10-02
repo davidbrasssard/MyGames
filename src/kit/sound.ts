@@ -21,21 +21,36 @@ function context(): Ctx | null {
   return ctx;
 }
 
-// iOS Safari and Chrome only allow audio after a user gesture: create/resume the context on the first tap.
+function wake(c: Ctx): void {
+  // iOS can leave the state at "suspended" or "interrupted"; resume() is only honoured inside a user gesture.
+  if (c.state === 'running') return;
+  try {
+    const p = c.resume();
+    if (p && p.catch) p.catch(() => undefined);
+  } catch {
+    // Ignore: sound is optional.
+  }
+}
+
+// iOS Safari and Chrome only allow audio after a user gesture. iOS ignores pointerdown for this, so we listen to
+// touchend/click too and keep listening (never removed) so a context suspended later is resumed by the next tap.
+// A one-sample silent buffer is played on each tap while not running: that is what actually unlocks iOS output.
 export function installAudioUnlock(): void {
   const unlock = () => {
     unlocked = true;
     const c = context();
-    if (c && c.state !== 'running') {
-      try {
-        const p = c.resume();
-        if (p && p.catch) p.catch(() => undefined);
-      } catch {
-        // Ignore: sound is optional.
-      }
+    if (!c || c.state === 'running') return;
+    wake(c);
+    try {
+      const src = c.createBufferSource();
+      src.buffer = c.createBuffer(1, 1, 22050);
+      src.connect(c.destination);
+      src.start(0);
+    } catch {
+      // Ignore: sound is optional.
     }
   };
-  ['pointerdown', 'touchend', 'click', 'keydown'].forEach((type) => window.addEventListener(type, unlock, { passive: true }));
+  ['pointerup', 'touchend', 'click', 'keydown'].forEach((type) => window.addEventListener(type, unlock, { passive: true }));
 }
 
 // ---- Sounds (all synthesized, all quiet) ----
@@ -108,7 +123,8 @@ const GOOD_ACTION_SOUND: Record<GameId, SoundId> = {
 export function playGood(game: GameId): void {
   if (!getSettings().sound) return;
   const c = context();
-  if (!c || c.state !== 'running') return;
+  if (!c) return;
+  wake(c);
   try {
     SOUNDS[GOOD_ACTION_SOUND[game]](c);
   } catch {

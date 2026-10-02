@@ -1,4 +1,8 @@
-Game top bar title + disabled action buttons restyled (both games, kit). Not committed. tsc OK; not seen on a tablet.
-Before (src/styles.css): .game-title plain text, margin-left 1.75rem, 2.4rem/800; .tap:disabled opacity 0.35 on the whole button (so .action-button became see-through); .back-button = white 0.92 pill, 5rem high, radius 2.5rem.
-Now: .game-title = same pill as Back (5rem high, padding 0 2.25rem, white 0.92, shadow). .action-button:disabled = opacity 1, solid #fff; only svg and label greyed (#9a9a9a, 0.8).
-Check: long titles/FR names in portrait (pill must not crowd the level button); disabled Undo on dark photos.
+Two bugs fixed (not committed). tsc OK; not tested on an iPad.
+FOUND: sound.ts had `unlocked` + installAudioUnlock (main.tsx:18) listening to pointerdown/touchend/click. playGood returned silently unless ctx.state === 'running'. hintTile (rules.ts:144) and showHint (TripleTileGame.tsx:240) are logically fine; the hint sets data-hint on .tt-tile.
+1. SOUND root cause: context created on pointerdown (iOS does not count it as an audio gesture), resume() not retried reliably, and playGood dropped every sound while the state was not exactly 'running' (iOS often stays 'suspended'/'interrupted').
+   Fix (src/kit/sound.ts): unlock on pointerup/touchend/click/keydown, kept for the whole session; each tap while not running calls resume() and plays a 1-sample silent buffer (iOS unlock); playGood now calls resume() and plays instead of bailing out.
+2. HINT root cause: the hint was only an OUTER green box-shadow on .tt-tile::after. The new tile look (thick sides, neighbours with higher z-index) covers it, so nothing visible. Lite tier was a flat outer ring, equally hidden.
+   Fix (src/games/tripletile/tripletile.css): hint now tints the face green with an inset ring (also in lite) and lifts the tile slightly. Duration unchanged (4.5 s).
+TEST (iPad): speaker ON, tap a tile in Mahjong/Trio: clack on the first or second tap. Trio: tap Hint: a free tile turns green with a ring for ~4.5 s.
+CHECK: iPad mute switch (ringer silent) still silences Web Audio on some iOS versions; hint tint on every tile palette.

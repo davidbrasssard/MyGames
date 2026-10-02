@@ -82,11 +82,17 @@
 
 .tt-tile::after {
   z-index: 2;
-  box-shadow: 0 0 calc(var(--tw) * 0.22) calc(var(--tw) * 0.06) rgba(70, 190, 140, 0.95);
+  /* Drawn ON the face (tint + inset ring): an outer glow is hidden by the neighbouring tiles and their thick sides. */
+  background: rgba(70, 190, 140, 0.4);
+  box-shadow: inset 0 0 0 calc(var(--tw) * 0.07) rgba(30, 160, 110, 1), 0 0 calc(var(--tw) * 0.18) calc(var(--tw) * 0.05) rgba(70, 190, 140, 0.95);
 }
 
 .tt-tile[data-hint='true']::after {
   opacity: 1;
+}
+
+.tt-tile[data-hint='true'] {
+  transform: translateY(calc(var(--fx-lift) * -0.6));
 }
 
 .tt-glow {
@@ -225,7 +231,7 @@
 
 /* Lite quality tier (see kit/quality.ts): flat rings instead of blurred glows, three sparkles instead of six. */
 .quality-lite .tt-tile::after {
-  box-shadow: 0 0 0 calc(var(--tw) * 0.05) rgba(70, 190, 140, 0.9);
+  box-shadow: inset 0 0 0 calc(var(--tw) * 0.07) rgba(30, 160, 110, 1);
 }
 
 .quality-lite .tt-glow {
