@@ -19,7 +19,7 @@ Everything is built once and shared by all games. A game only defines its own ru
 - One undo system: every game records moves the same way.
 - One set of animations (lift, glide, fade, flip) that follows the Effects setting.
 - One end card (src/kit/EndCard.tsx, built on OverlayCard), one settings system, one picture system.
-- End cards: warm ivory card with a gold border and soft glow, a game-supplied decoration on top, title, short line, and two large buttons: Rejouer / Play again (new board, same level, solid green) and Accueil / Home (white, blue outline). Tapping outside does not close them. Win = "Bravo !" / "Well done!" + "Partie terminée" / "Game complete". Stuck (Défi levels only) = "Presque !" / "Almost!" + "Plus de paires libres. On réessaie ?" / "No free pairs left. Try again?"; never "game over", no sad imagery. Animations are slow, transform/opacity only: reduced on Gentle, none on Minimal. Mahjong win: gold trophy popping in with 4 board tiles fanned out beside it; stuck: 3 remaining tiles with a few faded behind.
+- End cards: warm ivory card with a gold border and soft glow, a game-supplied decoration on top, title, short line, and two large buttons: Rejouer / Play again (new board, same level, solid green) and Accueil / Home (white, blue outline). Tapping outside does not close them. Win = "Bravo !" / "Well done!" + "Partie terminée" / "Game complete". Stuck (Défi levels only) = "Presque !" / "Almost!" + "Plus de paires libres. On réessaie ?" / "No free pairs left. Try again?"; never "game over", no sad imagery. Animations are transform/opacity only: reduced on Gentle, none on Minimal. They may be lively (glow, sparkle, bounce) but never strobe or flash rapidly. Mahjong win: gold trophy popping in with 4 board tiles fanned out beside it; stuck: 3 remaining tiles with a few faded behind.
 - Détente / Défi: each game declares, per level, whether it can be lost. Levels that cannot are "Détente" / "Relaxed"; levels that can are "Défi" / "Challenge". The level panel shows this word on each level button.
 When a game needs something new, extend the kit; no one-off code.
 
@@ -35,6 +35,22 @@ When a game needs something new, extend the kit; no one-off code.
 - Hint (gently highlights a free pair) and Undo.
 - Level picker (kit screen): the level badge in the game's top bar opens "Choose your level" (4 colored cards with tile count and 1-4 stars). Choosing starts a new board; Back returns to the game unchanged. The chosen level is remembered per game and used when the game is next opened from Home.
 - Levels (Easy and Medium = Détente, Hard and Very Hard = Défi; 24 / 40 / 64 / 80 tiles): Easy = small, nearly flat board, few tiles; Very Hard = a tall pyramid of 5 layers. Every level is visibly layered (Easy 2 layers, Medium 3, Hard 4, Very Hard 5). Medium and Hard in between.
+
+## Triple Tile (game 2)
+- Real Tile Master rules. Layered, symmetric boards. A tile is free when no tile above overlaps it. Tap only (no drag).
+- A tapped free tile flies into a 7-slot tray below the board and is placed next to identical pictures already in the tray. When 3 identical tiles are in the tray they clear with a lively animation (glow, gather, vanish).
+- Levels (every board is generated to be solvable). First play starts on Facile; the last level chosen is remembered (kit rule).
+  - Facile (Easy): 36 tiles, 2 layers, 6 pictures. Détente.
+  - Moyen (Medium): 54 tiles, 3 layers, 9 pictures. Détente.
+  - Difficile (Hard): 72 tiles, 3 layers, 12 pictures. Défi.
+  - Très difficile (Very Hard): 90 tiles, 4 layers, 15 pictures. Défi.
+- Action bar: the kit Hint and Undo, same as Mahjong. Undo is unlimited. No Shuffle button. Hint highlights the next free tile that builds toward a set.
+- Tray full, Détente levels (Facile, Moyen): the tray gives a gentle shake, the Undo button glows and pulses, and a calm line appears above the tray: FR "Plateau plein — annulez votre dernier coup" / EN "Tray full — undo your last move". Tapping board tiles only gives a tiny wiggle. Hint points to Undo. No timer, no ending. The line disappears once she taps Undo.
+- Tray full, Défi levels (Difficile, Très difficile): the game ends with the kit stuck EndCard exactly as shipped (its rotating titles) and Rejouer.
+- Look: Microsoft Fluent Emoji "3D" style (PNG, MIT license), bundled offline, distinct from Mahjong's flat "Color" style. Tiles: white face, soft blue thickness, rounded corners. Blocked tiles are clearly greyed but still readable. Own colourful painted-landscape background.
+- Performance: glows and sparkles are opacity-faded layers using transform/opacity only, no animated shadows or filters. Fluent 3D PNGs are resized small (about 128 px) to stay light on the Galaxy Tab 4.
+- Sound: minimal, default off (kit rule); its own soft "good action" sound when a set clears. No music.
+- Its own end-card decoration (kit rule).
 
 ## Later games
 Match (pairs; Easy 6 cards, Medium 12, Hard 20, Very Hard 32; wrong pair flips back gently), Match 3 (no way to lose), Puzzles (move tiles to rebuild a picture). All games use the level names Easy / Medium / Hard / Very Hard; each game defines what they mean.
@@ -59,7 +75,7 @@ No settings screen for now. Home, top-right: a language pill "FR | EN" (both sho
 - The gear returns later, only for caregiver functions (personal photos, passcode-protected, opened by press-and-hold ~3 seconds with a filling ring; a tap does nothing). The press-and-hold component is kept in src/kit/GearButton.tsx. A caregiver guide for locking the tablet (Guided Access on iPad, Screen Pinning on Android) comes with it.
 
 ## Never
-Timers, lives, scores pressure, ads, accounts, streaks, rewards, pop-ups, "come back tomorrow", flashing or flickering effects, scrolling game boards, hidden menus, close/exit buttons.
+Timers, lives, scores pressure, ads, accounts, streaks, rewards, pop-ups, "come back tomorrow", rapid strobing, flashing or flickering effects (lively glow, sparkle and bounce are allowed), scrolling game boards, hidden menus, close/exit buttons.
 
 ## Platform
 PWA for iPad and Android tablets, full screen, works fully offline. React + TypeScript + Vite, hosted free on Netlify. Settings stored on the device. Everything within free tiers. A web app cannot lock the tablet; locking is done with the tablet's own Guided Access / Screen Pinning.

@@ -1,13 +1,5 @@
-Per-game kit sound; Mahjong match = ivory tile "clack". Not committed. npm run build passes (not heard on a device).
-
-Read first: src/kit/sound.ts (old soft sine blip playMatch), MahjongGame.tsx (only caller, removePair), main.tsx (unlock).
-
-Done:
-- sound.ts: removed the sine/dove blip and playMatch(). New tileClick sound: filtered noise tick + faint second tick 11 ms later (two tiles touching) + two fast-dying tones (1250 Hz woody, 2050 Hz porcelain). ~70 ms, quiet. Web Audio only, no files.
-- Per-game: GOOD_ACTION_SOUND maps each game id to a sound; playGood(gameId) plays it, only when speaker is ON. New sounds = add a function + SOUNDS entry + map the game.
-- MahjongGame.removePair now calls playGood('mahjong'). Audio unlock on first tap unchanged.
-
-Files: src/kit/sound.ts, src/games/mahjong/MahjongGame.tsx, docs/results.txt.
-
-Assumptions: other games (match, match3, puzzles) are pre-mapped to tileClick as placeholders until they get their own.
-David to check: listen on the tablet; if too sharp/quiet, tune master gain (0.5) or band frequency (2600) in tileClick.
+DONE (docs only, no code, no commit)
+File changed: docs/CONCEPT.md (section "Triple Tile (game 2)"), docs/results.txt
+1. Tray full, Défi levels: removed the per-game stuck text override; now says the game ends with the kit stuck EndCard exactly as shipped (its rotating titles) and Rejouer.
+2. Added a Performance line: glows/sparkles are opacity-faded layers using transform/opacity only, no animated shadows or filters; Fluent 3D PNGs resized to about 128 px for the Galaxy Tab 4.
+Assumptions: none. Nothing for David to check.

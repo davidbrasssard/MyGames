@@ -14,7 +14,7 @@ React + TypeScript + Vite PWA, hosted on Netlify (free plan). No backend, no acc
 - Do not update docs/BACKLOG.md unless the prompt asks.
 
 ## Design rules (non-negotiable)
-- Photosensitivity-safe: nothing flashes, blinks, strobes or flickers. Animations are slow and smooth (fades, glides, gentle lifts, 3D flips).
+- Photosensitivity-safe: no rapid strobing, flashing, blinking or flickering. Animations may be lively for fun (glow, sparkle, bounce) as well as smooth (fades, glides, gentle lifts, 3D flips).
 - A global "Effects" setting: Full / Gentle / Minimal.
 - The kit supports two input modes: Drag, and Tap-Tap (tap origin, then tap destination). Which modes are exposed in settings is defined per release in CONCEPT.md.
 - No timers, lives, scores pressure, ads, accounts, streaks, rewards, or "come back tomorrow".
