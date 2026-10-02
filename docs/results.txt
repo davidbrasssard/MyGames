@@ -1,11 +1,14 @@
-DONE (no commit). dev:public fixed.
-OLD (package.json): "dev:public": "pkill -f node_modules/.bin/vite; (sleep 5 && gh codespace ports visibility 5173:public -c $CODESPACE_NAME) & vite --host --port 5173 --strictPort"
-  Problem: fixed 5 s sleep, one try, no feedback; if vite was slower, or gh failed, the port stayed private silently.
-NEW: "dev:public": "node scripts/dev-public.mjs"
-  scripts/dev-public.mjs: kills old vite; starts vite --host --port 5173 --strictPort in the foreground (output shown);
-  polls http://127.0.0.1:5173 every 0.5 s up to 30 s; then runs gh ... visibility 5173:public -c $CODESPACE_NAME,
-  up to 5 tries 2 s apart; prints "[dev:public] Port 5173 is PUBLIC" or "FAILED ... <gh error>"
-  (also messages if the port never responds or CODESPACE_NAME is unset). Ctrl+C / SIGTERM stops vite too.
-TESTED: ran the script here: vite came up, then "Port 5173 is PUBLIC" printed; stopping the script left no vite process.
-  Not tested: the failure/retry paths (no way to make gh fail here).
-CHECK: run npm run dev:public yourself and confirm the iPad can open the public URL.
+Triple Tile logic (no UI). Nothing committed. Mahjong and kit untouched.
+
+Mahjong structure (read): src/games/mahjong/{rules.ts (pure: blockers, free, createBoard, reshuffle), layouts.ts (LEVELS per Difficulty: positions in half-tile units, copies, canLose), geometry.ts (positions -> pixels), MahjongGame.tsx (UI), EndDecoration.tsx, mahjong.css}. Plugs into kit via GameDef.Screen in src/games/registry.ts; kit/GameScreen (action bar, level picker, EndCard), kit/history.ts useMoveHistory<M> (push/undo, game defines the move).
+
+Added:
+- src/games/tripletile/rules.ts: free tile, createBoard, tray insert/clear, tapTile, undoMove, hintTile, win/stuck.
+- src/games/tripletile/layouts.ts: LEVELS (36/54/72/90 tiles; 2/3/3/4 layers; 6/9/12/15 pictures; canLose false/false/true/true).
+- src/games/tripletile/selfcheck.ts + scripts/selfcheck-triple-tile.mjs (dev only; run: node scripts/selfcheck-triple-tile.mjs).
+
+Self-check (200 boards each, generation order replayed, then fully undone): easy OK, medium OK, hard OK, veryHard OK. Tile counts, layers, picture counts, layout symmetry exact; every board won; max tray used 2; undo restores board+tray (incl. clears).
+Layouts (cols x rows per layer, all centred): 6x5+3x2 / 6x5+5x4+2x2 / 8x5+7x4+2x2 / 9x5+8x4+3x3+2x2.
+
+Assumptions: each picture gets exactly 2 sets of 3 (even spread, shuffled). Undo move = tapped tile + tray snapshot. Hint returns null when tray full/stuck (UI should point to Undo). Hint does not avoid filling the tray with a non-matching tile. tapTile ignores taps when tray already full. Win = board and tray both empty (always equal). Not yet registered in GAME_IDS/registry/i18n (UI step).
+Check: layout looks (stack shapes) once the UI exists.
