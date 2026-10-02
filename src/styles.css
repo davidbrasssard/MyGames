@@ -818,3 +818,162 @@ svg {
     margin-left: 1.5rem;
   }
 }
+
+/* ---- Level kind word (Détente / Défi) ---- */
+.lp-kind {
+  margin-top: 0.1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  font-style: italic;
+  opacity: 0.95;
+}
+
+/* ---- End card (kit) ---- */
+.overlay-card.end-overlay {
+  max-width: 34rem;
+  padding: 1.25rem 1.75rem 1.5rem;
+  border: 0.3rem solid #e2b24a;
+  border-radius: 2rem;
+  background: #fffaf0;
+}
+
+.end-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* The decoration area: a soft warm glow (static radial gradient) behind the game's decoration. */
+.end-deco {
+  position: relative;
+  width: 100%;
+  height: 9rem;
+}
+
+.end-glow {
+  position: absolute;
+  top: -1rem;
+  right: 0;
+  bottom: -1rem;
+  left: 0;
+  background-image: radial-gradient(ellipse at center, rgba(255, 214, 120, 0.7) 0%, rgba(255, 214, 120, 0.25) 45%, rgba(255, 214, 120, 0) 70%);
+}
+
+.end-title {
+  margin-top: 0.75rem;
+  font-size: 3rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.end-line {
+  margin-top: 0.3rem;
+  font-size: 1.4rem;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.end-buttons {
+  display: flex;
+  width: 100%;
+  margin-top: 1.4rem;
+}
+
+.end-button {
+  flex: 1;
+  min-height: 4.5rem;
+  padding: 0 1rem;
+  border: 0.22rem solid var(--accent);
+  border-radius: 1.4rem;
+  background: #fff;
+  color: var(--accent);
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.end-button + .end-button {
+  margin-left: 1rem;
+}
+
+.end-button-main {
+  background: var(--good);
+  border-color: var(--good);
+  color: #fff;
+}
+
+/* ---- Mahjong end decoration (final positions here; the entrance is only an animated `from`) ---- */
+.end-deco-stage {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.end-deco-tile {
+  position: absolute;
+  top: 1.7rem;
+  left: 50%;
+  width: 4.6rem;
+  height: 5.6rem;
+  margin-left: -2.3rem;
+  transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
+  animation: deco-slide calc(var(--fx-dur) * 1.6) ease-out backwards;
+  animation-delay: calc(var(--fx-dur) * 0.9);
+}
+
+.end-deco-stage[data-kind='stuck'] .end-deco-tile {
+  animation: overlay-fade calc(var(--fx-dur) * 1.6) ease-out backwards;
+  animation-delay: calc(var(--order) * var(--fx-dur) * 0.5);
+}
+
+.end-deco-tile[data-faded='true'] {
+  opacity: 0.4;
+}
+
+.end-trophy {
+  position: absolute;
+  top: 0.4rem;
+  left: 50%;
+  width: 7.5rem;
+  height: 7.5rem;
+  margin-left: -3.75rem;
+  animation: deco-pop calc(var(--fx-dur) * 1.4) ease-out backwards;
+}
+
+.end-trophy svg {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes deco-slide {
+  from {
+    opacity: 0;
+    transform: translate(0, var(--dy)) rotate(0deg) scale(0.6);
+  }
+}
+
+@keyframes deco-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Gentle: smaller, softer entrance (no overshoot). Minimal: no movement at all. */
+[data-effects='gentle'] .end-trophy {
+  animation-name: overlay-fade;
+}
+
+[data-effects='minimal'] .end-trophy,
+[data-effects='minimal'] .end-deco-tile {
+  animation: none;
+}

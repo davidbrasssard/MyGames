@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LEVEL_TEXT, useT } from '../../i18n/dictionary';
+import { EndCard } from '../../kit/EndCard';
+import { StuckDecoration, WinDecoration } from './EndDecoration';
 import { GameScreen, type GameAction, type GameProps } from '../../kit/GameScreen';
 import { Tile, type TileState } from '../../kit/Tile';
 import { useMoveHistory } from '../../kit/history';
@@ -17,7 +19,8 @@ import './mahjong.css';
 const PICTURE_BY_ID = new Map<string, Picture>(TILES_FLUENT.pictures.map((picture) => [picture.id, picture]));
 
 const HINT_MS = 4500; // how long a hint stays visible
-const WIN_PAUSE_MS = 1200; // pause after the last pair, before going Home (completion screen comes later)
+const WIN_PAUSE_MS = 1200; // pause after the last pair, before the Bravo card
+const STUCK_PAUSE_MS = 1800; // calm pause once no free pair is left (Défi levels), before the Presque card
 
 interface GameState {
   pictures: string[]; // picture id of each tile
@@ -53,6 +56,7 @@ export function MahjongGame(props: GameProps) {
       key={`${level.mahjong}:${round}`}
       {...props}
       levelId={level.mahjong}
+      onReplay={() => setRound((r) => r + 1)}
       onPickLevel={(next) => {
         setLevel('mahjong', next);
         setRound((r) => r + 1);
@@ -63,10 +67,10 @@ export function MahjongGame(props: GameProps) {
 
 function MahjongBoard({
   onBack,
-  onComplete,
   levelId,
   onPickLevel,
-}: GameProps & { levelId: Difficulty; onPickLevel: (level: Difficulty) => void }) {
+  onReplay,
+}: GameProps & { levelId: Difficulty; onPickLevel: (level: Difficulty) => void; onReplay: () => void }) {
   const t = useT();
   const { hints, effects } = useSettings();
   const level = LEVELS[levelId];
@@ -79,6 +83,7 @@ function MahjongBoard({
   const [hidden, setHidden] = useState<ReadonlySet<number>>(new Set()); // removed and fully faded: not drawn
   const [returning, setReturning] = useState<ReadonlySet<number>>(new Set()); // brought back by Undo
   const [shuffling, setShuffling] = useState(false);
+  const [endCard, setEndCard] = useState<'win' | 'stuck' | null>(null);
   const history = useMoveHistory<Move>();
 
   // Always the latest state, for timers and for several events in a row.
@@ -319,17 +324,24 @@ function MahjongBoard({
 
   useEffect(() => {
     if (remaining > 0) return undefined;
-    const id = window.setTimeout(onComplete, fadeMs + WIN_PAUSE_MS);
+    const id = window.setTimeout(() => setEndCard('win'), fadeMs + WIN_PAUSE_MS);
     return () => window.clearTimeout(id);
-  }, [remaining, fadeMs, onComplete]);
+  }, [remaining, fadeMs]);
 
-  // No free matching pair: after the last pair has faded, the board fades out, the remaining tiles
+  // Défi levels: no reshuffle. After a calm pause the Presque card appears (Undo can still free a pair meanwhile).
+  useEffect(() => {
+    if (!stuck || !level.canLose) return undefined;
+    const id = window.setTimeout(() => setEndCard('stuck'), fadeMs + STUCK_PAUSE_MS);
+    return () => window.clearTimeout(id);
+  }, [stuck, level, game, fadeMs]);
+
+  // Détente levels, no free matching pair: after the last pair has faded, the board fades out, the remaining tiles
   // are dealt again into a position that can be cleared, and the board fades back in. No message.
   useEffect(() => {
-    if (!stuck || shuffling) return undefined;
+    if (!stuck || level.canLose || shuffling) return undefined;
     const id = window.setTimeout(() => setShuffling(true), fadeMs);
     return () => window.clearTimeout(id);
-  }, [stuck, shuffling, game, fadeMs]);
+  }, [stuck, level, shuffling, game, fadeMs]);
 
   useEffect(() => {
     if (!shuffling) return undefined;
@@ -349,6 +361,27 @@ function MahjongBoard({
   }, [shuffling, fadeMs, level]);
 
   // ---- Screen ----
+  // Pictures of the tiles of this board for the end card: distinct pictures, from what was just played (or what is left).
+  const endDecoration = useMemo(() => {
+    if (!endCard) return null;
+    const g = stateRef.current;
+    const wanted = endCard === 'win' ? 4 : 7;
+    const ids = shuffled(
+      g.pictures.map((_, i) => i).filter((i) => (endCard === 'win' ? true : !g.removed[i])),
+      Math.random,
+    );
+    const seen = new Set<string>();
+    const pics: Picture[] = [];
+    for (const i of ids) {
+      if (seen.has(g.pictures[i])) continue;
+      seen.add(g.pictures[i]);
+      pics.push(PICTURE_BY_ID.get(g.pictures[i]) as Picture);
+      if (pics.length === wanted) break;
+    }
+    return endCard === 'win' ? <WinDecoration pictures={pics} /> : <StuckDecoration pictures={pics} />;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [endCard]);
+
   const actions: GameAction[] = [];
   if (hints) actions.push({ id: 'hint', onTap: showHint, disabled: shuffling });
   actions.push({ id: 'undo', onTap: undo, disabled: !history.canUndo || shuffling });
@@ -366,6 +399,7 @@ function MahjongBoard({
       level={{
         current: levelId,
         detail: (l) => t('tilesCount').replace('{n}', String(LEVELS[l].positions.length)),
+        kind: (l) => (LEVELS[l].canLose ? 'challenge' : 'relaxed'),
         onPick: onPickLevel,
       }}
       onBack={onBack}
@@ -397,6 +431,9 @@ function MahjongBoard({
           </div>
         )}
       </div>
+      {endCard && (
+        <EndCard kind={endCard} decoration={endDecoration} onReplay={onReplay} onHome={onBack} />
+      )}
     </GameScreen>
   );
 }

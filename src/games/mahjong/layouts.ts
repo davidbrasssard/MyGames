@@ -13,7 +13,8 @@ export interface LevelDef {
   id: Difficulty;
   number: number; // shown as "Level 2"
   positions: Pos[];
-  copies: number; // how many times each picture appears (2 = every picture has exactly one partner)
+  copies: number; // how many times each picture appears (2 = every picture has exactly one partner; 4 = any two identical tiles match)
+  canLose: boolean; // Défi levels: no auto-reshuffle, the player can get stuck
 }
 
 export const LEVELS: Record<Difficulty, LevelDef> = {
@@ -22,6 +23,7 @@ export const LEVELS: Record<Difficulty, LevelDef> = {
     id: 'easy',
     number: 1,
     copies: 2,
+    canLose: false,
     positions: [...grid(0, 0, 0, 6, 3), ...grid(1, 3, 1, 3, 2)],
   },
   // 40 tiles: a three-layer stepped block.
@@ -29,20 +31,23 @@ export const LEVELS: Record<Difficulty, LevelDef> = {
     id: 'medium',
     number: 2,
     copies: 2,
+    canLose: false,
     positions: [...grid(0, 0, 0, 8, 3), ...grid(1, 2, 1, 6, 2), ...grid(2, 5, 1, 2, 2)],
   },
-  // 64 tiles: a four-layer pyramid.
+  // 64 tiles: a four-layer pyramid (Défi: 16 pictures, 4 of each).
   hard: {
     id: 'hard',
     number: 3,
-    copies: 2,
+    copies: 4,
+    canLose: true,
     positions: [...grid(0, 0, 0, 8, 4), ...grid(1, 2, 1, 6, 3), ...grid(2, 4, 2, 4, 2), ...grid(3, 5, 2, 3, 2)],
   },
-  // 80 tiles: a tall five-layer pyramid.
+  // 80 tiles: a tall five-layer pyramid (Défi: 20 pictures, 4 of each).
   veryHard: {
     id: 'veryHard',
     number: 4,
-    copies: 2,
+    copies: 4,
+    canLose: true,
     positions: [
       ...grid(0, 0, 0, 10, 4),
       ...grid(1, 2, 1, 8, 3),

@@ -1,15 +1,14 @@
-Lucide icons for all UI icons (not committed). npm run build passes.
+End cards redesigned. Not committed. npm run build passes (not viewed on a screen).
 
-Done: added lucide-react 1.49 (tree-shaken named imports). All use strokeWidth 2.5.
-- Home speaker: Volume2 (on) / VolumeOff (off); colours unchanged (white on green / dark blue on white).
-- Back buttons: ChevronLeft. Home page arrows: ChevronLeft/Right. Level badge: ChevronDown.
-- Game actions: Lightbulb (Hint), Undo2, Shuffle. Gear (caregiver hold button, unused on Home): Settings.
-- Sizes bumped in src/styles.css: back 2.3rem (large 3rem), level badge 2.1rem, action 3.8rem, page arrows/speaker/gear padding reduced so icons are larger.
-- Untouched: game icons on Home buttons, LeafIcon, tile pictures.
+Done:
+- Kit EndCard: ivory card, gold border, warm static glow, large title + line, Rejouer (green) / Accueil (white, blue outline); compact (34rem). New `decoration` slot; drifting leaves removed. OverlayCard got a `className` prop.
+- Mahjong decoration (new src/games/mahjong/EndDecoration.tsx), tiles use the kit Tile with real pictures from the board:
+  - Win: gold filled Lucide Trophy pops in with a small bounce; 4 tiles slide out from behind it, tilted.
+  - Stuck: 3 remaining tiles in front, up to 4 faded behind; gentle fade-in.
+- Texts: Bravo !/Well done! + Partie terminée/Game complete; Presque !/Almost! + "Plus de paires libres. On réessaie ?"/"No free pairs left. Try again?". Removed unused keys mahjongWinLine.
+- Effects: Full = bounce + slide; Gentle = trophy fades only (tiles slide, shorter); Minimal = no animation. Transform/opacity only.
 
-Files changed: package.json, package-lock.json, src/components/BackButton.tsx, src/screens/HomeScreen.tsx, src/kit/GameScreen.tsx, src/kit/GearButton.tsx, src/games/icons.tsx (removed GearIcon, ChevronIcon, SpeakerIcon), src/styles.css. Deleted src/kit/actionIcons.tsx.
+Files: src/kit/EndCard.tsx, OverlayCard.tsx, src/games/mahjong/{EndDecoration.tsx (new),MahjongGame.tsx}, src/i18n/dictionary.ts, src/styles.css.
 
-Bundle (before -> after): modern JS 253.6 -> 256.9 KB, legacy JS 267.6 -> 270.9 KB, polyfills 52.2 -> 53.5 KB. Legacy bundle still builds; +~3 KB.
-
-Assumptions: Settings icon replaces the gear too (counted as UI icon); Hint bulb now follows text colour (no longer yellow).
-David to check: icon legibility on the tablet.
+Assumptions: the 4 win tiles are random distinct pictures from the board; if fewer than 7 distinct pictures remain when stuck, fewer faded tiles show. CONCEPT.md end-card text updated.
+David to check: look of the card on the tablet (tile size, trophy proportions), animation smoothness.

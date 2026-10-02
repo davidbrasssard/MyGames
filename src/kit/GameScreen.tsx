@@ -26,12 +26,15 @@ const ACTIONS: Record<ActionId, { labelKey: TextKey; Icon: LucideIcon }> = {
 // What the app gives every game screen.
 export interface GameProps {
   onBack: () => void; // back to Home
-  onComplete: () => void; // the board is cleared
 }
 
 // The level badge is a button that opens the LevelPicker over the game (the game stays as it is).
+// Each game declares, per level, whether it can be lost: "relaxed" (Détente) levels cannot, "challenge" (Défi) levels can.
+export type LevelKind = 'relaxed' | 'challenge';
+
 export interface GameLevel {
   current: Difficulty;
+  kind: (level: Difficulty) => LevelKind;
   detail: (level: Difficulty) => string; // short line under each level name, e.g. "24 tuiles"
   onPick: (level: Difficulty) => void; // start a new board at that level
 }
@@ -85,6 +88,7 @@ export function GameScreen({ title, levelLabel, level, onBack, actions, caption,
         <LevelPicker
           current={level.current}
           detail={level.detail}
+          kind={level.kind}
           onBack={() => setPicking(false)}
           onPick={(next) => {
             setPicking(false);

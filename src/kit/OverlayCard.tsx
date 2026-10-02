@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 // A card shown over the softly dimmed screen (level picker, end-of-game cards...). Tapping outside the
-// card closes it. Fades in and out over --fx-dur (0 under Minimal effects); only opacity is animated.
+// card closes it, unless `dismissable` is false (end cards: only their buttons close them). Fades in and out over --fx-dur (0 under Minimal effects); only opacity is animated.
 export interface OverlayCardProps {
   label: string; // accessible name
   onClose: () => void;
+  dismissable?: boolean; // default true
+  className?: string; // extra class on the card
   children: (close: () => void) => ReactNode; // close() fades out, then calls onClose
 }
 
-export function OverlayCard({ label, onClose, children }: OverlayCardProps) {
+export function OverlayCard({ label, onClose, dismissable = true, className, children }: OverlayCardProps) {
   const [leaving, setLeaving] = useState(false);
   const timer = useRef<number | undefined>(undefined);
   useEffect(() => () => window.clearTimeout(timer.current), []);
@@ -26,10 +28,10 @@ export function OverlayCard({ label, onClose, children }: OverlayCardProps) {
       className="overlay-backdrop"
       data-leaving={leaving}
       onClick={(event) => {
-        if (event.target === event.currentTarget) close();
+        if (dismissable && event.target === event.currentTarget) close();
       }}
     >
-      <div className="overlay-card" role="dialog" aria-modal="true" aria-label={label}>
+      <div className={className ? `overlay-card ${className}` : 'overlay-card'} role="dialog" aria-modal="true" aria-label={label}>
         {children(close)}
       </div>
     </div>

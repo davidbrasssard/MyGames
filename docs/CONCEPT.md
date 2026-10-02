@@ -18,7 +18,9 @@ Everything is built once and shared by all games. A game only defines its own ru
 - One touch system (see Touch).
 - One undo system: every game records moves the same way.
 - One set of animations (lift, glide, fade, flip) that follows the Effects setting.
-- One completion screen ("Bravo !", Play again / Home), one settings system, one picture system.
+- One end card (src/kit/EndCard.tsx, built on OverlayCard), one settings system, one picture system.
+- End cards: warm ivory card with a gold border and soft glow, a game-supplied decoration on top, title, short line, and two large buttons: Rejouer / Play again (new board, same level, solid green) and Accueil / Home (white, blue outline). Tapping outside does not close them. Win = "Bravo !" / "Well done!" + "Partie terminée" / "Game complete". Stuck (Défi levels only) = "Presque !" / "Almost!" + "Plus de paires libres. On réessaie ?" / "No free pairs left. Try again?"; never "game over", no sad imagery. Animations are slow, transform/opacity only: reduced on Gentle, none on Minimal. Mahjong win: gold trophy popping in with 4 board tiles fanned out beside it; stuck: 3 remaining tiles with a few faded behind.
+- Détente / Défi: each game declares, per level, whether it can be lost. Levels that cannot are "Détente" / "Relaxed"; levels that can are "Défi" / "Challenge". The level panel shows this word on each level button.
 When a game needs something new, extend the kit; no one-off code.
 
 ## Mahjong (Release 1)
@@ -26,11 +28,13 @@ When a game needs something new, extend the kit; no one-off code.
 - Tiles: ivory blocks built in CSS. Tiles on a layer sit tight together; thickness shows on the left and bottom (darker tan). Each higher layer is offset up and to the right by the tile thickness and casts a soft static shadow down-left onto the tiles below. Lower layers are slightly darker (about 4% per layer) so the top tiles stand out; tiles on the same layer look identical. Blocked tiles are never greyed out. Pictures: Microsoft Fluent Emoji, "Color" (flat) style, MIT license, bundled locally for offline use.
 - Every picture on a board must be clearly different from the others: no near-twins (e.g. never two butterflies).
 - Every board is generated to be solvable.
-- If no free pair remains, the remaining tiles reshuffle gently and automatically. No message, no game over.
+- Détente levels (Easy, Medium): each picture appears twice. If no free pair remains, the remaining tiles reshuffle gently and automatically. No message, no game over.
+- Défi levels (Hard, Very Hard): each picture appears 4 times (any two identical tiles match); boards are still generated with at least one full solution, but there is no auto-reshuffle. When no free matching pair remains, after a short calm pause the "Presque !" card appears (Undo during the pause still works).
+- Clearing the board on any level shows the "Bravo !" card.
 - Select a tile: it lifts with a soft glow. Tap its match: both glide away and fade. Wrong pick: the selection simply moves to the new tile.
 - Hint (gently highlights a free pair) and Undo.
 - Level picker (kit screen): the level badge in the game's top bar opens "Choose your level" (4 colored cards with tile count and 1-4 stars). Choosing starts a new board; Back returns to the game unchanged. The chosen level is remembered per game and used when the game is next opened from Home.
-- Levels: Easy = small, nearly flat board, few tiles; Very Hard = a tall pyramid of 5 layers. Every level is visibly layered (Easy 2 layers, Medium 3, Hard 4, Very Hard 5). Medium and Hard in between.
+- Levels (Easy and Medium = Détente, Hard and Very Hard = Défi; 24 / 40 / 64 / 80 tiles): Easy = small, nearly flat board, few tiles; Very Hard = a tall pyramid of 5 layers. Every level is visibly layered (Easy 2 layers, Medium 3, Hard 4, Very Hard 5). Medium and Hard in between.
 
 ## Later games
 Match (pairs; Easy 6 cards, Medium 12, Hard 20, Very Hard 32; wrong pair flips back gently), Match 3 (no way to lose), Puzzles (move tiles to rebuild a picture). All games use the level names Easy / Medium / Hard / Very Hard; each game defines what they mean.

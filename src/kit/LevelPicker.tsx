@@ -1,6 +1,7 @@
 import { BackButton } from '../components/BackButton';
 import { LEVEL_TEXT, useT } from '../i18n/dictionary';
 import { DIFFICULTIES, type Difficulty } from '../settings/settings';
+import type { LevelKind } from './GameScreen';
 import { OverlayCard } from './OverlayCard';
 import { TapButton } from './TapButton';
 
@@ -9,6 +10,7 @@ import { TapButton } from './TapButton';
 export interface LevelPickerProps {
   current: Difficulty;
   detail: (level: Difficulty) => string;
+  kind: (level: Difficulty) => LevelKind;
   onPick: (level: Difficulty) => void;
   onBack: () => void;
 }
@@ -34,7 +36,7 @@ function Star({ on }: { on: boolean }) {
   );
 }
 
-export function LevelPicker({ current, detail, onPick, onBack }: LevelPickerProps) {
+export function LevelPicker({ current, detail, kind, onPick, onBack }: LevelPickerProps) {
   const t = useT();
   return (
     <OverlayCard label={t('chooseLevel')} onClose={onBack}>
@@ -54,6 +56,7 @@ export function LevelPicker({ current, detail, onPick, onBack }: LevelPickerProp
               >
                 <span className="lp-name">{t(LEVEL_TEXT[level])}</span>
                 <span className="lp-detail">{detail(level)}</span>
+                <span className="lp-kind">{t(kind(level) === 'challenge' ? 'kindChallenge' : 'kindRelaxed')}</span>
                 <span className="lp-stars">
                   {DIFFICULTIES.map((_, i) => (
                     <Star key={i} on={i <= index} />

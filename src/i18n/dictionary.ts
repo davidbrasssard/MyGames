@@ -39,6 +39,15 @@ const fr = {
   actionUndo: 'Annuler',
   actionShuffle: 'Mélanger',
   mahjongCaption: 'Trouvez et retirez les tuiles identiques.',
+
+  kindRelaxed: 'Détente',
+  kindChallenge: 'Défi',
+  endWin: 'Bravo !',
+  endStuck: 'Presque !',
+  endWinLine: 'Partie terminée',
+  endStuckLine: 'Plus de paires libres. On réessaie ?',
+  playAgain: 'Rejouer',
+  home: 'Accueil',
 };
 
 export type TextKey = keyof typeof fr;
@@ -80,6 +89,15 @@ const en: Record<TextKey, string> = {
   actionUndo: 'Undo',
   actionShuffle: 'Shuffle',
   mahjongCaption: 'Find and remove matching tiles.',
+
+  kindRelaxed: 'Relaxed',
+  kindChallenge: 'Challenge',
+  endWin: 'Well done!',
+  endStuck: 'Almost!',
+  endWinLine: 'Game complete',
+  endStuckLine: 'No free pairs left. Try again?',
+  playAgain: 'Play again',
+  home: 'Home',
 };
 
 export const DICTIONARY: Record<Language, Record<TextKey, string>> = { fr, en };

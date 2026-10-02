@@ -17,7 +17,7 @@ const DevTiles = import.meta.env.DEV ? lazy(() => import('./dev/DevTiles')) : nu
 // The playable game if the game has one; otherwise the temporary "coming soon" screen.
 function GameRoute({ id, onBack }: { id: GameId; onBack: () => void }) {
   const { Screen: GameScreenComponent } = getGame(id);
-  return GameScreenComponent ? <GameScreenComponent onBack={onBack} onComplete={onBack} /> : <ComingSoonScreen gameId={id} onBack={onBack} />;
+  return GameScreenComponent ? <GameScreenComponent onBack={onBack} /> : <ComingSoonScreen gameId={id} onBack={onBack} />;
 }
 
 export function App() {
