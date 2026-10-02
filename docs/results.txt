@@ -1,11 +1,6 @@
-Triple Tile: 4 new layouts per level (8 per level, 32 total).
-Read first: layouts.ts (ASCII art shapes, 1 = pile, f = step cluster, build() raises piles symmetrically to the exact count) and DevTripleLayouts.tsx (lists LEVELS automatically).
-New layouts:
-- Level 1 Facile (36): Cœur, Pyramide, Sablier, Trois colonnes
-- Level 2 (54): Fleur, Étoile, Cadre et tour, Couronne
-- Level 3 (72): Deux losanges, Carrés concentriques, Quatre piliers, Grand cœur
-- Level 4 (90): Grande couronne, Grand sablier, Grande pyramide, Grande étoile
-Self-check (node scripts/selfcheck-triple-tile.mjs): all 32 layouts OK (exact counts, symmetry, 200 boards each playable), dealing OK 8/8 per level, no repeats. tsc clean.
-Files changed: src/games/tripletile/layouts.ts, src/games/tripletile/selfcheck.ts (expects 8 per level), src/dev/DevTripleLayouts.tsx (note text "8 formes"), docs/BACKLOG.md (added the layouts line).
-Assumptions: spiral/pinwheel/wave not used (they can't be left-right symmetric as simple shapes); replaced by nested squares, pillars, etc. Clusters (fans) only in the Level 4 crown and hourglass.
-Check: look at /dev/triple-layouts to confirm the shapes look good. Not committed.
+Triple Tile: free tiles now have the same pure white face (and light blue edge) on every layer. Not committed.
+Before (tileLook.ts): --c-face and --c-edge were darkened 4% per layer; CSS .tt-tile reads var(--c-face)/var(--c-edge).
+Changed (tileLook.ts only): --c-face/--c-edge are fixed; darkening (4%/layer) still applies to the blue side + rim
+ (--c-side, --c-rim) and to the blocked grey (face, edge, side, rim). Blocked grey is 201 at the top layer vs 255 white
+ (darker still on lower layers), so blocked stays clearly grey. tsc clean.
+To test: /dev/triple-tiles pile sample and a real board: free tiles all equally white, lower-layer thickness darker.

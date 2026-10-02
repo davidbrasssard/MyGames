@@ -29,6 +29,7 @@ import {
   type GameState,
   type Move,
 } from './rules';
+import { tileVars } from './tileLook';
 import './tripletile.css';
 
 const PICTURE_BY_ID = new Map<string, Picture>(TRIPLE_TILES_FLUENT.pictures.map((picture) => [picture.id, picture]));
@@ -128,9 +129,10 @@ function TripleTileBoard({
     () => (size.width > 0 && size.height > 0 ? computeGeometry(board.positions, size.width, size.height) : null),
     [board, size.width, size.height],
   );
+  const topLayer = useMemo(() => Math.max(0, ...board.positions.map((p) => p.z)), [board]);
   const freeSet = useMemo(() => new Set(freeIds(game.onBoard, board.covers)), [game.onBoard, board]);
 
-  // Topmost board tile under a point (client px). The thickness under a tile counts as part of it.
+  // Topmost board tile under a point (client px). The thickness left of and under a tile counts as part of it.
   const tileAt = (point: Point): number | null => {
     const rect = fieldRef.current?.getBoundingClientRect();
     if (!geometry || !rect) return null;
@@ -142,7 +144,7 @@ function TripleTileBoard({
       if (!onBoard[id]) return;
       const l = geometry.left[id];
       const tp = geometry.top[id];
-      if (x < l || x > l + geometry.tw || y < tp || y > tp + geometry.th + geometry.t) return;
+      if (x < l - geometry.tl || x > l + geometry.tw || y < tp || y > tp + geometry.th + geometry.t) return;
       if (best === null || pos.z >= board.positions[best].z) best = id;
     });
     return best;
@@ -360,7 +362,7 @@ function TripleTileBoard({
         ref={fieldRef}
         className="tt-field"
         data-full={fullNotice ? 'true' : undefined}
-        style={geometry ? ({ '--tw': `${geometry.tw}px`, '--t': `${geometry.t}px` } as React.CSSProperties) : undefined}
+        style={geometry ? ({ '--tw': `${geometry.tw}px`, '--t': `${geometry.t}px`, '--tl': `${geometry.tl}px` } as React.CSSProperties) : undefined}
         {...handlers}
       >
         {geometry && (
@@ -375,7 +377,7 @@ function TripleTileBoard({
               </p>
             )}
             {geometry.slotLeft.map((left, k) => (
-              <div key={k} className="tt-slot" style={{ left, top: geometry.slotTop, width: geometry.tw, height: geometry.th + geometry.t }} />
+              <div key={k} className="tt-slot" style={{ left: left - geometry.tl, top: geometry.slotTop, width: geometry.tw + geometry.tl, height: geometry.th + geometry.t }} />
             ))}
             {board.positions.map((pos, id) => {
               const gone = goneSlots.get(id);
@@ -404,8 +406,13 @@ function TripleTileBoard({
                   key={id}
                   className="tt-pos"
                   data-phase={clear?.phase}
-                  style={{ width: geometry.tw, height: geometry.th, zIndex, transform: `translate(${x}px, ${y}px)` }}
+                  style={{ ...tileVars(onBoard ? topLayer - pos.z : 0), width: geometry.tw, height: geometry.th, zIndex, transform: `translate(${x}px, ${y}px)` }}
                 >
+                  <div
+                    className="tt-drop"
+                    data-gone={gone !== undefined ? 'true' : undefined}
+                    data-intray={onBoard ? undefined : 'true'}
+                  />
                   <div
                     className="tt-tile"
                     data-hint={hint === id ? 'true' : undefined}

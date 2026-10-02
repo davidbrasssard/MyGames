@@ -27,35 +27,28 @@
   text-align: center;
 }
 
-.dtt-tile {
+.dtt-vars {
+  --tw: 7rem;
+  --t: 0.84rem;
+  --tl: 0.42rem;
   position: relative;
-  width: 8rem;
-  height: 8rem;
-  border-radius: 1.1rem;
-  background: #ffffff;
-  border: 2px solid #cfe3f1;
-  box-shadow: 0 0.7rem 0 #6fa8d6, 0 0.9rem 0.6rem rgba(40, 80, 120, 0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1rem;
 }
 
-.dtt-tile img {
-  width: 82%;
-  height: 82%;
-  display: block;
+.dtt-slot {
+  width: 7.5rem;
+  height: 8.8rem;
+  margin: 0 0.5rem 0.4rem 0.5rem;
 }
 
-/* Blocked: clearly greyed but readable. A grey veil over the white face and a duller side. */
-.dtt-tile[data-blocked='true'] {
-  background: #c9ced4;
-  border-color: #aab2ba;
-  box-shadow: 0 0.7rem 0 #7f93a6, 0 0.9rem 0.6rem rgba(40, 80, 120, 0.2);
+.dtt-stack {
+  width: 24rem;
+  height: 12.5rem;
+  margin: 0 0 2rem;
 }
 
-.dtt-tile[data-blocked='true'] img {
-  opacity: 0.55;
+.dtt-sub {
+  margin: 1rem 0 0.5rem;
+  font-size: 1.2rem;
 }
 
 .dtt-label {
