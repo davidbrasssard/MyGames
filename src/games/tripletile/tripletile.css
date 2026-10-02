@@ -219,3 +219,17 @@
   padding: 0.2rem 0.6rem;
   font-size: 0.8rem;
 }
+
+/* Lite quality tier (see kit/quality.ts): flat rings instead of blurred glows, three sparkles instead of six. */
+.quality-lite .tt-tile::after {
+  box-shadow: 0 0 0 calc(var(--tw) * 0.05) rgba(70, 190, 140, 0.9);
+}
+
+.quality-lite .tt-glow {
+  background: rgba(255, 205, 80, 0.5);
+  box-shadow: 0 0 0 calc(var(--tw) * 0.05) rgba(255, 190, 50, 1);
+}
+
+.quality-lite .tt-sparks i:nth-child(even) {
+  display: none;
+}

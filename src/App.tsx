@@ -2,6 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { getGame } from './games/registry';
 import { ScreenHost } from './kit/ScreenHost';
 import { applyEffects } from './kit/motion';
+import { startGameWatch, stopGameWatch } from './kit/quality';
 import { setHomeShowing } from './kit/updates';
 import { ComingSoonScreen } from './screens/ComingSoonScreen';
 import { HomeScreen } from './screens/HomeScreen';
@@ -38,6 +39,13 @@ export function App() {
   // A downloaded update is applied only while Home is showing.
   useEffect(() => {
     setHomeShowing(screen.name === 'home');
+  }, [screen.name]);
+
+  // Silent frame-rate safety net, only while a game screen is open.
+  useEffect(() => {
+    if (screen.name !== 'game') return undefined;
+    startGameWatch();
+    return stopGameWatch;
   }, [screen.name]);
 
   // The tablet's Back button returns Home instead of leaving the app.

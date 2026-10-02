@@ -70,3 +70,19 @@
 .td-drop[data-gone='true'] {
   opacity: 0;
 }
+
+/* Lite quality tier (see kit/quality.ts, class on <html>): plain hard-edged shadows and glows, no blur anywhere on the tiles. */
+.quality-lite .tile {
+  --td-ground: calc(var(--t) * -1.1) calc(var(--t) * 1.4) 0 rgba(6, 36, 52, 0.2);
+}
+
+.quality-lite .tile::after,
+.quality-lite .tile[data-hint='true']::after,
+.quality-lite .tile[data-state='selected']::after,
+.quality-lite .tile[data-dragging='true']::after {
+  box-shadow: 0 0 0 calc(var(--tw) * 0.05) rgba(255, 205, 90, 0.9);
+}
+
+.quality-lite .tile[data-hint='true']::after {
+  box-shadow: 0 0 0 calc(var(--tw) * 0.05) rgba(70, 190, 140, 0.9);
+}

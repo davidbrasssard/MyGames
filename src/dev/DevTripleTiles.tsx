@@ -1,6 +1,7 @@
 import { TRIPLE_TILES_FLUENT } from '../pictures/tripleTilesFluent';
 import { tileVars } from '../games/tripletile/tileLook';
 import '../games/tripletile/tripletile.css';
+import { QualityBadge } from './QualityBadge';
 import './DevTripleTiles.css';
 
 // DEVELOPMENT ONLY. Reached at /dev/triple-tiles; App.tsx only loads this file when import.meta.env.DEV is true,
@@ -25,6 +26,7 @@ export default function DevTripleTiles() {
   return (
     <div className="dtt" data-scrollable>
       <h1 className="dev-title">triple-tiles-fluent: {pictures.length} images</h1>
+      <QualityBadge />
       <p className="dev-note">Écran de développement. Chaque image est montrée libre (à gauche) et bloquée (à droite).</p>
       <h2 className="dtt-sub">Piles (3 couches, la plus basse un peu plus sombre) et rangée de plateau</h2>
       <div className="dtt-vars dtt-stack">

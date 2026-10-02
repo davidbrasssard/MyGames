@@ -7,9 +7,11 @@ import './styles.css';
 import { App } from './App';
 import { installFocusRing, installGestureBlockers } from './kit/gestures';
 import { installScale } from './kit/scale';
+import { installQuality } from './kit/quality';
 import { installAudioUnlock } from './kit/sound';
 import { installUpdates } from './kit/updates';
 
+installQuality();
 installScale();
 installGestureBlockers();
 installFocusRing();

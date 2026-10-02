@@ -1,6 +1,7 @@
 import { FACE_H, FACE_W, LIFT, ROW, THICK } from '../games/tripletile/geometry';
 import { LEVELS } from '../games/tripletile/layouts';
 import { TILE_UNITS, type Pos } from '../games/tripletile/rules';
+import { QualityBadge } from './QualityBadge';
 import './DevTripleLayouts.css';
 
 // DEVELOPMENT ONLY. Reached at /dev/triple-layouts; App.tsx only loads this file when import.meta.env.DEV is true,
@@ -38,6 +39,7 @@ export default function DevTripleLayouts() {
   return (
     <div className="dtl" data-scrollable>
       <h1 className="dev-title">Triple Tile layouts: {Object.values(LEVELS).reduce((n, l) => n + l.layouts.length, 0)}</h1>
+      <QualityBadge />
       <p className="dev-note">Écran de développement. Plus la teinte est foncée, plus la couche est haute. Chaque niveau a ses 8 formes.</p>
       {Object.values(LEVELS).map((level) => (
         <section key={level.id}>

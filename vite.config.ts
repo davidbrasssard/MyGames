@@ -4,6 +4,8 @@ import legacy from '@vitejs/plugin-legacy';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
+  // Lets src/kit/quality.ts re-check the device after each app update.
+  define: { __BUILD_ID__: JSON.stringify(Date.now().toString(36)) },
   plugins: [
     react(),
     // Old tablets (Chrome 80 and up to the modern cut-off) get the legacy bundle; newer ones get the normal one.

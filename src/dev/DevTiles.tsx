@@ -3,6 +3,7 @@ import { CELEBRATIONS, type CelebrationId } from '../kit/Celebrations';
 import { StuckDecoration, WinDecoration } from '../games/mahjong/EndDecoration';
 import { pictureUrl } from '../pictures';
 import { TILES_FLUENT } from '../pictures/tilesFluent';
+import { DeviceTest, QualityBadge } from './QualityBadge';
 import './DevTiles.css';
 
 // DEVELOPMENT ONLY. Reached at /dev/tiles; App.tsx only loads this file when import.meta.env.DEV is true,
@@ -15,6 +16,8 @@ export default function DevTiles() {
   return (
     <div className="dev-tiles" data-scrollable>
       <h1 className="dev-title">tiles-fluent: {pictures.length} images</h1>
+      <QualityBadge />
+      <DeviceTest />
       <p className="dev-note">Écran de développement. Chaque image est affichée sur une tuile ivoire avec son nom français.</p>
       <div className="dev-cel-buttons">
         {CELEBRATIONS.map((id) => (

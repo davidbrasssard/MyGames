@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, Volume2, VolumeOff } from 'lucide-react';
 import { LeafIcon } from '../games/icons';
 import { GAMES, type GameDef } from '../games/registry';
 import { useT } from '../i18n/dictionary';
+import { startQualityProbe } from '../kit/quality';
 import { TapButton } from '../kit/TapButton';
 import { useTouch } from '../kit/touch';
 import { updateSettings, useSettings, type GameId, type Language } from '../settings/settings';
@@ -37,6 +38,10 @@ export function HomeScreen({ onOpenGame }: { onOpenGame: (id: GameId) => void })
   const t = useT();
   const { swipe, language, sound } = useSettings();
   const [requestedPage, setPage] = useState(0);
+
+  useEffect(() => {
+    startQualityProbe();
+  }, []);
 
   // Every released game (one with a playable screen) appears automatically.
   const games = GAMES.filter((game) => game.Screen);

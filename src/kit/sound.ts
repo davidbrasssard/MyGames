@@ -7,9 +7,10 @@ const AudioCtor: typeof AudioContext | undefined =
   typeof window === 'undefined' ? undefined : window.AudioContext || (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
 
 let ctx: Ctx | null = null;
+let unlocked = false; // true after the first user tap: the AudioContext is never created before that
 
 function context(): Ctx | null {
-  if (!AudioCtor) return null;
+  if (!AudioCtor || !unlocked) return null;
   if (!ctx) {
     try {
       ctx = new AudioCtor();
@@ -23,6 +24,7 @@ function context(): Ctx | null {
 // iOS Safari and Chrome only allow audio after a user gesture: create/resume the context on the first tap.
 export function installAudioUnlock(): void {
   const unlock = () => {
+    unlocked = true;
     const c = context();
     if (c && c.state !== 'running') {
       try {
