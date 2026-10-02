@@ -1,11 +1,11 @@
-TRIPLE TILE: STAIRCASES NOW STEPPED CLUSTERS INSIDE THE SHAPE (not committed)
-Before (layouts.ts): 'f' spots sat on outline corners and fanned tiles outward (legs). Now each 'f' is a group of 3 tiles stepping toward the centre (2 steps, half a tile each, one layer higher), nothing outside the outline.
-Builder caps piles under/next to a cluster so no same-layer overlap; self-check also fails any tile outside the bottom layer's outline.
-- Escaliers (Moyen): framed 10x6 with a 4x2 centre block; clusters in the 4 inner corners of the frame.
-- Escaliers et centre (Difficile): 12x6 with notched corners; clusters just inside the notches, centre block.
-- Grand papillon: 13 wide, clusters inside the wing corners (row 2 / row 5), stepping toward the body.
-- Grande arche: clusters at the foot of the opening between the pillars, stepping inward and up.
-- Îles et escaliers: islands widened to 5x4 (more room for piles); one cluster per island corner, stepping inward.
-Piles/counts rebalanced automatically. Facile Escaliers had no clusters (unchanged). CONCEPT.md wording updated.
-Self-check: 200 boards x 16 layouts OK (counts, solvable, symmetric, no overlap, limits, inside outline); dealing OK; tsc OK.
-David to check: /dev/triple-layouts. Butterfly and arch are left-right symmetric only where top/bottom differ.
+Triple Tile: 4 new layouts per level (8 per level, 32 total).
+Read first: layouts.ts (ASCII art shapes, 1 = pile, f = step cluster, build() raises piles symmetrically to the exact count) and DevTripleLayouts.tsx (lists LEVELS automatically).
+New layouts:
+- Level 1 Facile (36): Cœur, Pyramide, Sablier, Trois colonnes
+- Level 2 (54): Fleur, Étoile, Cadre et tour, Couronne
+- Level 3 (72): Deux losanges, Carrés concentriques, Quatre piliers, Grand cœur
+- Level 4 (90): Grande couronne, Grand sablier, Grande pyramide, Grande étoile
+Self-check (node scripts/selfcheck-triple-tile.mjs): all 32 layouts OK (exact counts, symmetry, 200 boards each playable), dealing OK 8/8 per level, no repeats. tsc clean.
+Files changed: src/games/tripletile/layouts.ts, src/games/tripletile/selfcheck.ts (expects 8 per level), src/dev/DevTripleLayouts.tsx (note text "8 formes"), docs/BACKLOG.md (added the layouts line).
+Assumptions: spiral/pinwheel/wave not used (they can't be left-right symmetric as simple shapes); replaced by nested squares, pillars, etc. Clusters (fans) only in the Level 4 crown and hourglass.
+Check: look at /dev/triple-layouts to confirm the shapes look good. Not committed.

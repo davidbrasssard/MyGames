@@ -23,7 +23,7 @@ export interface LevelDef {
   tiles: number; // exact tile count of every layout of this level
   maxPile: number; // most tiles on the same spot
   maxLayers: number; // most layers (a fan counts its height too)
-  layouts: LayoutDef[]; // 4 per level
+  layouts: LayoutDef[]; // 8 per level
   pictureCount: number; // pictures used on each board (each appears in exactly 2 sets of 3)
   canLose: boolean; // Défi levels: a full tray ends the game; Détente levels: undo
 }
@@ -130,6 +130,10 @@ const EASY: Shape[] = [
   { id: 'diamond', fr: 'Losange', en: 'Diamond', art: ['..11..', '.1111.', '111111', '111111', '.1111.', '..11..'] },
   { id: 'islands', fr: 'Deux îles', en: 'Two islands', art: ['1111..1111', '1111..1111', '1111..1111', '1111..1111'] },
   { id: 'stairs', fr: 'Escaliers', en: 'Staircases', art: ['111....111', '11......11', '1..1111..1', '1..1111..1', '11......11', '111....111'] },
+  { id: 'heart', fr: 'Cœur', en: 'Heart', art: ['.11.11.', '1111111', '1111111', '.11111.', '..111..', '...1...'] },
+  { id: 'pyramid', fr: 'Pyramide', en: 'Pyramid', art: ['...11...', '..1111..', '.111111.', '11111111', '11111111'] },
+  { id: 'hourglass', fr: 'Sablier', en: 'Hourglass', art: ['1111111', '.11111.', '..111..', '..111..', '.11111.', '1111111'] },
+  { id: 'columns', fr: 'Trois colonnes', en: 'Three columns', art: ['11.11.11', '11.11.11', '11.11.11', '11.11.11'] },
 ];
 
 const MEDIUM: Shape[] = [
@@ -143,6 +147,15 @@ const MEDIUM: Shape[] = [
     fanN: 2,
     art: ['1111111111', '1f......f1', '1..1111..1', '1..1111..1', '1f......f1', '1111111111'],
   },
+  { id: 'flower', fr: 'Fleur', en: 'Flower', art: ['11.111.11', '11.111.11', '...111...', '111111111', '...111...', '11.111.11', '11.111.11'] },
+  { id: 'star', fr: 'Étoile', en: 'Star', art: ['....1....', '....1....', '...111...', '111111111', '.1111111.', '..11111..', '.111.111.', '.11...11.'] },
+  {
+    id: 'frame-tower',
+    fr: 'Cadre et tour',
+    en: 'Frame and tower',
+    art: ['11111111111', '1.........1', '1...111...1', '1...111...1', '1...111...1', '1.........1', '11111111111'],
+  },
+  { id: 'crown', fr: 'Couronne', en: 'Crown', art: ['11...1...11', '111..1..111', '11111111111', '11111111111', '.111111111.'] },
 ];
 
 const HARD: Shape[] = [
@@ -160,6 +173,20 @@ const HARD: Shape[] = [
     en: 'Staircases and centre',
     fanN: 2,
     art: ['1111....1111', '1f1......1f1', '11..1111..11', '11..1111..11', '1f1......1f1', '1111....1111'],
+  },
+  { id: 'two-diamonds', fr: 'Deux losanges', en: 'Two diamonds', art: ['..1.....1..', '.111...111.', '11111.11111', '.111...111.', '..1.....1..'] },
+  {
+    id: 'squares',
+    fr: 'Carrés concentriques',
+    en: 'Nested squares',
+    art: ['11111111111', '1.........1', '1.1111111.1', '1.1.....1.1', '1.1.111.1.1', '1.1.....1.1', '1.1111111.1', '1.........1', '11111111111'],
+  },
+  { id: 'pillars', fr: 'Quatre piliers', en: 'Four pillars', art: ['11.11.11.11', '11.11.11.11', '11.11.11.11', '11.11.11.11', '11.11.11.11', '11.11.11.11'] },
+  {
+    id: 'big-heart',
+    fr: 'Grand cœur',
+    en: 'Big heart',
+    art: ['.1111.1111.', '11111111111', '11111111111', '.111111111.', '..1111111..', '...11111...', '....111....', '.....1.....'],
   },
 ];
 
@@ -190,6 +217,27 @@ const VERY_HARD: Shape[] = [
     en: 'Islands and staircases',
     fanN: 2,
     art: ['1f111..111f1', '11111..11111', '11111..11111', '1f111..111f1'],
+  },
+  {
+    id: 'big-crown',
+    fr: 'Grande couronne',
+    en: 'Big crown',
+    fanN: 2,
+    art: ['11....1....11', '111...1...111', '1f111111111f1', '1111111111111', '.11111111111.'],
+  },
+  {
+    id: 'big-hourglass',
+    fr: 'Grand sablier',
+    en: 'Big hourglass',
+    fanN: 2,
+    art: ['11111111111', '1f1111111f1', '.111111111.', '...11111...', '....111....', '...11111...', '.111111111.', '1f1111111f1', '11111111111'],
+  },
+  { id: 'big-pyramid', fr: 'Grande pyramide', en: 'Big pyramid', art: ['.....111.....', '....11111....', '...1111111...', '..111111111..', '.11111111111.', '1111111111111'] },
+  {
+    id: 'big-star',
+    fr: 'Grande étoile',
+    en: 'Big star',
+    art: ['......1......', '.....111.....', '1111111111111', '.11111111111.', '..111111111..', '...1111111...', '.1111...1111.', '.111.....111.'],
   },
 ];
 

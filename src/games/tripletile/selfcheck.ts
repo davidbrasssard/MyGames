@@ -9,9 +9,9 @@ export function runSelfCheck(boards: number): boolean {
   const ids = TRIPLE_TILES_FLUENT.pictures.map((p) => p.id);
   let allOk = true;
   for (const def of Object.values(LEVELS)) {
-    if (def.layouts.length !== 4) {
+    if (def.layouts.length !== 8) {
       allOk = false;
-      console.log(`${def.id}: ${def.layouts.length} layouts, expected 4`);
+      console.log(`${def.id}: ${def.layouts.length} layouts, expected 8`);
     }
     for (const layout of def.layouts) {
       const { positions } = layout;

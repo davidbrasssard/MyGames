@@ -38,7 +38,7 @@ export default function DevTripleLayouts() {
   return (
     <div className="dtl" data-scrollable>
       <h1 className="dev-title">Triple Tile layouts: {Object.values(LEVELS).reduce((n, l) => n + l.layouts.length, 0)}</h1>
-      <p className="dev-note">Écran de développement. Plus la teinte est foncée, plus la couche est haute. Chaque niveau a ses 4 formes.</p>
+      <p className="dev-note">Écran de développement. Plus la teinte est foncée, plus la couche est haute. Chaque niveau a ses 8 formes.</p>
       {Object.values(LEVELS).map((level) => (
         <section key={level.id}>
           <h2 className="dtl-level">
