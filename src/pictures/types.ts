@@ -9,6 +9,7 @@ export interface Picture {
 // and do not care where they come from.
 export interface PictureCollection {
   id: string;
-  basePath: string; // folder under the site root that holds <picture id>.svg
+  basePath: string; // folder under the site root that holds <picture id>.<extension>
+  extension?: string; // file extension without the dot; 'svg' when omitted
   pictures: Picture[];
 }

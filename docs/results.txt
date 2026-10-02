@@ -1,14 +1,8 @@
-Triple Tile logic (no UI). Nothing committed. Mahjong and kit untouched.
-
-Mahjong structure (read): src/games/mahjong/{rules.ts (pure: blockers, free, createBoard, reshuffle), layouts.ts (LEVELS per Difficulty: positions in half-tile units, copies, canLose), geometry.ts (positions -> pixels), MahjongGame.tsx (UI), EndDecoration.tsx, mahjong.css}. Plugs into kit via GameDef.Screen in src/games/registry.ts; kit/GameScreen (action bar, level picker, EndCard), kit/history.ts useMoveHistory<M> (push/undo, game defines the move).
-
-Added:
-- src/games/tripletile/rules.ts: free tile, createBoard, tray insert/clear, tapTile, undoMove, hintTile, win/stuck.
-- src/games/tripletile/layouts.ts: LEVELS (36/54/72/90 tiles; 2/3/3/4 layers; 6/9/12/15 pictures; canLose false/false/true/true).
-- src/games/tripletile/selfcheck.ts + scripts/selfcheck-triple-tile.mjs (dev only; run: node scripts/selfcheck-triple-tile.mjs).
-
-Self-check (200 boards each, generation order replayed, then fully undone): easy OK, medium OK, hard OK, veryHard OK. Tile counts, layers, picture counts, layout symmetry exact; every board won; max tray used 2; undo restores board+tray (incl. clears).
-Layouts (cols x rows per layer, all centred): 6x5+3x2 / 6x5+5x4+2x2 / 8x5+7x4+2x2 / 9x5+8x4+3x3+2x2.
-
-Assumptions: each picture gets exactly 2 sets of 3 (even spread, shuffled). Undo move = tapped tile + tray snapshot. Hint returns null when tray full/stuck (UI should point to Undo). Hint does not avoid filling the tray with a non-matching tile. tapTile ignores taps when tray already full. Win = board and tray both empty (always equal). Not yet registered in GAME_IDS/registry/i18n (UI step).
-Check: layout looks (stack shapes) once the UI exists.
+STEP A: Triple Tile playable (not committed)
+Relied on: CONCEPT.md Triple Tile; tripletile rules/layouts (unchanged except hintTile); Mahjong game + geometry (pattern for level wrapper, hit-testing, dev buttons); kit GameScreen/EndCard/history/touch; registry; pictureUrl.
+Done: game "tripletile" registered (FR "Trio", EN "Triple Tile", icon, Home entry, sound map, per-game level). pictureUrl uses collection.extension (default svg; Triple Tile = png, generator script updated). TripleTileGame.tsx: board from layouts, 7-slot tray below, one fitted geometry (geometry.ts), tap only (drags do nothing), tile slides to tray (transform transition), set of 3 fades out, win/stuck kit EndCards, Hint+Undo, level badge/picker (Facile first, last level remembered), dev Win/Stuck buttons, flat sand background (#f1d9b5).
+hintTile fix: when the tray has 6, only tiles completing a set are suggested; else null.
+Files changed: src/games/tripletile/{TripleTileGame.tsx,geometry.ts,tripletile.css (new), rules.ts}, registry.ts, icons.tsx, settings.ts, sound.ts, dictionary.ts, pictures/{index,types,tripleTilesFluent}.ts, scripts/fetch-triple-tiles.mjs, kit/GameScreen.tsx (optional className), mahjong/EndDecoration.tsx (optional collection prop, Mahjong output identical).
+Checks: tsc + build pass; selfcheck-triple-tile OK (all 4 levels). Not tested on a device or in a browser.
+To test: all 4 levels at 1280x800 and iPad portrait/landscape (tile size, tray fits); tap free/blocked tiles; set of 3 clears; Undo after a clear restores the tiles; Hint never points at a tile that fills the tray; Défi: full tray -> Presque card; Win/Stuck dev buttons; Mahjong unchanged.
+Assumptions: Détente full tray does nothing special yet (taps ignored, Undo works; shake/line comes next step). Taps wait ~0.6s while a set clears. No caption under the board (space). End cards reuse Mahjong's decoration with ivory kit tiles (own decoration later). Clear sound reuses tileClick. Tile aspect 1.12, thickness at the bottom only, layers shift up. Hint glow green, 4.5 s.

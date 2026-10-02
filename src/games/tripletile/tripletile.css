@@ -1,0 +1,98 @@
+/* Triple Tile. Only transform and opacity are animated. */
+.game-screen.tt-screen {
+  background-image: none;
+  background-color: #f1d9b5; /* flat warm sand, different from Mahjong's lake (placeholder) */
+}
+
+.tt-field {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  touch-action: none;
+}
+
+.tt-tray {
+  position: absolute;
+  background: #d9b98a;
+  border-radius: 1.4rem;
+}
+
+.tt-slot {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 0.9rem;
+}
+
+/* Tile look from the dev page: white face, soft blue thickness, rounded. --tw / --t are set by the board. */
+.tt-tile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  border: 2px solid #cfe3f1;
+  border-radius: calc(var(--tw) * 0.14);
+  background: #ffffff;
+  box-shadow: 0 var(--t) 0 #6fa8d6, 0 calc(var(--t) * 1.3) calc(var(--t) * 0.9) rgba(40, 80, 120, 0.25);
+  transition: transform var(--fx-dur) ease-in-out, opacity var(--fx-dur) ease-in-out;
+}
+
+.tt-tile img {
+  position: absolute;
+  top: 9%;
+  left: 9%;
+  width: 82%;
+  height: 82%;
+  pointer-events: none;
+}
+
+/* Blocked: clearly greyed but still readable. */
+.tt-tile[data-blocked='true'] {
+  background: #c9ced4;
+  border-color: #aab2ba;
+  box-shadow: 0 var(--t) 0 #7f93a6, 0 calc(var(--t) * 1.3) calc(var(--t) * 0.9) rgba(40, 80, 120, 0.2);
+}
+
+.tt-tile[data-blocked='true'] img {
+  opacity: 0.55;
+}
+
+/* Hint: a soft glow layer that fades in (the shadow itself never animates). */
+.tt-tile::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 calc(var(--tw) * 0.22) calc(var(--tw) * 0.06) rgba(70, 190, 140, 0.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease-in-out;
+}
+
+.tt-tile[data-hint='true']::after {
+  opacity: 1;
+}
+
+/* A cleared set: the tile swells a little and fades away where it sits in the tray. */
+.tt-tile[data-gone='true'] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tt-dev {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  opacity: 0.5;
+}
+
+.tt-dev button {
+  margin-left: 0.4rem;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.8rem;
+}

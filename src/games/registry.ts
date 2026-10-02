@@ -3,7 +3,8 @@ import type { TextKey } from '../i18n/dictionary';
 import type { GameId } from '../settings/settings';
 import type { GameProps } from '../kit/GameScreen';
 import { MahjongGame } from './mahjong/MahjongGame';
-import { Match3Icon, MahjongIcon, MatchIcon, PuzzlesIcon } from './icons';
+import { TripleTileGame } from './tripletile/TripleTileGame';
+import { Match3Icon, TripleTileIcon, MahjongIcon, MatchIcon, PuzzlesIcon } from './icons';
 
 export interface GameDef {
   id: GameId;
@@ -19,6 +20,7 @@ export interface GameDef {
 export const GAMES: GameDef[] = [
   { id: 'match', nameKey: 'gameMatch', taglineKey: 'gameMatchTagline', colors: ['#3d9be8', '#1f6fc4'], Icon: MatchIcon },
   { id: 'mahjong', nameKey: 'gameMahjong', taglineKey: 'gameMahjongTagline', colors: ['#47b565', '#2a8a47'], Icon: MahjongIcon, Screen: MahjongGame },
+  { id: 'tripletile', nameKey: 'gameTripleTile', taglineKey: 'gameTripleTileTagline', colors: ['#e8658c', '#c23d68'], Icon: TripleTileIcon, Screen: TripleTileGame },
   { id: 'match3', nameKey: 'gameMatch3', taglineKey: 'gameMatch3Tagline', colors: ['#9a68dc', '#6b3fb8'], Icon: Match3Icon },
   { id: 'puzzles', nameKey: 'gamePuzzles', taglineKey: 'gamePuzzlesTagline', colors: ['#ec8226', '#c25a10'], Icon: PuzzlesIcon },
 ];

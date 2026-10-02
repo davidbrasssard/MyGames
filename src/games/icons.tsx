@@ -70,3 +70,21 @@ export function LeafIcon() {
     </svg>
   );
 }
+
+export function TripleTileIcon() {
+  return (
+    <svg viewBox="0 0 96 96" aria-hidden="true">
+      <rect x="8" y="46" width="34" height="38" rx="7" fill="#6fa8d6" />
+      <rect x="8" y="42" width="34" height="38" rx="7" fill="#fff" stroke="#cfe3f1" strokeWidth="2" />
+      <circle cx="25" cy="61" r="9" fill="#e8483f" />
+      <rect x="31" y="46" width="34" height="38" rx="7" fill="#6fa8d6" />
+      <rect x="31" y="42" width="34" height="38" rx="7" fill="#fff" stroke="#cfe3f1" strokeWidth="2" />
+      <circle cx="48" cy="61" r="9" fill="#e8483f" />
+      <rect x="54" y="46" width="34" height="38" rx="7" fill="#6fa8d6" />
+      <rect x="54" y="42" width="34" height="38" rx="7" fill="#fff" stroke="#cfe3f1" strokeWidth="2" />
+      <circle cx="71" cy="61" r="9" fill="#e8483f" />
+      <rect x="30" y="12" width="36" height="34" rx="7" fill="#fff" stroke="#cfe3f1" strokeWidth="2" />
+      <circle cx="48" cy="29" r="9" fill="#f4b73a" />
+    </svg>
+  );
+}

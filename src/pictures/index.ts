@@ -13,7 +13,7 @@ export function getCollection(id: string): PictureCollection | undefined {
 }
 
 export function pictureUrl(collection: PictureCollection, picture: Picture): string {
-  return `${import.meta.env.BASE_URL}${collection.basePath}/${picture.id}.svg`;
+  return `${import.meta.env.BASE_URL}${collection.basePath}/${picture.id}.${collection.extension ?? 'svg'}`;
 }
 
 export function pictureName(picture: Picture, language: Language): string {

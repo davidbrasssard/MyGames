@@ -138,14 +138,17 @@ export function undoMove(state: GameState, move: Move): GameState {
 }
 
 // The tile to point at: 1) a free tile that completes a set in the tray, 2) one matching a tray picture,
-// 3) the free tile whose picture has the most free copies. Null when nothing can be played.
+// 3) the free tile whose picture has the most free copies. Null when nothing safe can be played.
 export function hintTile(board: Board, state: GameState, rng: Rng = Math.random): number | null {
   if (state.status !== 'playing' || state.tray.length >= TRAY_SIZE) return null;
-  const free = freeIds(state.onBoard, board.covers);
-  if (free.length === 0) return null;
-
   const inTray = new Map<string, number>();
   for (const t of state.tray) inTray.set(board.pictures[t], (inTray.get(board.pictures[t]) ?? 0) + 1);
+  // Never point at a tile that would fill the tray without clearing a set (that would end the game).
+  const fillsTray = state.tray.length + 1 >= TRAY_SIZE;
+  const free = freeIds(state.onBoard, board.covers).filter(
+    (t) => !fillsTray || (inTray.get(board.pictures[t]) ?? 0) >= SET_SIZE - 1,
+  );
+  if (free.length === 0) return null;
   const pick = (ids: number[]) => ids[Math.floor(rng() * ids.length)];
 
   const completes = free.filter((t) => (inTray.get(board.pictures[t]) ?? 0) >= SET_SIZE - 1);

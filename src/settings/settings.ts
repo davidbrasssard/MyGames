@@ -3,7 +3,7 @@ import { useSyncExternalStore } from 'react';
 // ---- Allowed values -------------------------------------------------------
 export const LANGUAGES = ['fr', 'en'] as const;
 export const DIFFICULTIES = ['easy', 'medium', 'hard', 'veryHard'] as const;
-export const GAME_IDS = ['match', 'mahjong', 'match3', 'puzzles'] as const;
+export const GAME_IDS = ['match', 'mahjong', 'tripletile', 'match3', 'puzzles'] as const;
 export const INPUT_MODES = ['both', 'drag', 'tap'] as const;
 export const EFFECTS = ['full', 'gentle', 'minimal'] as const;
 export const IMAGE_SIZES = ['large', 'medium', 'small'] as const;

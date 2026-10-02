@@ -44,6 +44,7 @@ import type { PictureCollection } from './types';
 export const TRIPLE_TILES_FLUENT: PictureCollection = {
   id: 'triple-tiles-fluent',
   basePath: 'triple-tiles',
+  extension: 'png',
   pictures: [
 ${entries}
   ],

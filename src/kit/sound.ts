@@ -97,6 +97,7 @@ type SoundId = keyof typeof SOUNDS;
 const GOOD_ACTION_SOUND: Record<GameId, SoundId> = {
   match: 'tileClick',
   mahjong: 'tileClick',
+  tripletile: 'tileClick',
   match3: 'tileClick',
   puzzles: 'tileClick',
 };

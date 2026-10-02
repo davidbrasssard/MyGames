@@ -46,15 +46,16 @@ interface GameScreenProps {
   onBack: () => void;
   actions: GameAction[];
   caption?: string;
+  className?: string; // extra class on the screen, for a game's own background
   overlay?: ReactNode; // covers the whole screen, top bar and actions included (end cards)
   children: ReactNode; // the board
 }
 
-export function GameScreen({ title, levelLabel, level, onBack, actions, caption, overlay, children }: GameScreenProps) {
+export function GameScreen({ title, levelLabel, level, onBack, actions, caption, className, overlay, children }: GameScreenProps) {
   const t = useT();
   const [picking, setPicking] = useState(false);
   return (
-    <div className="game-screen">
+    <div className={className ? `game-screen ${className}` : 'game-screen'}>
       <header className="game-topbar">
         <BackButton onBack={onBack} />
         <h1 className="game-title">{title}</h1>
