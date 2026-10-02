@@ -1,17 +1,15 @@
-Step A: simplify settings (not committed)
+Lucide icons for all UI icons (not committed). npm run build passes.
 
-Done
-- Removed gear + Settings screen from the app. Gear (press-and-hold) kept as src/kit/GearButton.tsx, unused for now.
-- Removed "starting level" and enabled-games settings. Home shows every game with a playable Screen (today: Mahjong). First play = Easy, then last level (per game, already stored).
-- Home top-right: FR|EN pill (current highlighted) and speaker button (green when on). Both 72px tall. Sound default OFF.
-- CONCEPT.md updated. package.json: "dev:public" script added.
-- npm run build passes.
+Done: added lucide-react 1.49 (tree-shaken named imports). All use strokeWidth 2.5.
+- Home speaker: Volume2 (on) / VolumeOff (off); colours unchanged (white on green / dark blue on white).
+- Back buttons: ChevronLeft. Home page arrows: ChevronLeft/Right. Level badge: ChevronDown.
+- Game actions: Lightbulb (Hint), Undo2, Shuffle. Gear (caregiver hold button, unused on Home): Settings.
+- Sizes bumped in src/styles.css: back 2.3rem (large 3rem), level badge 2.1rem, action 3.8rem, page arrows/speaker/gear padding reduced so icons are larger.
+- Untouched: game icons on Home buttons, LeafIcon, tile pictures.
 
-Files changed: App.tsx, HomeScreen.tsx, settings.ts, dictionary.ts, icons.tsx (SpeakerIcon), registry.ts (comment), styles.css, CONCEPT.md, package.json, kit/GearButton.tsx (moved).
-Deleted: SettingsScreen.tsx, settings/release.ts, components/Controls.tsx (only the settings screen used them).
+Files changed: package.json, package-lock.json, src/components/BackButton.tsx, src/screens/HomeScreen.tsx, src/kit/GameScreen.tsx, src/kit/GearButton.tsx, src/games/icons.tsx (removed GearIcon, ChevronIcon, SpeakerIcon), src/styles.css. Deleted src/kit/actionIcons.tsx.
 
-Assumptions / check
-- Old saved settings keep their stored values: a device that already saved sound=true stays on until toggled once (sound plays nothing yet).
-- dev:public kills vite via "pkill -f node_modules/.bin/vite" (plain "pkill -f vite" would kill its own shell). Untested here (needs Codespace + gh).
-- Unused dictionary keys removed (settings, startingLevel, sound, on/off, langFr/langEn); settingsHold kept for the gear.
-- Please check the pill and speaker look on the tablet.
+Bundle (before -> after): modern JS 253.6 -> 256.9 KB, legacy JS 267.6 -> 270.9 KB, polyfills 52.2 -> 53.5 KB. Legacy bundle still builds; +~3 KB.
+
+Assumptions: Settings icon replaces the gear too (counted as UI icon); Hint bulb now follows text colour (no longer yellow).
+David to check: icon legibility on the tablet.

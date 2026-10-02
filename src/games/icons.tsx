@@ -70,36 +70,3 @@ export function LeafIcon() {
     </svg>
   );
 }
-
-export function GearIcon() {
-  return (
-    <svg viewBox="0 0 48 48" aria-hidden="true">
-      <path
-        fill="#2d5d78"
-        d="M27.5 4h-7l-1.2 5.3a15 15 0 0 0-3.6 2.1L10.5 9.8 7 15.9l4 3.7a15 15 0 0 0 0 4.8l-4 3.7 3.5 6.1 5.2-1.6a15 15 0 0 0 3.6 2.1L20.5 44h7l1.2-5.3a15 15 0 0 0 3.6-2.1l5.2 1.6 3.5-6.1-4-3.7a15 15 0 0 0 0-4.8l4-3.7-3.5-6.1-5.2 1.6a15 15 0 0 0-3.6-2.1L27.5 4zM24 16.5a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15z"
-      />
-    </svg>
-  );
-}
-
-export function ChevronIcon({ direction }: { direction: 'left' | 'right' | 'down' }) {
-  return (
-    <svg viewBox="0 0 32 32" aria-hidden="true" style={{ transform: direction === 'right' ? 'rotate(180deg)' : direction === 'down' ? 'rotate(-90deg)' : undefined }}>
-      <path d="M20 5L9 16l11 11" fill="none" stroke="currentColor" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-// Speaker: with sound waves when on, with a cross when off. Uses currentColor.
-export function SpeakerIcon({ on }: { on: boolean }) {
-  return (
-    <svg viewBox="0 0 48 48" aria-hidden="true">
-      <path fill="currentColor" d="M6 18h8l10-8v28l-10-8H6z" />
-      {on ? (
-        <path d="M31 17a10 10 0 0 1 0 14M36 11a18 18 0 0 1 0 26" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
-      ) : (
-        <path d="M31 18l11 12M42 18L31 30" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
-      )}
-    </svg>
-  );
-}

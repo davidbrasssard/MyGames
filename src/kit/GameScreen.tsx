@@ -1,8 +1,7 @@
-import { useState, type ComponentType, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { BackButton } from '../components/BackButton';
 import { useT, type TextKey } from '../i18n/dictionary';
-import { ChevronIcon } from '../games/icons';
-import { HintIcon, ShuffleIcon, UndoIcon } from './actionIcons';
+import { ChevronDown, Lightbulb, Shuffle, Undo2, type LucideIcon } from 'lucide-react';
 import type { Difficulty } from '../settings/settings';
 import { LevelPicker } from './LevelPicker';
 import { TapButton } from './TapButton';
@@ -18,10 +17,10 @@ export interface GameAction {
   disabled?: boolean;
 }
 
-const ACTIONS: Record<ActionId, { labelKey: TextKey; Icon: ComponentType }> = {
-  hint: { labelKey: 'actionHint', Icon: HintIcon },
-  undo: { labelKey: 'actionUndo', Icon: UndoIcon },
-  shuffle: { labelKey: 'actionShuffle', Icon: ShuffleIcon },
+const ACTIONS: Record<ActionId, { labelKey: TextKey; Icon: LucideIcon }> = {
+  hint: { labelKey: 'actionHint', Icon: Lightbulb },
+  undo: { labelKey: 'actionUndo', Icon: Undo2 },
+  shuffle: { labelKey: 'actionShuffle', Icon: Shuffle },
 };
 
 // What the app gives every game screen.
@@ -57,7 +56,7 @@ export function GameScreen({ title, levelLabel, level, onBack, actions, caption,
         <h1 className="game-title">{title}</h1>
         <TapButton className="game-level" aria-label={`${t('changeLevel')}: ${levelLabel}`} onTap={() => setPicking(true)}>
           <span>{levelLabel}</span>
-          <ChevronIcon direction="down" />
+          <ChevronDown strokeWidth={2.5} aria-hidden="true" />
         </TapButton>
       </header>
 
@@ -73,7 +72,7 @@ export function GameScreen({ title, levelLabel, level, onBack, actions, caption,
               const { labelKey, Icon } = ACTIONS[action.id];
               return (
                 <TapButton key={action.id} className="action-button" disabled={action.disabled} onTap={action.onTap}>
-                  <Icon />
+                  <Icon strokeWidth={2.5} aria-hidden="true" />
                   <span>{t(labelKey)}</span>
                 </TapButton>
               );

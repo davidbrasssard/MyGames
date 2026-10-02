@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ChevronIcon, LeafIcon, SpeakerIcon } from '../games/icons';
+import { ChevronLeft, ChevronRight, Volume2, VolumeOff } from 'lucide-react';
+import { LeafIcon } from '../games/icons';
 import { GAMES, type GameDef } from '../games/registry';
 import { useT } from '../i18n/dictionary';
 import { TapButton } from '../kit/TapButton';
@@ -83,7 +84,7 @@ export function HomeScreen({ onOpenGame }: { onOpenGame: (id: GameId) => void })
             data-on={sound}
             onTap={() => updateSettings({ sound: !sound })}
           >
-            <SpeakerIcon on={sound} />
+            {sound ? <Volume2 strokeWidth={2.5} aria-hidden="true" /> : <VolumeOff strokeWidth={2.5} aria-hidden="true" />}
           </TapButton>
         </div>
       </header>
@@ -104,7 +105,7 @@ export function HomeScreen({ onOpenGame }: { onOpenGame: (id: GameId) => void })
         {paged && (
           <>
             <TapButton className="page-arrow page-arrow-left" aria-label={t('previousPage')} disabled={page === 0} onTap={() => goTo(page - 1)}>
-              <ChevronIcon direction="left" />
+              <ChevronLeft strokeWidth={2.5} aria-hidden="true" />
             </TapButton>
             <TapButton
               className="page-arrow page-arrow-right"
@@ -112,7 +113,7 @@ export function HomeScreen({ onOpenGame }: { onOpenGame: (id: GameId) => void })
               disabled={page === pages.length - 1}
               onTap={() => goTo(page + 1)}
             >
-              <ChevronIcon direction="right" />
+              <ChevronRight strokeWidth={2.5} aria-hidden="true" />
             </TapButton>
           </>
         )}

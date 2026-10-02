@@ -1,4 +1,4 @@
-import { ChevronIcon } from '../games/icons';
+import { ChevronLeft } from 'lucide-react';
 import { useT } from '../i18n/dictionary';
 import { TapButton } from '../kit/TapButton';
 
@@ -6,7 +6,7 @@ export function BackButton({ onBack, large }: { onBack: () => void; large?: bool
   const t = useT();
   return (
     <TapButton className={large ? 'back-button back-button-large' : 'back-button'} onTap={onBack}>
-      <ChevronIcon direction="left" />
+      <ChevronLeft strokeWidth={2.5} aria-hidden="true" />
       <span>{t('back')}</span>
     </TapButton>
   );

@@ -1,9 +1,10 @@
 import { BackButton } from '../components/BackButton';
 import { LEVEL_TEXT, useT } from '../i18n/dictionary';
 import { DIFFICULTIES, type Difficulty } from '../settings/settings';
+import { OverlayCard } from './OverlayCard';
 import { TapButton } from './TapButton';
 
-// The "Choose your level" screen, shared by every game. The game supplies the detail line of each
+// The "Choose your level" card (shown over the dimmed game), shared by every game. The game supplies the detail line of each
 // level (e.g. "24 tuiles"); the kit supplies the names, colours, stars and the current-level mark.
 export interface LevelPickerProps {
   current: Difficulty;
@@ -36,33 +37,37 @@ function Star({ on }: { on: boolean }) {
 export function LevelPicker({ current, detail, onPick, onBack }: LevelPickerProps) {
   const t = useT();
   return (
-    <div className="level-picker">
-      <header className="level-picker-bar">
-        <BackButton onBack={onBack} />
-        <h1 className="level-picker-title">{t('chooseLevel')}</h1>
-      </header>
-      <div className="level-picker-cards" role="radiogroup" aria-label={t('chooseLevel')}>
-        {DIFFICULTIES.map((level, index) => (
-          <TapButton
-            key={level}
-            className="level-card"
-            role="radio"
-            aria-checked={level === current}
-            data-current={level === current}
-            style={{ backgroundImage: `linear-gradient(to bottom, ${CARD_COLORS[level][0]}, ${CARD_COLORS[level][1]})` }}
-            onTap={() => onPick(level)}
-          >
-            <span className="lp-name">{t(LEVEL_TEXT[level])}</span>
-            <span className="lp-detail">{detail(level)}</span>
-            <span className="lp-stars">
-              {DIFFICULTIES.map((_, i) => (
-                <Star key={i} on={i <= index} />
-              ))}
-            </span>
-            <span className="lp-current">{level === current ? `✓ ${t('levelCurrent')}` : ''}</span>
-          </TapButton>
-        ))}
-      </div>
-    </div>
+    <OverlayCard label={t('chooseLevel')} onClose={onBack}>
+      {(close) => (
+        <>
+          <h1 className="level-picker-title">{t('chooseLevel')}</h1>
+          <div className="level-picker-cards" role="radiogroup" aria-label={t('chooseLevel')}>
+            {DIFFICULTIES.map((level, index) => (
+              <TapButton
+                key={level}
+                className="level-card"
+                role="radio"
+                aria-checked={level === current}
+                data-current={level === current}
+                style={{ backgroundImage: `linear-gradient(to bottom, ${CARD_COLORS[level][0]}, ${CARD_COLORS[level][1]})` }}
+                onTap={() => onPick(level)}
+              >
+                <span className="lp-name">{t(LEVEL_TEXT[level])}</span>
+                <span className="lp-detail">{detail(level)}</span>
+                <span className="lp-stars">
+                  {DIFFICULTIES.map((_, i) => (
+                    <Star key={i} on={i <= index} />
+                  ))}
+                </span>
+                <span className="lp-current">{level === current ? `✓ ${t('levelCurrent')}` : ''}</span>
+              </TapButton>
+            ))}
+          </div>
+          <div className="overlay-actions">
+            <BackButton onBack={close} />
+          </div>
+        </>
+      )}
+    </OverlayCard>
   );
 }

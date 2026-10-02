@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { GearIcon } from '../games/icons';
+import { Settings } from 'lucide-react';
 import { useT } from '../i18n/dictionary';
 import { useHold } from './touch';
 
@@ -22,7 +22,7 @@ export function GearButton({ onOpen }: { onOpen: () => void }) {
           <span className="ring-fill" />
         </span>
       </span>
-      <GearIcon />
+      <Settings strokeWidth={2.5} aria-hidden="true" />
     </button>
   );
 }
