@@ -1,8 +1,12 @@
-STEP A: Triple Tile playable (not committed)
-Relied on: CONCEPT.md Triple Tile; tripletile rules/layouts (unchanged except hintTile); Mahjong game + geometry (pattern for level wrapper, hit-testing, dev buttons); kit GameScreen/EndCard/history/touch; registry; pictureUrl.
-Done: game "tripletile" registered (FR "Trio", EN "Triple Tile", icon, Home entry, sound map, per-game level). pictureUrl uses collection.extension (default svg; Triple Tile = png, generator script updated). TripleTileGame.tsx: board from layouts, 7-slot tray below, one fitted geometry (geometry.ts), tap only (drags do nothing), tile slides to tray (transform transition), set of 3 fades out, win/stuck kit EndCards, Hint+Undo, level badge/picker (Facile first, last level remembered), dev Win/Stuck buttons, flat sand background (#f1d9b5).
-hintTile fix: when the tray has 6, only tiles completing a set are suggested; else null.
-Files changed: src/games/tripletile/{TripleTileGame.tsx,geometry.ts,tripletile.css (new), rules.ts}, registry.ts, icons.tsx, settings.ts, sound.ts, dictionary.ts, pictures/{index,types,tripleTilesFluent}.ts, scripts/fetch-triple-tiles.mjs, kit/GameScreen.tsx (optional className), mahjong/EndDecoration.tsx (optional collection prop, Mahjong output identical).
-Checks: tsc + build pass; selfcheck-triple-tile OK (all 4 levels). Not tested on a device or in a browser.
-To test: all 4 levels at 1280x800 and iPad portrait/landscape (tile size, tray fits); tap free/blocked tiles; set of 3 clears; Undo after a clear restores the tiles; Hint never points at a tile that fills the tray; Défi: full tray -> Presque card; Win/Stuck dev buttons; Mahjong unchanged.
-Assumptions: Détente full tray does nothing special yet (taps ignored, Undo works; shake/line comes next step). Taps wait ~0.6s while a set clears. No caption under the board (space). End cards reuse Mahjong's decoration with ivory kit tiles (own decoration later). Clear sound reuses tileClick. Tile aspect 1.12, thickness at the bottom only, layers shift up. Hint glow green, 4.5 s.
+STEP B1: Triple Tile lively (not committed)
+Relied on: CONCEPT.md Triple Tile (+Performance line); TripleTileGame (shownTray/goneSlots/busy/epoch pattern, Undo history); geometry.ts (slot positions, unchanged); kit GameScreen action buttons (TapButton, .action-button). Mahjong untouched.
+Done:
+1. Tile to tray: 350 ms glide + arc (inner layer lifts and swells, then settles). Tray tiles slide to make room (transform transition).
+2. Set clear: gold glow layer (opacity) + bounce 280 ms, gather onto middle tile 170 ms, pop (swell + fade) with 6 sparkles 300 ms. Remaining tiles slide over.
+3. Unblock: grey is now a separate layer whose opacity fades (300 ms) instead of switching.
+4. Détente full tray: tray/slots/tiles sway once, Undo gets a pulsing gold glow (kit GameAction "emphasis"), line "Plateau plein — annulez votre dernier coup" / "Tray full — undo your last move" (dictionary key trayFull) above the tray; board taps = tiny wiggle; Hint -> Undo pulses faster; all reset on Undo. No timer.
+5. Taps are blocked only from a set-completing tap until the set starts to pop (~0.8 s); all other taps are never blocked.
+Files: src/games/tripletile/{TripleTileGame.tsx,tripletile.css}, src/kit/GameScreen.tsx (emphasis prop), src/styles.css (action-button pulse), src/i18n/dictionary.ts.
+Checks: tsc + build pass. Not tested in a browser or on device.
+To test: all 4 levels; arc and gather look right on 1280x800 and portrait; unblocking fade; Facile full tray (shake, line position, Undo glow, Hint, wiggle, Undo resets); Défi full tray still ends with Presque; Effects Minimal = no movement (opacity only); Undo during a clear.
+Assumptions: lift/shake/wiggle sizes scale with the Effects setting (--fx-lift; 0 on Minimal). Full-tray line sits in the gap above the tray on a light pill and may overlap the bottom board row slightly. Shake plays once per full tray. Win/Presque card delays adjusted to the new timings. Old fadeMs-based clear timing removed.

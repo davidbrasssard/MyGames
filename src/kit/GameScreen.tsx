@@ -15,6 +15,7 @@ export interface GameAction {
   id: ActionId;
   onTap: () => void;
   disabled?: boolean;
+  emphasis?: 'glow' | 'strong'; // a soft pulsing glow that draws the eye to this button
 }
 
 const ACTIONS: Record<ActionId, { labelKey: TextKey; Icon: LucideIcon }> = {
@@ -76,7 +77,7 @@ export function GameScreen({ title, levelLabel, level, onBack, actions, caption,
             {actions.map((action) => {
               const { labelKey, Icon } = ACTIONS[action.id];
               return (
-                <TapButton key={action.id} className="action-button" disabled={action.disabled} onTap={action.onTap}>
+                <TapButton key={action.id} className="action-button" disabled={action.disabled} data-emphasis={action.emphasis} onTap={action.onTap}>
                   <Icon strokeWidth={2.5} aria-hidden="true" />
                   <span>{t(labelKey)}</span>
                 </TapButton>

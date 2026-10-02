@@ -4,7 +4,6 @@ import { pickStuckTitle } from '../../kit/NearMiss';
 import { EndCard } from '../../kit/EndCard';
 import { GameScreen, type GameAction, type GameProps } from '../../kit/GameScreen';
 import { useMoveHistory } from '../../kit/history';
-import { EFFECT_PROFILES } from '../../kit/motion';
 import { playGood } from '../../kit/sound';
 import { useDragGesture, type Point } from '../../kit/touch';
 import { useElementSize } from '../../kit/useElementSize';
@@ -35,7 +34,12 @@ import './tripletile.css';
 const PICTURE_BY_ID = new Map<string, Picture>(TRIPLE_TILES_FLUENT.pictures.map((picture) => [picture.id, picture]));
 
 const HINT_MS = 4500; // how long a hint stays visible
-const CLEAR_PAUSE_MS = 120; // after the third tile has arrived, before the set clears
+const FLY_MS = 350; // a tapped tile flies to its tray slot (matches the CSS)
+const GLOW_MS = 280; // set cleared: golden glow and a small bounce
+const GATHER_MS = 170; // the three tiles slide onto the middle one
+const POP_MS = 300; // pop away with sparkles
+const WIGGLE_MS = 350;
+const FULL_DELAY_MS = 400; // Détente full tray: notice appears once the last tile has landed
 const WIN_PAUSE_MS = 1200; // pause after the last set, before the Bravo card
 const STUCK_PAUSE_MS = 1500; // calm pause once the tray is full (Défi levels), before the Presque card
 
@@ -75,9 +79,8 @@ function TripleTileBoard({
   onReplay,
 }: GameProps & { levelId: Difficulty; onPickLevel: (level: Difficulty) => void; onReplay: () => void }) {
   const t = useT();
-  const { hints, effects, language } = useSettings();
+  const { hints, language } = useSettings();
   const level = LEVELS[levelId];
-  const fadeMs = EFFECT_PROFILES[effects].fadeMs;
 
   const [board] = useState<Board>(() => newBoard(levelId));
   const [game, setGame] = useState<GameState>(() => initialState(board));
@@ -86,6 +89,13 @@ function TripleTileBoard({
   const [shownTray, setShownTray] = useState<number[]>([]);
   const [goneSlots, setGoneSlots] = useState<ReadonlyMap<number, number>>(new Map());
   const [hint, setHint] = useState<number | null>(null);
+  const [flying, setFlying] = useState<ReadonlySet<number>>(new Set()); // tiles on their way to the tray
+  const [clearing, setClearing] = useState<ReadonlyMap<number, { phase: 'glow' | 'gather'; mid: number }>>(new Map());
+  const [sparks, setSparks] = useState<readonly { key: number; slot: number }[]>([]);
+  const [wiggle, setWiggle] = useState<{ id: number; n: number } | null>(null);
+  const [fullNotice, setFullNotice] = useState(false); // Détente: tray full, waiting for Undo
+  const [undoStrong, setUndoStrong] = useState(false); // Hint asked while the tray is full
+  const sparkKey = useRef(0);
   const [endCard, setEndCard] = useState<'win' | 'stuck' | null>(null);
   const history = useMoveHistory<Move>();
 
@@ -144,6 +154,11 @@ function TripleTileBoard({
   const tap = (id: number) => {
     if (busy.current || endCard) return;
     const g = stateRef.current;
+    if (g.status === 'stuck' && !level.canLose) {
+      setWiggle((old) => ({ id, n: (old?.n ?? 0) + 1 })); // tray full on a Détente level: only a tiny wiggle
+      later(WIGGLE_MS, () => setWiggle(null));
+      return;
+    }
     const result = tapTile(board, g, id);
     if (!result) return; // blocked tile, or nothing can be played
     const inserted = g.tray.slice();
@@ -155,20 +170,37 @@ function TripleTileBoard({
     setGame(result.state);
     setShownTray(inserted);
     clearHint();
+    setFlying((old) => new Set(old).add(id));
+    later(FLY_MS, () => setFlying((old) => (old.has(id) ? new Set([...old].filter((t) => t !== id)) : old)));
 
     if (cleared.length > 0) {
+      // Taps wait until the set starts to pop (the tray is then already settled). Undo drops every pending step.
       busy.current = true;
       const mine = epoch.current;
-      later(fadeMs + CLEAR_PAUSE_MS, () => {
+      const mid = [...cleared].sort((a, b) => inserted.indexOf(a) - inserted.indexOf(b))[1];
+      const midSlot = inserted.indexOf(mid);
+      later(FLY_MS, () => {
+        if (epoch.current !== mine) return;
+        playGood('tripletile');
+        setClearing(new Map(cleared.map((tile) => [tile, { phase: 'glow' as const, mid }])));
+      });
+      later(FLY_MS + GLOW_MS, () => {
+        if (epoch.current !== mine) return;
+        setClearing(new Map(cleared.map((tile) => [tile, { phase: 'gather' as const, mid }])));
+      });
+      later(FLY_MS + GLOW_MS + GATHER_MS, () => {
         if (epoch.current !== mine) return;
         busy.current = false;
-        playGood('tripletile');
+        const key = (sparkKey.current += 1);
+        setClearing(new Map());
         setGoneSlots((old) => {
           const grown = new Map(old);
-          cleared.forEach((tile) => grown.set(tile, inserted.indexOf(tile)));
+          cleared.forEach((tile) => grown.set(tile, midSlot));
           return grown;
         });
         setShownTray((old) => old.filter((tile) => !cleared.includes(tile)));
+        setSparks((old) => [...old, { key, slot: midSlot }]);
+        later(POP_MS, () => setSparks((old) => old.filter((spark) => spark.key !== key)));
       });
     }
   };
@@ -178,6 +210,10 @@ function TripleTileBoard({
     if (!move) return;
     epoch.current += 1;
     busy.current = false;
+    setClearing(new Map());
+    setFlying(new Set());
+    setSparks([]);
+    setUndoStrong(false);
     const next = undoMove(stateRef.current, move);
     stateRef.current = next;
     setGame(next);
@@ -192,6 +228,10 @@ function TripleTileBoard({
   };
 
   const showHint = () => {
+    if (stateRef.current.status === 'stuck' && !level.canLose) {
+      setUndoStrong(true); // the hint points at Undo: it pulses more until tapped
+      return;
+    }
     const id = hintTile(board, stateRef.current);
     if (id === null) return;
     window.clearTimeout(hintTimer.current);
@@ -209,16 +249,27 @@ function TripleTileBoard({
   // ---- Board cleared, or tray full ----
   useEffect(() => {
     if (game.status !== 'won') return undefined;
-    const id = window.setTimeout(() => setEndCard('win'), fadeMs + CLEAR_PAUSE_MS + WIN_PAUSE_MS);
+    const id = window.setTimeout(() => setEndCard('win'), FLY_MS + GLOW_MS + GATHER_MS + WIN_PAUSE_MS);
     return () => window.clearTimeout(id);
-  }, [game.status, fadeMs]);
+  }, [game.status]);
 
-  // Défi levels only (the Détente rule for a full tray comes in the next step). Undo can still rescue it meanwhile.
+  // Défi levels only: the game ends (Undo can still rescue it meanwhile).
   useEffect(() => {
     if (game.status !== 'stuck' || !level.canLose) return undefined;
-    const id = window.setTimeout(() => setEndCard('stuck'), fadeMs + STUCK_PAUSE_MS);
+    const id = window.setTimeout(() => setEndCard('stuck'), FLY_MS + STUCK_PAUSE_MS);
     return () => window.clearTimeout(id);
-  }, [game.status, level, fadeMs]);
+  }, [game.status, level]);
+
+  // Détente levels: a full tray is not an ending. Once the last tile has landed the tray shakes and Undo glows.
+  useEffect(() => {
+    if (game.status !== 'stuck' || level.canLose) {
+      setFullNotice(false);
+      setUndoStrong(false);
+      return undefined;
+    }
+    const id = window.setTimeout(() => setFullNotice(true), FULL_DELAY_MS);
+    return () => window.clearTimeout(id);
+  }, [game.status, level]);
 
   // ---- Dev-only test shortcuts (stripped from the production build) ----
   const devWin = () => {
@@ -280,7 +331,12 @@ function TripleTileBoard({
 
   const actions: GameAction[] = [];
   if (hints) actions.push({ id: 'hint', onTap: showHint });
-  actions.push({ id: 'undo', onTap: undo, disabled: !history.canUndo });
+  actions.push({
+    id: 'undo',
+    onTap: undo,
+    disabled: !history.canUndo,
+    emphasis: fullNotice ? (undoStrong ? 'strong' : 'glow') : undefined,
+  });
 
   return (
     <GameScreen
@@ -300,6 +356,7 @@ function TripleTileBoard({
       <div
         ref={fieldRef}
         className="tt-field"
+        data-full={fullNotice ? 'true' : undefined}
         style={geometry ? ({ '--tw': `${geometry.tw}px`, '--t': `${geometry.t}px` } as React.CSSProperties) : undefined}
         {...handlers}
       >
@@ -309,6 +366,11 @@ function TripleTileBoard({
               className="tt-tray"
               style={{ left: geometry.trayLeft, top: geometry.trayTop, width: geometry.trayWidth, height: geometry.trayHeight }}
             />
+            {fullNotice && (
+              <p className="tt-full-line" style={{ left: geometry.trayLeft, width: geometry.trayWidth, bottom: size.height - geometry.trayTop + 6 }}>
+                {t('trayFull')}
+              </p>
+            )}
             {geometry.slotLeft.map((left, k) => (
               <div key={k} className="tt-slot" style={{ left, top: geometry.slotTop, width: geometry.tw, height: geometry.th + geometry.t }} />
             ))}
@@ -332,24 +394,42 @@ function TripleTileBoard({
               }
               const picture = PICTURE_BY_ID.get(board.pictures[id]) as Picture;
               const onBoard = gone === undefined && slot < 0;
+              const clear = clearing.get(id);
+              if (clear && clear.phase === 'gather') x = geometry.slotLeft[Math.max(0, shownTray.indexOf(clear.mid))];
               return (
                 <div
                   key={id}
-                  className="tt-tile"
-                  data-blocked={onBoard && !freeSet.has(id) ? 'true' : undefined}
-                  data-hint={hint === id ? 'true' : undefined}
-                  data-gone={gone !== undefined ? 'true' : undefined}
-                  style={{
-                    width: geometry.tw,
-                    height: geometry.th,
-                    zIndex,
-                    transform: `translate(${x}px, ${y}px)${gone !== undefined ? ' scale(1.2)' : ''}`,
-                  }}
+                  className="tt-pos"
+                  data-phase={clear?.phase}
+                  style={{ width: geometry.tw, height: geometry.th, zIndex, transform: `translate(${x}px, ${y}px)` }}
                 >
-                  <img src={pictureUrl(TRIPLE_TILES_FLUENT, picture)} alt={pictureName(picture, language)} draggable={false} />
+                  <div
+                    className="tt-tile"
+                    data-hint={hint === id ? 'true' : undefined}
+                    data-gone={gone !== undefined ? 'true' : undefined}
+                    data-fly={flying.has(id) ? 'true' : undefined}
+                    data-clear={clear?.phase}
+                    data-intray={onBoard ? undefined : 'true'}
+                    data-wiggle={wiggle?.id === id ? (wiggle.n % 2 ? 'a' : 'b') : undefined}
+                  >
+                    <div className="tt-shade" style={{ opacity: onBoard && !freeSet.has(id) ? 1 : 0 }} />
+                    <div className="tt-glow" />
+                    <img src={pictureUrl(TRIPLE_TILES_FLUENT, picture)} alt={pictureName(picture, language)} draggable={false} />
+                  </div>
                 </div>
               );
             })}
+            {sparks.map((spark) => (
+              <div
+                key={spark.key}
+                className="tt-sparks"
+                style={{ left: geometry.slotLeft[spark.slot] + geometry.tw / 2, top: geometry.slotTop + geometry.th / 2, zIndex: 6000 }}
+              >
+                {[0, 1, 2, 3, 4, 5].map((k) => (
+                  <i key={k} style={{ '--a': `${k * 60 + 20}deg` } as React.CSSProperties} />
+                ))}
+              </div>
+            ))}
           </>
         )}
       </div>

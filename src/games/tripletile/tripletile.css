@@ -25,17 +25,31 @@
   border-radius: 0.9rem;
 }
 
+/* A tile is two layers: .tt-pos glides (transform), .tt-tile carries the look and the one-shot animations. */
+.tt-pos {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: transform 350ms ease-in-out;
+}
+
+.tt-pos[data-phase='gather'] {
+  transition-duration: 170ms;
+}
+
 /* Tile look from the dev page: white face, soft blue thickness, rounded. --tw / --t are set by the board. */
 .tt-tile {
   position: absolute;
   top: 0;
+  right: 0;
+  bottom: 0;
   left: 0;
   box-sizing: border-box;
   border: 2px solid #cfe3f1;
   border-radius: calc(var(--tw) * 0.14);
   background: #ffffff;
   box-shadow: 0 var(--t) 0 #6fa8d6, 0 calc(var(--t) * 1.3) calc(var(--t) * 0.9) rgba(40, 80, 120, 0.25);
-  transition: transform var(--fx-dur) ease-in-out, opacity var(--fx-dur) ease-in-out;
+  transition: opacity 200ms ease-in-out, transform 200ms ease-in-out;
 }
 
 .tt-tile img {
@@ -47,19 +61,29 @@
   pointer-events: none;
 }
 
-/* Blocked: clearly greyed but still readable. */
-.tt-tile[data-blocked='true'] {
+/* Blocked: a grey layer (face, border and thickness) that fades in and out, so a freed tile
+   loses its grey smoothly. Only this layer's opacity animates. */
+.tt-shade {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  bottom: -2px;
+  left: -2px;
+  border: 2px solid #aab2ba;
+  border-radius: inherit;
   background: #c9ced4;
-  border-color: #aab2ba;
-  box-shadow: 0 var(--t) 0 #7f93a6, 0 calc(var(--t) * 1.3) calc(var(--t) * 0.9) rgba(40, 80, 120, 0.2);
+  box-shadow: 0 var(--t) 0 #7f93a6;
+  pointer-events: none;
+  transition: opacity 300ms ease-in-out;
 }
 
-.tt-tile[data-blocked='true'] img {
-  opacity: 0.55;
+.tt-tile img {
+  z-index: 1;
 }
 
-/* Hint: a soft glow layer that fades in (the shadow itself never animates). */
-.tt-tile::after {
+/* Glow layers (hint green, set-clear gold): static shadow, only opacity animates. */
+.tt-tile::after,
+.tt-glow {
   content: '';
   position: absolute;
   top: 0;
@@ -67,20 +91,136 @@
   bottom: 0;
   left: 0;
   border-radius: inherit;
-  box-shadow: 0 0 calc(var(--tw) * 0.22) calc(var(--tw) * 0.06) rgba(70, 190, 140, 0.95);
   opacity: 0;
   pointer-events: none;
   transition: opacity 300ms ease-in-out;
+}
+
+.tt-tile::after {
+  z-index: 2;
+  box-shadow: 0 0 calc(var(--tw) * 0.22) calc(var(--tw) * 0.06) rgba(70, 190, 140, 0.95);
 }
 
 .tt-tile[data-hint='true']::after {
   opacity: 1;
 }
 
-/* A cleared set: the tile swells a little and fades away where it sits in the tray. */
+.tt-glow {
+  z-index: 2;
+  background: rgba(255, 205, 80, 0.45);
+  box-shadow: 0 0 calc(var(--tw) * 0.28) calc(var(--tw) * 0.1) rgba(255, 190, 50, 1);
+  transition-duration: 200ms;
+}
+
+.tt-tile[data-clear] .tt-glow {
+  opacity: 1;
+}
+
+/* Tile to tray: a gentle arc (lift and settle) on top of the glide. The lift follows the Effects setting. */
+.tt-tile[data-fly='true'] {
+  animation: tt-arc 350ms ease-in-out;
+}
+
+@keyframes tt-arc {
+  0% { transform: translateY(0) scale(1); }
+  45% { transform: translateY(calc(var(--fx-lift) * -3)) scale(1.1); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* Set clear: bounce, then (after gathering) swell and fade away. */
+.tt-tile[data-clear='glow'] {
+  animation: tt-bounce 280ms ease-in-out;
+}
+
+@keyframes tt-bounce {
+  0% { transform: translateY(0); }
+  40% { transform: translateY(calc(var(--fx-lift) * -0.8)); }
+  100% { transform: translateY(0); }
+}
+
 .tt-tile[data-gone='true'] {
   opacity: 0;
+  transform: scale(1.3);
   pointer-events: none;
+}
+
+.tt-sparks {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.tt-sparks i {
+  position: absolute;
+  top: -0.4rem;
+  left: -0.4rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  background: #ffc933;
+  border-radius: 20%;
+  opacity: 0;
+  animation: tt-spark 300ms ease-out forwards;
+}
+
+@keyframes tt-spark {
+  0% { opacity: 1; transform: rotate(var(--a)) translateX(0) scale(0.6) rotate(45deg); }
+  100% { opacity: 0; transform: rotate(var(--a)) translateX(calc(var(--tw) * 0.8)) scale(1) rotate(45deg); }
+}
+
+/* Détente, tray full: the tray, its slots and its tiles sway once, gently. */
+.tt-field[data-full='true'] .tt-tray,
+.tt-field[data-full='true'] .tt-slot,
+.tt-field[data-full='true'] .tt-tile[data-intray='true'] {
+  animation: tt-shake 900ms ease-in-out;
+}
+
+@keyframes tt-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(calc(var(--fx-lift) * -0.4)); }
+  50% { transform: translateX(0); }
+  75% { transform: translateX(calc(var(--fx-lift) * 0.4)); }
+}
+
+.tt-full-line {
+  position: absolute;
+  z-index: 6000;
+  margin: 0;
+  padding: 0.35rem 0.8rem;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #4a3a22;
+  background: rgba(255, 250, 240, 0.92);
+  border-radius: 1rem;
+  animation: tt-line-in 500ms ease-out backwards;
+}
+
+@keyframes tt-line-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* A board tile tapped while the tray is full: a tiny wiggle (two identical names so a repeat tap restarts it). */
+.tt-tile[data-wiggle='a'] {
+  animation: tt-wiggle-a 350ms ease-in-out;
+}
+
+.tt-tile[data-wiggle='b'] {
+  animation: tt-wiggle-b 350ms ease-in-out;
+}
+
+@keyframes tt-wiggle-a {
+  0%, 100% { transform: translateX(0); }
+  30% { transform: translateX(calc(var(--fx-lift) * -0.15)); }
+  70% { transform: translateX(calc(var(--fx-lift) * 0.15)); }
+}
+
+@keyframes tt-wiggle-b {
+  0%, 100% { transform: translateX(0); }
+  30% { transform: translateX(calc(var(--fx-lift) * -0.15)); }
+  70% { transform: translateX(calc(var(--fx-lift) * 0.15)); }
 }
 
 .tt-dev {

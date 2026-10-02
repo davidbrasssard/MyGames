@@ -771,6 +771,42 @@ svg {
   color: var(--ink);
 }
 
+.action-button {
+  position: relative;
+}
+
+/* Emphasis: a golden layer behind the label pulses slowly (opacity and a small swell only, no flashing). */
+.action-button::after {
+  content: '';
+  position: absolute;
+  top: -0.3rem;
+  right: -0.3rem;
+  bottom: -0.3rem;
+  left: -0.3rem;
+  border-radius: 2.3rem;
+  box-shadow: 0 0 1.2rem 0.35rem rgba(240, 180, 40, 0.95);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.action-button[data-emphasis='glow']::after {
+  animation: action-pulse 2.6s ease-in-out infinite;
+}
+
+.action-button[data-emphasis='strong']::after {
+  animation: action-pulse-strong 1.8s ease-in-out infinite;
+}
+
+@keyframes action-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.05); }
+}
+
+@keyframes action-pulse-strong {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
 .action-button + .action-button {
   margin-top: 1.5rem;
 }
