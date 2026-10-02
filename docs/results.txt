@@ -1,5 +1,11 @@
-DONE (docs only, no code, no commit)
-File changed: docs/CONCEPT.md (section "Triple Tile (game 2)"), docs/results.txt
-1. Tray full, Défi levels: removed the per-game stuck text override; now says the game ends with the kit stuck EndCard exactly as shipped (its rotating titles) and Rejouer.
-2. Added a Performance line: glows/sparkles are opacity-faded layers using transform/opacity only, no animated shadows or filters; Fluent 3D PNGs resized to about 128 px for the Galaxy Tab 4.
-Assumptions: none. Nothing for David to check.
+DONE (no commit). dev:public fixed.
+OLD (package.json): "dev:public": "pkill -f node_modules/.bin/vite; (sleep 5 && gh codespace ports visibility 5173:public -c $CODESPACE_NAME) & vite --host --port 5173 --strictPort"
+  Problem: fixed 5 s sleep, one try, no feedback; if vite was slower, or gh failed, the port stayed private silently.
+NEW: "dev:public": "node scripts/dev-public.mjs"
+  scripts/dev-public.mjs: kills old vite; starts vite --host --port 5173 --strictPort in the foreground (output shown);
+  polls http://127.0.0.1:5173 every 0.5 s up to 30 s; then runs gh ... visibility 5173:public -c $CODESPACE_NAME,
+  up to 5 tries 2 s apart; prints "[dev:public] Port 5173 is PUBLIC" or "FAILED ... <gh error>"
+  (also messages if the port never responds or CODESPACE_NAME is unset). Ctrl+C / SIGTERM stops vite too.
+TESTED: ran the script here: vite came up, then "Port 5173 is PUBLIC" printed; stopping the script left no vite process.
+  Not tested: the failure/retry paths (no way to make gh fail here).
+CHECK: run npm run dev:public yourself and confirm the iPad can open the public URL.

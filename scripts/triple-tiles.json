@@ -1,0 +1,20 @@
+[
+  { "id": "strawberry", "source": "Strawberry", "fr": "Fraise", "en": "Strawberry" },
+  { "id": "cherries", "source": "Cherries", "fr": "Cerises", "en": "Cherries" },
+  { "id": "green-apple", "source": "Green apple", "fr": "Pomme verte", "en": "Green apple" },
+  { "id": "banana", "source": "Banana", "fr": "Banane", "en": "Banana" },
+  { "id": "avocado", "source": "Avocado", "fr": "Avocat", "en": "Avocado" },
+  { "id": "blueberries", "source": "Blueberries", "fr": "Myrtilles", "en": "Blueberries" },
+  { "id": "butterfly", "source": "Butterfly", "fr": "Papillon", "en": "Butterfly" },
+  { "id": "blossom", "source": "Blossom", "fr": "Fleur", "en": "Blossom" },
+  { "id": "gem-stone", "source": "Gem stone", "fr": "Gemme", "en": "Gem stone" },
+  { "id": "grapes", "source": "Grapes", "fr": "Raisin", "en": "Grapes" },
+  { "id": "lemon", "source": "Lemon", "fr": "Citron", "en": "Lemon" },
+  { "id": "carrot", "source": "Carrot", "fr": "Carotte", "en": "Carrot" },
+  { "id": "sunflower", "source": "Sunflower", "fr": "Tournesol", "en": "Sunflower" },
+  { "id": "tulip", "source": "Tulip", "fr": "Tulipe", "en": "Tulip" },
+  { "id": "mushroom", "source": "Mushroom", "fr": "Champignon", "en": "Mushroom" },
+  { "id": "peach", "source": "Peach", "fr": "Pêche", "en": "Peach" },
+  { "id": "watermelon", "source": "Watermelon", "fr": "Pastèque", "en": "Watermelon" },
+  { "id": "lady-beetle", "source": "Lady beetle", "fr": "Coccinelle", "en": "Lady beetle" }
+]

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:public": "pkill -f node_modules/.bin/vite; (sleep 5 && gh codespace ports visibility 5173:public -c $CODESPACE_NAME) & vite --host --port 5173 --strictPort",
+    "dev:public": "node scripts/dev-public.mjs",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview"
   },
@@ -20,6 +20,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-legacy": "^8.2.3",
     "@vitejs/plugin-react": "^6.1.1",
+    "sharp": "^0.35.5",
     "svgo": "^4.1.0",
     "terser": "^5.51.2",
     "typescript": "^7.0.2",

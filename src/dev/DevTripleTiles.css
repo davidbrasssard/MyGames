@@ -1,0 +1,71 @@
+/* Development-only styles for /dev/triple-tiles (never in the production build). */
+.dtt {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 2rem 3rem 4rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  background-image: linear-gradient(to bottom, #dff1fb, #b7e0ee 60%, #8cc6dc);
+}
+
+.dtt-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+  grid-gap: 2rem 1.5rem;
+}
+
+.dtt-pair {
+  display: flex;
+}
+
+.dtt-cell {
+  margin: 0 1rem 0 0;
+  text-align: center;
+}
+
+.dtt-tile {
+  position: relative;
+  width: 8rem;
+  height: 8rem;
+  border-radius: 1.1rem;
+  background: #ffffff;
+  border: 2px solid #cfe3f1;
+  box-shadow: 0 0.7rem 0 #6fa8d6, 0 0.9rem 0.6rem rgba(40, 80, 120, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.dtt-tile img {
+  width: 82%;
+  height: 82%;
+  display: block;
+}
+
+/* Blocked: clearly greyed but readable. A grey veil over the white face and a duller side. */
+.dtt-tile[data-blocked='true'] {
+  background: #c9ced4;
+  border-color: #aab2ba;
+  box-shadow: 0 0.7rem 0 #7f93a6, 0 0.9rem 0.6rem rgba(40, 80, 120, 0.2);
+}
+
+.dtt-tile[data-blocked='true'] img {
+  opacity: 0.55;
+}
+
+.dtt-label {
+  margin-top: 0.4rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.dtt-name {
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+}

@@ -14,6 +14,7 @@ const HOME: Screen = { name: 'home' };
 // Development-only picture review screen at /dev/tiles. `import.meta.env.DEV` is a build-time constant,
 // so in the production build this is `null` and the screen's code is not included at all.
 const DevTiles = import.meta.env.DEV ? lazy(() => import('./dev/DevTiles')) : null;
+const DevTripleTiles = import.meta.env.DEV ? lazy(() => import('./dev/DevTripleTiles')) : null;
 
 // The playable game if the game has one; otherwise the temporary "coming soon" screen.
 function GameRoute({ id, onBack }: { id: GameId; onBack: () => void }) {
@@ -63,6 +64,14 @@ export function App() {
     return (
       <Suspense fallback={null}>
         <DevTiles />
+      </Suspense>
+    );
+  }
+
+  if (DevTripleTiles && window.location.pathname === '/dev/triple-tiles') {
+    return (
+      <Suspense fallback={null}>
+        <DevTripleTiles />
       </Suspense>
     );
   }
