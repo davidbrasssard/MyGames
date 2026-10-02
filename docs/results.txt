@@ -1,10 +1,5 @@
-In-game quality safety net (silent, no UI). Not committed. tsc checked; not run on a tablet.
-Read first: quality.ts (setTier, store, probe, decide). Existing probe/store logic unchanged.
-How: quality.ts startGameWatch/stopGameWatch; App.tsx starts it when screen is a game, stops it on leaving (effect cleanup).
-One rAF loop, only 1 push per frame; sort happens once per window. Does nothing if tier is already lite or ?quality= override.
-Thresholds: ignore first 3 s after opening (and 3 s after tab returns); window = 5 s of active time, >=30 frames;
-median gap > 25 ms (same as probe) => store('lite') + setTier('lite') at once, watcher stops. Otherwise next window.
-Hidden tab resets the window; gaps > 500 ms (pause/suspend) reset it too. Never goes lite -> full; only the 7-day/new-build probe can.
-Files: src/kit/quality.ts, src/App.tsx.
-Check: on the Tab 4, play a heavy game ~10 s and see if the quality-lite class appears on <html>.
-Assumption: the stored result uses the same key as the probe (fresh for 7 days), so Home won't re-probe it right away.
+Backgrounds made sharper. Not committed.
+Before: scripts/make-backgrounds.mjs had BLUR = 2.5 and CONTRAST = 0.88 (.blur + .linear); src/styles.css .game-bg::after was rgba(255,255,255,0.22).
+Now: blur and contrast steps removed (normal contrast), veil 0.06. Script re-run from bg-src/.
+Sizes: lake 144 KB, balloons 58, river-sunset 133, cloud-lake 135, sky-sunset 124, green-hills 137. Total 730 KB (all under 150 KB).
+Check: top bar, tray and tiles still readable over busy photos; if not, raise the veil a little.

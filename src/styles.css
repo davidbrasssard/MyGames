@@ -574,6 +574,7 @@ svg {
 }
 
 .game-topbar {
+  position: relative; /* above a game's .game-bg photo */
   display: flex;
   flex: none;
   align-items: center;
@@ -718,6 +719,7 @@ svg {
 }
 
 .game-body {
+  position: relative; /* above a game's .game-bg photo */
   display: flex;
   flex: 1;
   min-height: 0;
@@ -962,4 +964,31 @@ svg {
   background: var(--good);
   border-color: var(--good);
   color: #fff;
+}
+
+/* A game's photo background: covers the whole screen, centred, behind the bars; a light veil keeps them readable. */
+.game-bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.game-bg img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+.game-bg::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.06);
 }

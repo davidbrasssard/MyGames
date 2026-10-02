@@ -1,7 +1,7 @@
 /* Triple Tile. Only transform and opacity are animated. */
 .game-screen.tt-screen {
   background-image: none;
-  background-color: #f1d9b5; /* flat warm sand, different from Mahjong's lake (placeholder) */
+  background-color: #f1d9b5; /* shows only until the photo (.game-bg) has loaded */
 }
 
 .tt-field {

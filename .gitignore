@@ -141,3 +141,6 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Original large photos, never committed (see scripts/make-backgrounds.mjs)
+bg-src/

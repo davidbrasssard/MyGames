@@ -36,7 +36,7 @@ export default defineConfig({
       },
       workbox: {
         // Cache everything (including the legacy bundle) so the app works fully offline.
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        globPatterns: ['**/*.{js,css,html,svg,png,jpg,woff2}'],
         navigateFallback: '/index.html',
         cleanupOutdatedCaches: true,
       },

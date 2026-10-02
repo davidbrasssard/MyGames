@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { takeBackground } from './backgrounds';
 import { LEVEL_TEXT, useT } from '../../i18n/dictionary';
 import { pickStuckTitle } from '../../kit/NearMiss';
 import { EndCard } from '../../kit/EndCard';
@@ -86,6 +87,7 @@ function TripleTileBoard({
   const level = LEVELS[levelId];
 
   const [{ board, layoutId }] = useState(() => newBoard(levelId));
+  const [background] = useState(takeBackground);
   useEffect(() => rememberLayout(levelId, layoutId), [levelId, layoutId]);
   const [game, setGame] = useState<GameState>(() => initialState(board));
   // What is drawn in the tray. It runs a moment ahead of game.tray: a set that just completed stays in its
@@ -356,6 +358,11 @@ function TripleTileBoard({
       onBack={onBack}
       actions={actions}
       className="tt-screen"
+      background={
+        <div className="game-bg">
+          <img src={background} alt="" draggable={false} />
+        </div>
+      }
       overlay={endCard && <EndCard kind={endCard} title={stuckTitle ? t(stuckTitle) : undefined} decoration={endDecoration} onReplay={onReplay} onHome={onBack} />}
     >
       <div

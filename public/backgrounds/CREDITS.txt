@@ -1,0 +1,9 @@
+Triple Tile background photos: free-to-use photos (Unsplash / Pexels licence, no attribution required),
+cropped, softened and recompressed by scripts/make-backgrounds.mjs.
+Photographer / source per image (fill in from the original download pages):
+  lake.jpg:
+  balloons.jpg:
+  river-sunset.jpg:
+  cloud-lake.jpg:
+  sky-sunset.jpg:
+  green-hills.jpg:
