@@ -7,10 +7,14 @@ import './styles.css';
 import { App } from './App';
 import { installFocusRing, installGestureBlockers } from './kit/gestures';
 import { installScale } from './kit/scale';
+import { installAudioUnlock } from './kit/sound';
+import { installUpdates } from './kit/updates';
 
 installScale();
 installGestureBlockers();
 installFocusRing();
+installAudioUnlock();
+installUpdates();
 
 createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>

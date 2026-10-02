@@ -2,6 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { getGame } from './games/registry';
 import { ScreenHost } from './kit/ScreenHost';
 import { applyEffects } from './kit/motion';
+import { setHomeShowing } from './kit/updates';
 import { ComingSoonScreen } from './screens/ComingSoonScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { useSettings, type GameId } from './settings/settings';
@@ -31,6 +32,11 @@ export function App() {
   useEffect(() => {
     applyEffects(effects);
   }, [effects]);
+
+  // A downloaded update is applied only while Home is showing.
+  useEffect(() => {
+    setHomeShowing(screen.name === 'home');
+  }, [screen.name]);
 
   // The tablet's Back button returns Home instead of leaving the app.
   useEffect(() => {

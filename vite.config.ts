@@ -9,7 +9,9 @@ export default defineConfig({
     // Old tablets (Chrome 80 and up to the modern cut-off) get the legacy bundle; newer ones get the normal one.
     legacy({ targets: ['chrome >= 80'] }),
     VitePWA({
-      registerType: 'autoUpdate',
+      // 'prompt': a new version waits until src/kit/updates.ts applies it (only on Home); we register it ourselves.
+      registerType: 'prompt',
+      injectRegister: false,
       includeAssets: ['favicon.svg', 'icons/apple-touch-icon-180.png'],
       manifest: {
         name: 'Oasis',

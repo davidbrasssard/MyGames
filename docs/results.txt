@@ -1,15 +1,13 @@
-Finer end cards: "near miss" stuck card, calmer win card. Not committed. npm run build passes (not viewed on a screen).
+Per-game kit sound; Mahjong match = ivory tile "clack". Not committed. npm run build passes (not heard on a device).
 
-Read first: MahjongGame.tsx (end decoration + title pick), EndDecoration.tsx, EndCard.tsx, Almost.tsx/.css (rain/droop/close + Lucide cloud), DevTiles.tsx, styles.css end-card rules (border 0.3rem, glow 0.7 alpha, title 3rem, buttons 1.4rem radius).
+Read first: src/kit/sound.ts (old soft sine blip playMatch), MahjongGame.tsx (only caller, removePair), main.tsx (unlock).
 
 Done:
-- Stuck card: new kit src/kit/NearMiss.tsx + NearMiss.css. 3 real remaining tiles in a row: identical pair left/right, a different tile between (opacity 0.55). The pair slides 1.5 rem toward the middle, stops just short, pauses, drifts back (~4.5 s, once); middle tile rises 0.4 rem as they meet. Gentle = 0.6x amplitude and time; Minimal = static.
-- Stuck styling: ivory card, 1.5px lavender border (#b9a4e6), no glow (not rendered), title deep purple, line softer purple (#8a77b5).
-- Titles still rotate (Presque ! / Pas cette fois… / Oh, si près !), line "On réessaie ?", never same twice (localStorage oasis.lastStuckTitle; replaces oasis.lastAlmost).
-- Win card: 1.5px gold border, lighter glow (alpha 0.4), title 2.4rem (was 3rem), button radius 12px (shared, so the stuck card's buttons too). Trophy and 5 celebrations untouched.
-- Removed: Almost.tsx/.css (rain/droop/close, Lucide cloud, lavender glow/tint CSS), old dev preview buttons. Dev preview /dev/tiles has one "near miss" button.
+- sound.ts: removed the sine/dove blip and playMatch(). New tileClick sound: filtered noise tick + faint second tick 11 ms later (two tiles touching) + two fast-dying tones (1250 Hz woody, 2050 Hz porcelain). ~70 ms, quiet. Web Audio only, no files.
+- Per-game: GOOD_ACTION_SOUND maps each game id to a sound; playGood(gameId) plays it, only when speaker is ON. New sounds = add a function + SOUNDS entry + map the game.
+- MahjongGame.removePair now calls playGood('mahjong'). Audio unlock on first tap unchanged.
 
-Files: src/kit/NearMiss.{tsx,css} (new), src/kit/EndCard.tsx, src/games/mahjong/{EndDecoration,MahjongGame}.tsx, src/dev/DevTiles.tsx, src/styles.css; src/kit/Almost.{tsx,css} deleted.
+Files: src/kit/sound.ts, src/games/mahjong/MahjongGame.tsx, docs/results.txt.
 
-Assumptions: border radius of the cards eased to 1.6rem; pair = a picture with 2+ tiles left (always true after pair removals), blocker = any other remaining picture; the card tint is now ivory for both cards.
-David to check on the tablet: the slide distance reads as a "near miss"; win title size.
+Assumptions: other games (match, match3, puzzles) are pre-mapped to tileClick as placeholders until they get their own.
+David to check: listen on the tablet; if too sharp/quiet, tune master gain (0.5) or band frequency (2600) in tileClick.

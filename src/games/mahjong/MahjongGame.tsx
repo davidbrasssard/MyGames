@@ -6,6 +6,7 @@ import { StuckDecoration, WinDecoration } from './EndDecoration';
 import { GameScreen, type GameAction, type GameProps } from '../../kit/GameScreen';
 import { Tile, type TileState } from '../../kit/Tile';
 import { useMoveHistory } from '../../kit/history';
+import { playGood } from '../../kit/sound';
 import { EFFECT_PROFILES } from '../../kit/motion';
 import { useDragGesture, type Point } from '../../kit/touch';
 import { useElementSize } from '../../kit/useElementSize';
@@ -182,6 +183,7 @@ function MahjongBoard({
     removed[a] = true;
     removed[b] = true;
     history.push({ a, b, picture: g.pictures[a] });
+    playGood('mahjong');
     const next = { ...g, removed };
     stateRef.current = next;
     setGame(next);
